@@ -1,0 +1,75 @@
+:root {
+  --canvas: #ffffff;
+  --surface: #f6f7f5;
+  --ink: #111411;
+  --muted: #6f746f;
+  --border: #e4e7e3;
+  --functional-green: #16823b;
+  --soft-green: #edf7ef;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Pretendard, SUIT, Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px;
+}
+
+.foundation {
+  width: min(760px, 100%);
+}
+
+.eyebrow {
+  margin: 0 0 24px;
+  color: var(--functional-green);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(42px, 8vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.description {
+  max-width: 620px;
+  margin: 32px 0 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
