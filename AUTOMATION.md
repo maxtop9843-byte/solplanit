@@ -18,6 +18,18 @@ Read and obey in this order:
 
 Do not reinterpret the product into a generic solar calculator directory or a generic green SaaS landing page.
 
+## Mandatory connector invocation gate
+
+This gate runs before any capability, permission, access, or blocker judgment.
+
+1. At the start of every run, invoke at least one connected GitHub function and at least one connected Vercel function before writing a status conclusion or stopping work.
+2. Until both connector calls return, never claim or imply that tools are unavailable, permissions are missing, the repository or deployment cannot be inspected, the current session cannot execute the work, or the user must perform the task manually.
+3. When the request explicitly names `@GitHub` or `@Vercel`, the corresponding connector call is mandatory, not optional.
+4. Browser, curl, clone, DNS, local runtime, or unrelated tool failure never substitutes for and never permits skipping the GitHub or Vercel connector calls.
+5. A failed or empty first result is not a blocker. Retry through at least one alternate grounded route using repository name, Pull Request number, exact head SHA, Vercel bot comment, project slug, project ID, deployment URL, deployment ID, or team ID as available.
+6. Only after the direct call and alternate lookup both fail may the run report `BLOCKED`. The report must name the functions called, their targets, returned errors or empty results, and retry outcomes.
+7. A work-stoppage report made without satisfying this gate is invalid and must be corrected by invoking the connectors and resuming state inspection.
+
 ## Required state inspection
 
 Before choosing work:
@@ -81,7 +93,7 @@ For calculation tasks, add tests for:
 ## Failure handling
 
 - Repair recoverable failures within the same run.
-- If blocked by credentials, permissions, missing external configuration, or a non-recoverable platform failure, stop and document the exact blocker.
+- If blocked by credentials, permissions, missing external configuration, or a non-recoverable platform failure, stop and document the exact blocker only after satisfying the mandatory connector invocation gate.
 - Do not mark a task complete when validation is incomplete.
 - Do not replace real checks with optimistic statements.
 
