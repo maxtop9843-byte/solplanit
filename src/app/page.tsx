@@ -23,7 +23,7 @@ export default function HomePage() {
           <h1 id="page-title">
             태양광 설치,
             <br />
-            처음부터 끝까지 한 번에
+            처음부터 끝까지 한 번에
           </h1>
           <p className="description">
             주소와 설치 면적만 입력하면 설치 가능한 용량과 예상 수익을 확인하고,
