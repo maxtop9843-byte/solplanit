@@ -19,8 +19,8 @@
 2. Data and calculation accuracy
 3. Professional workspace
 4. Community and quote connection
-5. SEO
-6. AdSense and monetization readiness
+5. SEO and content depth
+6. AdSense readiness and monetization optimization
 
 ## Queue
 
@@ -48,10 +48,20 @@
 | ACCOUNT-001 | P2 | OPEN | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
 | QA-001 | P0 | OPEN | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
 | QA-002 | P1 | OPEN | Compare professional inputs, outputs, downloads, error behavior, and representative results against PVGIS 5.3 | PRO-005 |
-| SEO-001 | P2 | OPEN | Add metadata, sitemap, robots, canonical URLs, and structured data foundation | UI-002 |
-| CONTENT-001 | P2 | OPEN | Add trustworthy methodology, data source, calculation assumption, limitation, and privacy pages | CALC-002, PRO-002 |
 | OPS-001 | P1 | OPEN | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
-| ADS-001 | P3 | OPEN | Prepare non-intrusive advertising zones only after core UX and content quality stabilize | SEO-001, CONTENT-001 |
+| SEO-001 | P2 | OPEN | Add metadata, sitemap, robots, canonical URLs, hreflang-ready structure, and structured data foundation | UI-002 |
+| SEO-002 | P2 | OPEN | Build search-intent landing pages for installation capacity, generation, savings, SMP/REC revenue, rooftop solar, factory solar, and land solar | CALC-002, SEO-001 |
+| SEO-003 | P2 | OPEN | Add unique explanatory content, worked examples, FAQs, related-tool links, breadcrumbs, and internal-link architecture to every public calculator and professional entry page | SEO-002 |
+| SEO-004 | P2 | OPEN | Add Organization, WebSite, WebPage, BreadcrumbList, FAQPage, SoftwareApplication, and calculation-specific structured data without duplication | SEO-003 |
+| SEO-005 | P2 | OPEN | Optimize Core Web Vitals, image delivery, font loading, bundle size, server rendering, caching, and mobile performance | UI-002, PRO-004 |
+| SEO-006 | P2 | OPEN | Add Google Search Console and Naver Search Advisor verification slots, submission checklist, indexing diagnostics, and canonical-domain checks | SEO-001, OPS-001 |
+| CONTENT-001 | P2 | OPEN | Add trustworthy methodology, data source, calculation assumption, limitation, privacy, terms, contact, and editorial-policy pages | CALC-002, PRO-002 |
+| CONTENT-002 | P2 | OPEN | Build installation guides, quote-review guides, subsidy-information framework, glossary, and expert-reviewed evergreen content hubs | CONTENT-001, SEO-002 |
+| ADS-001 | P3 | OPEN | Create AdSense-ready layout zones that never interrupt the calculator, result interpretation, map controls, quote flow, or primary CTA | SEO-003, CONTENT-001 |
+| ADS-002 | P3 | OPEN | Add consent-aware ad loading, reserved dimensions, lazy loading, CLS protection, and mobile density rules | ADS-001, SEO-005 |
+| ADS-003 | P3 | OPEN | Run AdSense policy-readiness audit for low-value content, navigation, ownership pages, privacy, misleading claims, accidental clicks, and prohibited placements | ADS-002, CONTENT-002 |
+| ADS-004 | P3 | OPEN | Optimize ad placement using measured viewability and revenue data while preserving task completion, Core Web Vitals, and user trust | ADS-003; traffic data required |
+| LAUNCH-001 | P1 | OPEN | Final pre-launch regression: public routes, calculators, PVGIS flow, downloads, community, SEO, policies, analytics consent, ads disabled-by-default, and production smoke | QA-001, QA-002, SEO-006, CONTENT-002, ADS-003 |
 
 ## Acceptance highlights
 
@@ -76,6 +86,22 @@
 - Results include source, API version, query time, assumptions, and limitations.
 - Downloaded files reproduce the same values shown on screen.
 - EU/JRC identity is not copied and no official affiliation is implied.
+
+### SEO-001 to SEO-006
+
+- Every indexable page has a unique title, description, canonical URL, useful main content, and one clear search intent.
+- Sitemap, robots, canonical, language architecture, redirects, breadcrumbs, and structured data agree with the actual public routes.
+- Calculator and professional-tool pages contain original explanations, assumptions, examples, FAQs, and related links rather than thin wrappers around forms.
+- Search-demand or policy claims are never fabricated; sensitive information uses authoritative sources and a visible verification date.
+- Performance work must not break calculations, maps, charts, downloads, or accessibility.
+
+### ADS-001 to ADS-004
+
+- Ads are never placed inside input groups, result cards, map controls, download controls, quote actions, or immediately beside deceptive look-alike buttons.
+- Ad slots reserve layout space and must not cause material CLS.
+- The site remains useful and complete with ads blocked or disabled.
+- Ad optimization may not outrank calculation accuracy, task completion, mobile usability, performance, or trust.
+- ADS-004 remains dependent on real traffic and revenue data; no placement is declared optimal without measurement.
 
 ## Definition of done
 
