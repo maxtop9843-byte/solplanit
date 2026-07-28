@@ -27,7 +27,7 @@
 | ID | Priority | Status | Task | Depends on |
 |---|---:|---|---|---|
 | FND-001 | P0 | DONE | Initialize Next.js, TypeScript, linting, testing, CI, environment schema, and provider-neutral map interfaces | — |
-| UI-001 | P0 | IN_REVIEW | Reproduce the approved image-led homepage hero with final copy, black CTA, restrained navigation, large real solar image, and responsive motion | FND-001 |
+| UI-001 | P0 | DONE | Reproduce the approved image-led homepage hero with final copy, black CTA, restrained navigation, large real solar image, and responsive motion | FND-001 |
 | UI-002 | P0 | OPEN | Complete the homepage below the fold: calculator entry, result preview, process, installation cases, community entry, and bottom CTA | UI-001 |
 | UX-001 | P0 | OPEN | Implement the four-step general-user guided calculator shell with one dominant question per step | UI-002 |
 | MAP-001 | P0 | OPEN | Implement MapLibre map selection with center marker, click-to-select coordinates, direct latitude/longitude inputs, and provider adapter boundary | FND-001 |
@@ -67,8 +67,8 @@
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
 - Preview deployment `dpl_7Zj6ffsjMYffHW64Pna4mX2QoJPj` for commit `674999ee778cb54a50379dd83b484e874ea33f14` reached `READY`.
-- Latest verified production deployment for main remains `dpl_AXckP5B8midV7M12ZeSDqARhkSrf` and is `ERROR`; the later security fix on main has not yet produced a confirmed production deployment because of deployment rate limiting or propagation.
-- Superseded PR #2 was closed after main received the official Next.js 16.0.x security fix through merged PR #3.
+- Latest verified production deployment for main remains `dpl_AXckP5B8midV7M12ZeSDqARhkSrf` and is `ERROR`; later main commits have not yet produced a confirmed production deployment because of deployment rate limiting or propagation.
+- UI-001 merged through PR #5 at `d8bed7e311b65a258e4e7f3d9134a0d2e151aa28` after exact-head CI and local Chromium desktop/mobile rendering passed; same-SHA Vercel Preview was unavailable only because of the free deployment limit.
 - Retry production deployment and smoke verification before marking OPS-001 `DONE`; this transient external limitation must not freeze unrelated queue work indefinitely.
 
 ## Acceptance highlights
