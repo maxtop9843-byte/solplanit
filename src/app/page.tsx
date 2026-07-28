@@ -1,18 +1,20 @@
+import Link from "next/link";
+
 export default function HomePage() {
   return (
     <main>
       <header className="siteHeader" aria-label="주요 탐색">
-        <a className="brand" href="/" aria-label="SolPlanit 홈">
+        <Link className="brand" href="/" aria-label="SolPlanit 홈">
           <span className="brandMark" aria-hidden="true" />
           SolPlanit
-        </a>
+        </Link>
         <nav className="desktopNav" aria-label="주요 메뉴">
           <a href="#calculator">설치 알아보기</a>
           <a href="#cases">설치 사례</a>
           <a href="#quote">질문·견적</a>
           <a href="#experts">전문가 찾기</a>
         </nav>
-        <a className="proLink" href="/pro">전문가용</a>
+        <Link className="proLink" href="/pro">전문가용</Link>
       </header>
 
       <section className="hero" aria-labelledby="page-title">
