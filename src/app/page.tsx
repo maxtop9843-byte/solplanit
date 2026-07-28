@@ -33,13 +33,11 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="heroVisual">
-          <img
-            src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1800&q=85"
-            alt="맑은 날 태양광 패널이 설치된 건물 지붕"
-            width="1800"
-            height="1200"
-          />
+        <div
+          className="heroVisual"
+          role="img"
+          aria-label="맑은 날 태양광 패널이 설치된 건물 지붕"
+        >
           <div className="capacityChip" aria-label="예상 설치 용량 약 23.4킬로와트">
             <span>이 건물의 예상 설치 용량</span>
             <strong>약 23.4kW</strong>
