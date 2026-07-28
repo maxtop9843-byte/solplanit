@@ -48,7 +48,7 @@
 | ACCOUNT-001 | P2 | OPEN | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
 | QA-001 | P0 | OPEN | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
 | QA-002 | P1 | OPEN | Compare professional inputs, outputs, downloads, error behavior, and representative results against PVGIS 5.3 | PRO-005 |
-| OPS-001 | P1 | OPEN | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
+| OPS-001 | P1 | POST_MERGE_VERIFY | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
 | SEO-001 | P2 | OPEN | Add metadata, sitemap, robots, canonical URLs, hreflang-ready structure, and structured data foundation | UI-002 |
 | SEO-002 | P2 | OPEN | Build search-intent landing pages for installation capacity, generation, savings, SMP/REC revenue, rooftop solar, factory solar, and land solar | CALC-002, SEO-001 |
 | SEO-003 | P2 | OPEN | Add unique explanatory content, worked examples, FAQs, related-tool links, breadcrumbs, and internal-link architecture to every public calculator and professional entry page | SEO-002 |
@@ -62,6 +62,14 @@
 | ADS-003 | P3 | OPEN | Run AdSense policy-readiness audit for low-value content, navigation, ownership pages, privacy, misleading claims, accidental clicks, and prohibited placements | ADS-002, CONTENT-002 |
 | ADS-004 | P3 | OPEN | Optimize ad placement using measured viewability and revenue data while preserving task completion, Core Web Vitals, and user trust | ADS-003; traffic data required |
 | LAUNCH-001 | P1 | OPEN | Final pre-launch regression: public routes, calculators, PVGIS flow, downloads, community, SEO, policies, analytics consent, ads disabled-by-default, and production smoke | QA-001, QA-002, SEO-006, CONTENT-002, ADS-003 |
+
+## Operational verification notes
+
+- Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
+- Preview deployment `dpl_7Zj6ffsjMYffHW64Pna4mX2QoJPj` for commit `674999ee778cb54a50379dd83b484e874ea33f14` reached `READY`.
+- Latest verified production deployment for main remains `dpl_AXckP5B8midV7M12ZeSDqARhkSrf` and is `ERROR`; the later security fix on main has not yet produced a confirmed production deployment because of deployment rate limiting or propagation.
+- Superseded PR #2 was closed after main received the official Next.js 16.0.x security fix through merged PR #3.
+- Retry production deployment and smoke verification before marking OPS-001 `DONE`; this transient external limitation must not freeze unrelated queue work indefinitely.
 
 ## Acceptance highlights
 
