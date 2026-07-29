@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { CapacityResult } from "../lib/calculations/capacity";
 import type { EconomicsResult } from "../lib/calculations/economics";
+import SaveCalculationButton from "./SaveCalculationButton";
 import "./result-summary.css";
 
 type Goal = "save" | "sell";
@@ -35,64 +36,42 @@ function AnimatedNumber({ value, maximumFractionDigits = 0, prefix = "", suffix 
 
   useEffect(() => {
     if (reducedMotion) return;
-
     let frame = 0;
     const startedAt = performance.now();
     const duration = 760;
-
     const tick = (now: number) => {
       const progress = Math.min((now - startedAt) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setAnimatedValue(value * eased);
       if (progress < 1) frame = requestAnimationFrame(tick);
     };
-
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [reducedMotion, value]);
 
   const displayValue = reducedMotion ? value : animatedValue;
   const formatted = useMemo(
-    () =>
-      displayValue.toLocaleString("ko-KR", {
-        maximumFractionDigits,
-        minimumFractionDigits: maximumFractionDigits,
-      }),
+    () => displayValue.toLocaleString("ko-KR", { maximumFractionDigits, minimumFractionDigits: maximumFractionDigits }),
     [displayValue, maximumFractionDigits],
   );
 
   return <>{prefix}{formatted}{suffix}</>;
 }
 
-export default function ResultSummary({
-  capacity,
-  economics,
-  goal,
-}: {
-  capacity: CapacityResult;
-  economics?: EconomicsResult | null;
-  goal: Goal;
-}) {
+export default function ResultSummary({ capacity, economics, goal }: { capacity: CapacityResult; economics?: EconomicsResult | null; goal: Goal }) {
   const benefitLabel = goal === "save" ? "연간 예상 절감액" : "연간 예상 발전 수익";
-  const sharedParameters = economics
-    ? {
-        capacity: String(capacity.installableCapacityKw),
-        panels: String(capacity.panelCount),
-        generation: String(economics.annualGenerationKwh),
-        benefit: String(economics.annualBenefit),
-        payback: economics.paybackYears === null ? "null" : String(economics.paybackYears),
-        goal,
-      }
-    : null;
-  const quoteHref = sharedParameters
-    ? `/quote?${new URLSearchParams(sharedParameters).toString()}`
-    : null;
-  const proHref = sharedParameters
-    ? `/pro?${new URLSearchParams({ source: "general", ...sharedParameters }).toString()}`
-    : null;
-  const communityHref = sharedParameters
-    ? `/community/new?${new URLSearchParams(sharedParameters).toString()}`
-    : null;
+  const sharedParameters = economics ? {
+    capacity: String(capacity.installableCapacityKw),
+    panels: String(capacity.panelCount),
+    generation: String(economics.annualGenerationKwh),
+    benefit: String(economics.annualBenefit),
+    payback: economics.paybackYears === null ? "null" : String(economics.paybackYears),
+    goal,
+  } : null;
+  const quoteHref = sharedParameters ? `/quote?${new URLSearchParams(sharedParameters).toString()}` : null;
+  const proHref = sharedParameters ? `/pro?${new URLSearchParams({ source: "general", ...sharedParameters }).toString()}` : null;
+  const communityHref = sharedParameters ? `/community/new?${new URLSearchParams(sharedParameters).toString()}` : null;
+  const accountHref = "/account";
 
   return (
     <section className="resultSummary" aria-labelledby="result-summary-heading">
@@ -108,43 +87,21 @@ export default function ResultSummary({
           <strong><AnimatedNumber value={capacity.installableCapacityKw} maximumFractionDigits={1} suffix="kW" /></strong>
           <small>입력한 면적과 건물 유형 기준</small>
         </article>
-
-        {economics && (
-          <>
-            <article className="resultCard" style={{ "--result-order": 1 } as React.CSSProperties}>
-              <span>연간 예상 발전량</span>
-              <strong><AnimatedNumber value={economics.annualGenerationKwh} suffix="kWh" /></strong>
-              <small>월평균 {economics.monthlyAverageGenerationKwh.toLocaleString("ko-KR")}kWh</small>
-            </article>
-            <article className="resultCard" style={{ "--result-order": 2 } as React.CSSProperties}>
-              <span>{benefitLabel}</span>
-              <strong><AnimatedNumber value={economics.annualBenefit} prefix="₩" /></strong>
-              <small>입력한 단가와 가정값 기준</small>
-            </article>
-            <article className="resultCard" style={{ "--result-order": 3 } as React.CSSProperties}>
-              <span>예상 단순 회수기간</span>
-              <strong>{economics.paybackYears === null ? "계산 불가" : <AnimatedNumber value={economics.paybackYears} maximumFractionDigits={1} suffix="년" />}</strong>
-              <small>금융비용·유지보수비 제외</small>
-            </article>
-          </>
-        )}
-
-        <article className="resultCard" style={{ "--result-order": economics ? 4 : 1 } as React.CSSProperties}>
-          <span>예상 패널 수</span>
-          <strong><AnimatedNumber value={capacity.panelCount} suffix="장" /></strong>
-          <small>패널 1장 {capacity.panelCapacityKw}kW 기준</small>
-        </article>
+        {economics && <>
+          <article className="resultCard" style={{ "--result-order": 1 } as React.CSSProperties}><span>연간 예상 발전량</span><strong><AnimatedNumber value={economics.annualGenerationKwh} suffix="kWh" /></strong><small>월평균 {economics.monthlyAverageGenerationKwh.toLocaleString("ko-KR")}kWh</small></article>
+          <article className="resultCard" style={{ "--result-order": 2 } as React.CSSProperties}><span>{benefitLabel}</span><strong><AnimatedNumber value={economics.annualBenefit} prefix="₩" /></strong><small>입력한 단가와 가정값 기준</small></article>
+          <article className="resultCard" style={{ "--result-order": 3 } as React.CSSProperties}><span>예상 단순 회수기간</span><strong>{economics.paybackYears === null ? "계산 불가" : <AnimatedNumber value={economics.paybackYears} maximumFractionDigits={1} suffix="년" />}</strong><small>금융비용·유지보수비 제외</small></article>
+        </>}
+        <article className="resultCard" style={{ "--result-order": economics ? 4 : 1 } as React.CSSProperties}><span>예상 패널 수</span><strong><AnimatedNumber value={capacity.panelCount} suffix="장" /></strong><small>패널 1장 {capacity.panelCapacityKw}kW 기준</small></article>
       </div>
 
       <div className="resultNextAction" role="region" aria-label="다음 행동 안내">
-        <div>
-          <p className="sectionKicker">다음 단계</p>
-          <h4>{economics ? "계산 결과를 바탕으로 견적을 준비해보세요" : "이 용량으로 절감액과 수익을 확인해보세요"}</h4>
-          <p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p>
-        </div>
+        <div><p className="sectionKicker">다음 단계</p><h4>{economics ? "계산 결과를 바탕으로 견적을 준비해보세요" : "이 용량으로 절감액과 수익을 확인해보세요"}</h4><p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p></div>
+        {economics && sharedParameters && <SaveCalculationButton calculation={{ href: proHref ?? "/pro", capacityKw: capacity.installableCapacityKw, panelCount: capacity.panelCount, annualGenerationKwh: economics.annualGenerationKwh, annualBenefit: economics.annualBenefit, paybackYears: economics.paybackYears, goal }} />}
         {quoteHref && <Link className="primaryButton panelButton" href={quoteHref}>계산 결과로 견적 준비하기</Link>}
         {communityHref && <Link className="secondaryButton panelButton" href={communityHref}>계산 결과로 질문하기</Link>}
         {proHref && <Link className="secondaryButton panelButton" href={proHref}>전문가 분석으로 이어가기</Link>}
+        <Link className="secondaryButton panelButton" href={accountHref}>내 작업 보기</Link>
       </div>
     </section>
   );
