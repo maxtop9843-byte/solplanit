@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
+import ResultDownloads from "./ResultDownloads";
 
 const tabs = ["시스템", "손실", "경제성"] as const;
 const INITIAL_LATITUDE = "37.5665";
@@ -160,7 +161,7 @@ export default function ProWorkspace() {
           {result && <><div className="resultCharts"><section className="chartPanel" aria-labelledby="monthly-chart-title"><div className="chartTitle"><div><h3 id="monthly-chart-title">월별 발전량</h3><p>막대 높이는 월간 예상 발전량을 나타냅니다.</p></div><span>kWh/월</span></div><div className="monthlyChart">{result.monthly.map((item) => <div className="monthColumn" key={item.month}><div className="barValue">{formatNumber(item.productionKwh)}</div><div className="barTrack"><span style={{ height: `${Math.max(4, item.productionKwh / maxMonthlyProduction * 100)}%` }} /></div><small>{MONTHS[item.month - 1]}</small></div>)}</div></section><section className="detailPanel" aria-labelledby="assumption-title"><div><h3 id="assumption-title">가정과 출처</h3><dl><div><dt>설치 용량</dt><dd>{formatNumber(Number(peakPowerKw), 1)} kWp</dd></div><div><dt>경사 / 방위</dt><dd>{useOptimalTilt ? "최적" : `${tiltDegrees}°`} / {useOptimalAzimuth ? "최적" : `${azimuthDegrees}°`}</dd></div><div><dt>입력 손실</dt><dd>{systemLossPercent}%</dd></div><div><dt>출처</dt><dd>{result.source} {result.version}</dd></div><div><dt>출처 검증일</dt><dd>{result.verifiedAt}</dd></div><div><dt>조회 시각</dt><dd>{new Date(result.retrievedAt).toLocaleString("ko-KR")}</dd></div></dl></div><p>이 결과는 기상 데이터와 모델 가정을 이용한 추정치이며 실제 발전량이나 수익을 보장하지 않습니다.</p></section></div>
           <div className="monthlyTableWrap"><table><caption>월별 발전량과 일사량 상세</caption><thead><tr><th>월</th><th>발전량</th><th>경사면 일사량</th><th>표준편차</th></tr></thead><tbody>{result.monthly.map((item) => <tr key={item.month}><th>{MONTHS[item.month - 1]}</th><td>{formatNumber(item.productionKwh)} kWh</td><td>{formatNumber(item.irradiationKwhM2, 1)} kWh/m²</td><td>± {formatNumber(item.variationKwh)} kWh</td></tr>)}</tbody></table></div>
           <section className="horizonPanel" aria-labelledby="horizon-title"><div><h3 id="horizon-title">지평선 프로파일</h3><p>{result.horizon.length ? "방위별 지평선 높이를 표시합니다." : "PVGIS 응답에 지평선 프로파일이 포함되지 않았습니다."}</p></div>{result.horizon.length > 0 && <div className="horizonChart" aria-label="방위별 지평선 높이 차트">{result.horizon.map((item, index) => <span key={`${item.azimuth}-${index}`} title={`${item.azimuth}° · ${item.height}°`} style={{ height: `${Math.max(2, item.height / maxHorizonHeight * 100)}%` }} />)}</div>}</section></>}
-          <div className="resultFooter"><p>결과 다운로드는 PRO-005에서 CSV, JSON, 이미지와 PDF로 연결됩니다.</p><button type="button" className="ghostButton" disabled>결과 다운로드</button></div>
+          <div className="resultFooter"><p>{result ? "출처와 면책 정보를 포함해 원하는 형식으로 저장하세요." : "분석을 완료하면 CSV, JSON, 차트 이미지와 PDF 보고서를 저장할 수 있습니다."}</p><ResultDownloads result={result} project={{ latitude: Number(latitude), longitude: Number(longitude), peakPowerKw: Number(peakPowerKw), systemLossPercent: Number(systemLossPercent), tilt: useOptimalTilt ? "최적" : `${tiltDegrees}°`, azimuth: useOptimalAzimuth ? "최적" : `${azimuthDegrees}°`, radiationDatabase }} /></div>
         </section>
       </section>
     </main>
