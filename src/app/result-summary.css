@@ -1,0 +1,131 @@
+.resultSummary {
+  display: grid;
+  gap: 28px;
+}
+
+.resultIntro {
+  max-width: 720px;
+}
+
+.resultIntro h3 {
+  margin: 8px 0 10px;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.resultIntro > p:last-child {
+  margin: 0;
+  color: #6f746f;
+}
+
+.resultCardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.resultCard {
+  --result-order: 0;
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid #e4e7e3;
+  border-radius: 22px;
+  background: #fff;
+  animation: result-card-enter 360ms ease both;
+  animation-delay: calc(var(--result-order) * 60ms);
+}
+
+.resultCardPrimary {
+  grid-column: 1 / -1;
+  padding: clamp(26px, 5vw, 40px);
+  border-color: #cfe5d4;
+  background: #edf7ef;
+  animation-name: result-card-primary-enter;
+}
+
+.resultCard span,
+.resultCard small {
+  display: block;
+}
+
+.resultCard span {
+  color: #4f5750;
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.resultCard strong {
+  display: block;
+  margin: 10px 0 8px;
+  overflow-wrap: anywhere;
+  color: #111411;
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.resultCardPrimary strong {
+  color: #16823b;
+  font-size: clamp(2.8rem, 9vw, 5.4rem);
+}
+
+.resultCard small {
+  color: #6f746f;
+  line-height: 1.5;
+}
+
+.resultNextAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid #e4e7e3;
+  border-radius: 22px;
+  background: #f6f7f5;
+  animation: result-card-enter 360ms 300ms ease both;
+}
+
+.resultNextAction h4 {
+  margin: 7px 0 8px;
+  font-size: clamp(1.25rem, 3vw, 1.65rem);
+  letter-spacing: -0.025em;
+}
+
+.resultNextAction p:last-child {
+  max-width: 680px;
+  margin: 0;
+  color: #6f746f;
+  line-height: 1.6;
+}
+
+.resultQuoteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@keyframes result-card-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes result-card-primary-enter {
+  from { opacity: 0; transform: translateY(8px) scale(1.01); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 720px) {
+  .resultCardGrid { grid-template-columns: 1fr; }
+  .resultCardPrimary { grid-column: auto; }
+  .resultCard { padding: 20px; }
+  .resultNextAction { align-items: stretch; flex-direction: column; }
+  .resultQuoteButton { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resultCard,
+  .resultNextAction {
+    animation: none;
+  }
+}
