@@ -44,7 +44,7 @@ describe("ProWorkspace", () => {
 
     await waitFor(() => expect(screen.getByText("PVGIS 5.3 분석 결과를 불러왔습니다.")).toBeInTheDocument());
     expect(screen.getByText("11,460")).toBeInTheDocument();
-    expect(screen.getByText("1,320.5")).toBeInTheDocument();
+    expect(screen.getByText("1,321")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "월별 발전량" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "가정과 출처" })).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
