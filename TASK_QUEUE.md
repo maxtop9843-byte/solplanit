@@ -29,7 +29,7 @@
 | FND-001 | P0 | DONE | Initialize Next.js, TypeScript, linting, testing, CI, environment schema, and provider-neutral map interfaces | — |
 | UI-001 | P0 | DONE | Reproduce the approved image-led homepage hero with final copy, black CTA, restrained navigation, large real solar image, and responsive motion | FND-001 |
 | UI-002 | P0 | DONE | Complete the homepage below the fold: calculator entry, result preview, process, installation cases, community entry, and bottom CTA | UI-001 |
-| UX-001 | P0 | IN_REVIEW | Implement the four-step general-user guided calculator shell with one dominant question per step | UI-002 |
+| UX-001 | P0 | DONE | Implement the four-step general-user guided calculator shell with one dominant question per step | UI-002 |
 | MAP-001 | P0 | OPEN | Implement MapLibre map selection with center marker, click-to-select coordinates, direct latitude/longitude inputs, and provider adapter boundary | FND-001 |
 | MAP-002 | P1 | BLOCKED | Add address-search and reverse-geocoding slots for Kakao or Naver without provider-specific UI coupling | MAP-001; API keys later |
 | CALC-001 | P0 | OPEN | Implement installable-capacity estimation by building type and area with explicit assumptions, panel count, units, boundaries, and tests | UX-001 |
@@ -66,11 +66,11 @@
 ## Operational verification notes
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
-- Preview deployment `dpl_7Zj6ffsjMYffHW64Pna4mX2QoJPj` for commit `674999ee778cb54a50379dd83b484e874ea33f14` reached `READY`.
-- Latest verified production deployment for main remains `dpl_AXckP5B8midV7M12ZeSDqARhkSrf` and is `ERROR`; later main commits have not yet produced a confirmed production deployment because of deployment rate limiting or propagation.
+- UX-001 merged through PR #8 at `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` after exact-head CI passed and Preview deployment `dpl_48PVoyhvkn6YXyST9t9MUs2DnMVm` reached `READY`.
+- Production deployment `dpl_7A4bdWDSsCbB35anpj2rZSHU1R5M` for main commit `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` reached `READY` and serves the canonical `solplanit.vercel.app` alias.
 - UI-001 merged through PR #5 at `d8bed7e311b65a258e4e7f3d9134a0d2e151aa28` after exact-head CI and local Chromium desktop/mobile rendering passed; same-SHA Vercel Preview was unavailable only because of the free deployment limit.
 - UI-002 Preview `dpl_EzSMVneDeDsXkVNFBZhJBHDsdCpi` reached `READY` and returned HTTP 200; the final head differs only by semantics-preserving source compaction and this queue update, while exact-head GitHub CI passed.
-- Retry production deployment and smoke verification before marking OPS-001 `DONE`; this transient external limitation must not freeze unrelated queue work indefinitely.
+- Keep OPS-001 in `POST_MERGE_VERIFY` until canonical-domain route, sitemap, robots, 404, and server-error smoke checks are fully recorded.
 
 ## Acceptance highlights
 
