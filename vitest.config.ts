@@ -3,6 +3,11 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "maplibre-gl": "/test/mocks/maplibre-gl.ts",
+    },
+  },
   test: {
     environment: "jsdom",
     globals: true,
