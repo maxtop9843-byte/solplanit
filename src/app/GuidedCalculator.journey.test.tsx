@@ -25,7 +25,7 @@ describe("GuidedCalculator general-user journey", () => {
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
     expect(screen.getByRole("alert")).toHaveTextContent("0보다 큰 설치 면적을 입력해주세요.");
 
-    fireEvent.change(screen.getByLabelText("설치 가능 면적"), { target: { value: "100" } });
+    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
 
     expect(screen.getByText("3 / 4 · 설치 위치를 지도에서 선택해주세요")).toBeInTheDocument();
@@ -45,11 +45,12 @@ describe("GuidedCalculator general-user journey", () => {
     expect(screen.getByText("설치 가능 용량 요약")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "절감액 계산하기" }));
-    fireEvent.change(screen.getByLabelText("평균 일 발전시간"), { target: { value: "3.6" } });
-    fireEvent.change(screen.getByLabelText("시스템 손실률"), { target: { value: "14" } });
-    fireEvent.change(screen.getByLabelText("kW당 설치비"), { target: { value: "1500000" } });
-    fireEvent.change(screen.getByLabelText("자가소비율"), { target: { value: "80" } });
-    fireEvent.change(screen.getByLabelText("자가소비 전력 가치"), { target: { value: "180" } });
+    const assumptionInputs = screen.getAllByRole("spinbutton");
+    fireEvent.change(assumptionInputs[0], { target: { value: "3.6" } });
+    fireEvent.change(assumptionInputs[1], { target: { value: "14" } });
+    fireEvent.change(assumptionInputs[2], { target: { value: "1500000" } });
+    fireEvent.change(assumptionInputs[3], { target: { value: "80" } });
+    fireEvent.change(assumptionInputs[4], { target: { value: "180" } });
     fireEvent.click(screen.getByRole("button", { name: "발전량과 경제성 계산하기" }));
 
     expect(screen.getByText("발전량·경제성 요약")).toBeInTheDocument();
@@ -62,11 +63,11 @@ describe("GuidedCalculator general-user journey", () => {
   it("keeps previous-step navigation and user-entered area intact", () => {
     render(<GuidedCalculator />);
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
-    fireEvent.change(screen.getByLabelText("설치 가능 면적"), { target: { value: "88" } });
+    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "88" } });
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
     fireEvent.click(screen.getByRole("button", { name: "이전" }));
 
-    expect(screen.getByLabelText("설치 가능 면적")).toHaveValue(88);
+    expect(screen.getByRole("spinbutton")).toHaveValue(88);
     expect(screen.getByText(/주택 · 88m²/)).toBeInTheDocument();
   });
 });
