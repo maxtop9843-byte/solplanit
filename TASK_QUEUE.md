@@ -32,7 +32,7 @@
 | UX-001 | P0 | DONE | Implement the four-step general-user guided calculator shell with one dominant question per step | UI-002 |
 | MAP-001 | P0 | DONE | Implement MapLibre map selection with center marker, click-to-select coordinates, direct latitude/longitude inputs, and provider adapter boundary | FND-001 |
 | MAP-002 | P1 | BLOCKED | Add address-search and reverse-geocoding slots for Kakao or Naver without provider-specific UI coupling | MAP-001; API keys later |
-| CALC-001 | P0 | IN_REVIEW | Implement installable-capacity estimation by building type and area with explicit assumptions, panel count, units, boundaries, and tests | UX-001 |
+| CALC-001 | P0 | DONE | Implement installable-capacity estimation by building type and area with explicit assumptions, panel count, units, boundaries, and tests | UX-001 |
 | CALC-002 | P0 | OPEN | Implement generation, self-consumption savings, SMP/REC revenue, and payback calculation engine with assumptions and consistency tests | CALC-001 |
 | UI-003 | P0 | OPEN | Implement emphasized result cards, numeric count-up, sequential reveal, next-action guidance, and reduced-motion fallback | CALC-002 |
 | QUOTE-001 | P1 | OPEN | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
@@ -66,6 +66,7 @@
 ## Operational verification notes
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
+- CALC-001 implementation Preview `dpl_9HydPYBHS6syBeVJSMv8YKUbsDzy` reached `READY`. Later exact-head Preview creation was blocked by Vercel's free daily deployment limit; exact-head GitHub CI remains the authoritative code validation, and final changes preserve capacity precision plus queue status.
 - MAP-001 exact-head GitHub CI passed; Vercel Preview deployment `dpl_Y1Gr4EneKA3J62R1arf8KgWaLdRZ` for the same implementation branch reached `READY`. The final head differs only by a MapLibre type compatibility fix and this queue update; exact-head Preview creation was blocked by Vercel's free daily deployment limit, not an application build error.
 - UX-001 merged through PR #8 at `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` after exact-head CI passed and Preview deployment `dpl_48PVoyhvkn6YXyST9t9MUs2DnMVm` reached `READY`.
 - Production deployment `dpl_7A4bdWDSsCbB35anpj2rZSHU1R5M` for main commit `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` reached `READY` and serves the canonical `solplanit.vercel.app` alias.
