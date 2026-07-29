@@ -38,7 +38,7 @@
 | QUOTE-001 | P1 | DONE | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
 | PRO-001 | P1 | DONE | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
 | PRO-002 | P1 | DONE | Add PVGIS 5.3 server proxy with validation, timeout, retry, caching, rate-limit handling, source/version metadata, and Korean errors | PRO-001 |
-| PRO-003 | P1 | IN_REVIEW | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
+| PRO-003 | P1 | DONE | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
 | PRO-004 | P1 | OPEN | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
 | PRO-005 | P1 | OPEN | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
 | PRO-006 | P1 | OPEN | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
