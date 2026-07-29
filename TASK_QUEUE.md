@@ -40,7 +40,7 @@
 | PRO-002 | P1 | DONE | Add PVGIS 5.3 server proxy with validation, timeout, retry, caching, rate-limit handling, source/version metadata, and Korean errors | PRO-001 |
 | PRO-003 | P1 | DONE | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
 | PRO-004 | P1 | DONE | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
-| PRO-005 | P1 | OPEN | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
+| PRO-005 | P1 | DONE | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
 | PRO-006 | P1 | OPEN | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
 | CASE-001 | P1 | OPEN | Build image-led installation case gallery and case detail pages | UI-001 |
 | COMMUNITY-001 | P1 | OPEN | Build community categories and structured post model | QUOTE-001 |
@@ -65,6 +65,7 @@
 
 ## Operational verification notes
 
+- PRO-005 adds result-state-gated CSV, JSON, monthly chart PNG, and branded print-to-PDF exports. Every export carries project assumptions, PVGIS source/version, verification and retrieval timestamps, and the non-guarantee disclaimer; CSV/JSON builders have direct unit coverage.
 - PRO-004 connects the validated PVGIS proxy response to annual and monthly production, irradiation, variation, calculated-loss, monthly chart/table, horizon profile, source metadata, assumptions, loading, empty, and Korean error states. Download controls remain disabled until PRO-005. Exact-head CI passed after isolating MapLibre with a Vitest alias; the latest available branch Preview is READY, while the final documentation-only head uses the Preview fallback policy.
 - PRO-003 implements controlled fixed-system inputs for capacity, module technology, mounting, integrated losses, tilt, azimuth, horizon use, optimal-angle options, and PVGIS radiation database selection, with client-side boundary feedback aligned to the PRO-002 proxy contract.
 - PRO-002 adds a version-pinned PVGIS 5.3 `PVcalc` server proxy with strict input boundaries, a 12-second timeout, two bounded retries, one-hour upstream caching, explicit 429 handling, Korean errors, and source/version/verification metadata. The endpoint and parameters were verified against the European Commission Joint Research Centre non-interactive API documentation on 2026-07-30.
