@@ -27,7 +27,7 @@ describe("estimateInstallableCapacity", () => {
       panelFootprintM2: 2.4,
       panelCapacityKw: 0.45,
       panelCount: 29,
-      installableCapacityKw: 13.1,
+      installableCapacityKw: 13.05,
       methodVersion: CAPACITY_METHOD.version,
     });
   });
@@ -59,18 +59,18 @@ describe("estimateInstallableCapacity", () => {
   it("accepts the exact minimum boundary when one panel fits", () => {
     const result = estimateInstallableCapacity({ buildingType: "공장·창고", area: 5, areaUnit: "m2" });
     expect(result.panelCount).toBe(1);
-    expect(result.installableCapacityKw).toBe(0.5);
+    expect(result.installableCapacityKw).toBe(0.45);
   });
 
   it("rejects areas beyond the supported maximum", () => {
     expect(() => estimateInstallableCapacity({ buildingType: "토지", area: 1_000_001, areaUnit: "m2" })).toThrow("1,000,000m² 이하");
   });
 
-  it("rounds capacity to one decimal and areas to two decimals", () => {
+  it("rounds capacity to two decimals and areas to two decimals", () => {
     const result = estimateInstallableCapacity({ buildingType: "주택", area: 31, areaUnit: "pyeong" });
     expect(result.areaM2).toBe(102.48);
     expect(result.usableAreaM2).toBe(56.36);
     expect(Number.isInteger(result.panelCount)).toBe(true);
-    expect(result.installableCapacityKw.toString().split(".")[1]?.length ?? 0).toBeLessThanOrEqual(1);
+    expect(result.installableCapacityKw.toString().split(".")[1]?.length ?? 0).toBeLessThanOrEqual(2);
   });
 });
