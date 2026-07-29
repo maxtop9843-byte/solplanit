@@ -41,7 +41,7 @@
 | PRO-003 | P1 | DONE | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
 | PRO-004 | P1 | DONE | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
 | PRO-005 | P1 | DONE | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
-| PRO-006 | P1 | OPEN | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
+| PRO-006 | P1 | DONE | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
 | CASE-001 | P1 | OPEN | Build image-led installation case gallery and case detail pages | UI-001 |
 | COMMUNITY-001 | P1 | OPEN | Build community categories and structured post model | QUOTE-001 |
 | COMMUNITY-002 | P1 | OPEN | Attach calculation result data to questions and quote posts | COMMUNITY-001 |
@@ -65,6 +65,7 @@
 
 ## Operational verification notes
 
+- PRO-006 adds a URL-restorable handoff from the completed general-user result to `/pro`, pre-fills the validated installation capacity, preserves panel/generation/benefit/payback context, rejects invalid payloads, and keeps location plus professional assumptions editable before a fresh PVGIS analysis.
 - PRO-005 adds result-state-gated CSV, JSON, monthly chart PNG, and branded print-to-PDF exports. Every export carries project assumptions, PVGIS source/version, verification and retrieval timestamps, and the non-guarantee disclaimer; CSV/JSON builders have direct unit coverage.
 - PRO-004 connects the validated PVGIS proxy response to annual and monthly production, irradiation, variation, calculated-loss, monthly chart/table, horizon profile, source metadata, assumptions, loading, empty, and Korean error states. Download controls remain disabled until PRO-005. Exact-head CI passed after isolating MapLibre with a Vitest alias; the latest available branch Preview is READY, while the final documentation-only head uses the Preview fallback policy.
 - PRO-003 implements controlled fixed-system inputs for capacity, module technology, mounting, integrated losses, tilt, azimuth, horizon use, optimal-angle options, and PVGIS radiation database selection, with client-side boundary feedback aligned to the PRO-002 proxy contract.

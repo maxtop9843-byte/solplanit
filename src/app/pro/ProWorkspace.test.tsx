@@ -29,7 +29,10 @@ const pvgisResponse = {
   },
 };
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  window.history.replaceState({}, "", "/pro");
+});
 
 describe("ProWorkspace", () => {
   it("shows fixed-system inputs, renders PVGIS outputs, and enables downloads", async () => {
@@ -70,6 +73,27 @@ describe("ProWorkspace", () => {
       "/api/pvgis",
       expect.objectContaining({ method: "POST" }),
     );
+  });
+
+  it("imports a general-user result into the professional system inputs", async () => {
+    window.history.replaceState({}, "", "/pro?source=general&capacity=23.4&panels=52&generation=31200&benefit=4680000&payback=6.8&goal=save");
+    render(<ProWorkspace />);
+
+    await waitFor(() => expect(screen.getByLabelText(/설치 용량/)).toHaveValue(23.4));
+    expect(screen.getByText("일반 사용자 계산에서 가져옴")).toBeInTheDocument();
+    expect(screen.getByText(/추천 용량 23.4kW · 패널 약 52장/)).toBeInTheDocument();
+    expect(screen.getByText("가져오기 완료")).toBeInTheDocument();
+    expect(screen.getByText(/전문 조건을 확인한 뒤 분석을 실행하세요/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("tab", { name: "경제성" }));
+    expect(screen.getByText(/연간 예상 절감액 4,680,000원/)).toBeInTheDocument();
+  });
+
+  it("ignores an invalid imported capacity", () => {
+    window.history.replaceState({}, "", "/pro?source=general&capacity=0&panels=52");
+    render(<ProWorkspace />);
+    expect(screen.getByLabelText(/설치 용량/)).toHaveValue(10);
+    expect(screen.queryByText("일반 사용자 계산에서 가져옴")).not.toBeInTheDocument();
   });
 
   it("keeps invalid inputs from calling the proxy", () => {
