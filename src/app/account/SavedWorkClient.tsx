@@ -23,8 +23,10 @@ export default function SavedWorkClient() {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    setDisplayName(readProfile(window.localStorage).displayName);
-    setItems(readSavedWork(window.localStorage));
+    queueMicrotask(() => {
+      setDisplayName(readProfile(window.localStorage).displayName);
+      setItems(readSavedWork(window.localStorage));
+    });
   }, []);
 
   function saveProfile() {
@@ -66,10 +68,7 @@ export default function SavedWorkClient() {
         <p className="accountKicker">공유 프로필</p>
         <h2 id="profile-title">계산과 전문가 작업에 같은 이름을 사용해요</h2>
         <p>현재 단계에서는 로그인 서버 없이 이 브라우저에만 저장됩니다. 연락처나 상세 주소는 저장하지 않아요.</p>
-        <label className="accountField">
-          <span>표시 이름</span>
-          <input value={displayName} maxLength={40} onChange={(event) => setDisplayName(event.target.value)} placeholder="예: 김태양" />
-        </label>
+        <label className="accountField"><span>표시 이름</span><input value={displayName} maxLength={40} onChange={(event) => setDisplayName(event.target.value)} placeholder="예: 김태양" /></label>
         <button className="accountPrimary" type="button" onClick={saveProfile}>프로필 저장</button>
       </section>
 
@@ -77,35 +76,17 @@ export default function SavedWorkClient() {
         <p className="accountKicker">전문가 프로젝트</p>
         <h2 id="new-project-title">다음 분석을 위한 프로젝트를 만들어두세요</h2>
         <p>프로젝트를 열면 `/pro`에서 위치와 시스템 조건을 입력해 새 분석을 시작합니다.</p>
-        <label className="accountField">
-          <span>프로젝트 이름</span>
-          <input value={projectName} maxLength={60} onChange={(event) => setProjectName(event.target.value)} placeholder="예: 화성 공장 지붕 검토" />
-        </label>
+        <label className="accountField"><span>프로젝트 이름</span><input value={projectName} maxLength={60} onChange={(event) => setProjectName(event.target.value)} placeholder="예: 화성 공장 지붕 검토" /></label>
         <button className="accountPrimary" type="button" onClick={addProject}>프로젝트 저장</button>
       </section>
 
       <section className="savedSection" aria-labelledby="saved-title">
-        <div className="savedHeader">
-          <div><p className="accountKicker">저장한 작업</p><h2 id="saved-title">계산과 프로젝트를 한곳에서 이어가세요</h2></div>
-          <span>{items.length}개</span>
-        </div>
+        <div className="savedHeader"><div><p className="accountKicker">저장한 작업</p><h2 id="saved-title">계산과 프로젝트를 한곳에서 이어가세요</h2></div><span>{items.length}개</span></div>
         {status && <p className="accountStatus" role="status">{status}</p>}
         {items.length === 0 ? (
           <div className="savedEmpty"><strong>아직 저장한 작업이 없어요.</strong><p>계산 결과에서 저장하거나 새 전문가 프로젝트를 만들어보세요.</p><Link href="/#calculator">설치 가능 용량 계산하기 →</Link></div>
         ) : (
-          <ul className="savedList">
-            {items.map((item) => (
-              <li key={item.id}>
-                <div>
-                  <span>{item.kind === "calculation" ? "일반 계산" : "전문가 프로젝트"}</span>
-                  <h3>{item.title}</h3>
-                  {item.kind === "calculation" ? <p>{item.capacityKw.toLocaleString("ko-KR")}kW · 연간 {item.annualGenerationKwh.toLocaleString("ko-KR")}kWh · {item.goal === "save" ? "절감" : "발전 수익"}</p> : <p>전문가 워크스페이스에서 조건을 입력해 분석을 시작하세요.</p>}
-                  <small>{new Date(item.createdAt).toLocaleString("ko-KR")}</small>
-                </div>
-                <div className="savedActions"><Link href={item.href}>열기</Link><button type="button" onClick={() => remove(item.id)} aria-label={`${item.title} 삭제`}>삭제</button></div>
-              </li>
-            ))}
-          </ul>
+          <ul className="savedList">{items.map((item) => <li key={item.id}><div><span>{item.kind === "calculation" ? "일반 계산" : "전문가 프로젝트"}</span><h3>{item.title}</h3>{item.kind === "calculation" ? <p>{item.capacityKw.toLocaleString("ko-KR")}kW · 연간 {item.annualGenerationKwh.toLocaleString("ko-KR")}kWh · {item.goal === "save" ? "절감" : "발전 수익"}</p> : <p>전문가 워크스페이스에서 조건을 입력해 분석을 시작하세요.</p>}<small>{new Date(item.createdAt).toLocaleString("ko-KR")}</small></div><div className="savedActions"><Link href={item.href}>열기</Link><button type="button" onClick={() => remove(item.id)} aria-label={`${item.title} 삭제`}>삭제</button></div></li>)}</ul>
         )}
       </section>
     </div>
