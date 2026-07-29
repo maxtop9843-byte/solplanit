@@ -37,7 +37,7 @@ export const mapLibreProvider: InteractiveMapProvider = {
       style: "https://demotiles.maplibre.org/style.json",
       center: [point.longitude, point.latitude],
       zoom: 6,
-      attributionControl: true,
+      attributionControl: {},
     });
     const marker = new maplibregl.Marker({ draggable: true })
       .setLngLat([point.longitude, point.latitude])
