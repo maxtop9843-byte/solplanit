@@ -46,7 +46,7 @@
 | COMMUNITY-001 | P1 | OPEN | Build community categories and structured post model | QUOTE-001 |
 | COMMUNITY-002 | P1 | OPEN | Attach calculation result data to questions and quote posts | COMMUNITY-001 |
 | ACCOUNT-001 | P2 | OPEN | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
-| QA-001 | P0 | IN_REVIEW | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
+| QA-001 | P0 | DONE | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
 | QA-002 | P1 | OPEN | Compare professional inputs, outputs, downloads, error behavior, and representative results against PVGIS 5.3 | PRO-005 |
 | OPS-001 | P1 | POST_MERGE_VERIFY | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
 | SEO-001 | P2 | OPEN | Add metadata, sitemap, robots, canonical URLs, hreflang-ready structure, and structured data foundation | UI-002 |
@@ -66,7 +66,7 @@
 ## Operational verification notes
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
-- QA-001 adds an automated general-user journey covering required-field errors, backward navigation persistence, capacity calculation, user-entered savings assumptions, economics results, and edit/recalculate actions. Production HTTP rendering is healthy; direct desktop/mobile Chromium navigation was attempted but blocked by the execution environment with `ERR_BLOCKED_BY_ADMINISTRATOR`, so the audit records Vercel HTTP output, responsive source inspection, and exact-head CI as alternate evidence.
+- QA-001 exact-head GitHub CI passed and same-SHA Preview `dpl_4TbUvzKnVcxBT97ZkqZmaamUoX1F` reached `READY`. The automated journey covers required-field errors, backward-navigation persistence, capacity calculation, user-entered savings assumptions, economics results, and edit/recalculate actions. Direct desktop/mobile Chromium navigation was blocked by the execution environment with `ERR_BLOCKED_BY_ADMINISTRATOR`; Vercel HTTP output, responsive source inspection, and automated interactions are retained as alternate evidence.
 - UI-003 exact-head GitHub CI passed at `5e97a2fee624d3accff1f72b9276129cb1527567`. Same-SHA Preview creation was blocked only by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; code inspection confirms reduced-motion fallback, responsive single-column mobile cards, sequential reveal, and overflow-safe result typography.
 - CALC-002 exact-head GitHub CI passed at `aa124e6e0cc175867aa4253db6c3983a42b822c7`. Exact-head Preview creation remained blocked by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; the implementation exposes user-entered assumptions and avoids publishing guessed SMP, REC, tariff, or installation-cost values.
 - CALC-001 implementation Preview `dpl_9HydPYBHS6syBeVJSMv8YKUbsDzy` reached `READY`. Later exact-head Preview creation was blocked by Vercel's free daily deployment limit; exact-head GitHub CI remains the authoritative code validation, and final changes preserve capacity precision plus queue status.
