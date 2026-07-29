@@ -90,6 +90,9 @@ export default function ResultSummary({
   const proHref = sharedParameters
     ? `/pro?${new URLSearchParams({ source: "general", ...sharedParameters }).toString()}`
     : null;
+  const communityHref = sharedParameters
+    ? `/community/new?${new URLSearchParams(sharedParameters).toString()}`
+    : null;
 
   return (
     <section className="resultSummary" aria-labelledby="result-summary-heading">
@@ -140,6 +143,7 @@ export default function ResultSummary({
           <p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p>
         </div>
         {quoteHref && <Link className="primaryButton panelButton" href={quoteHref}>계산 결과로 견적 준비하기</Link>}
+        {communityHref && <Link className="secondaryButton panelButton" href={communityHref}>계산 결과로 질문하기</Link>}
         {proHref && <Link className="secondaryButton panelButton" href={proHref}>전문가 분석으로 이어가기</Link>}
       </div>
     </section>
