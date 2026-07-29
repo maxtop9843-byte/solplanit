@@ -32,7 +32,7 @@ const pvgisResponse = {
 afterEach(() => vi.restoreAllMocks());
 
 describe("ProWorkspace", () => {
-  it("shows fixed-system inputs and renders PVGIS outputs", async () => {
+  it("shows fixed-system inputs, renders PVGIS outputs, and enables downloads", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue(
       new Response(JSON.stringify(pvgisResponse), {
         status: 200,
@@ -45,6 +45,10 @@ describe("ProWorkspace", () => {
     expect(screen.getByLabelText("태양광 분석 위치 선택 지도")).toBeInTheDocument();
     expect(screen.getByLabelText(/설치 용량/)).toHaveValue(10);
     expect(screen.getByRole("button", { name: "분석 실행" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "CSV" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "JSON" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "차트 이미지" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "PDF 보고서" })).toBeDisabled();
 
     fireEvent.click(screen.getByRole("button", { name: "분석 실행" }));
     expect(screen.getByRole("button", { name: "분석 중…" })).toBeDisabled();
@@ -58,6 +62,10 @@ describe("ProWorkspace", () => {
     expect(screen.getByRole("heading", { name: "가정과 출처" })).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "지평선 프로파일" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "CSV" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "JSON" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "차트 이미지" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "PDF 보고서" })).toBeEnabled();
     expect(global.fetch).toHaveBeenCalledWith(
       "/api/pvgis",
       expect.objectContaining({ method: "POST" }),
@@ -90,5 +98,6 @@ describe("ProWorkspace", () => {
       ).toBeInTheDocument(),
     );
     expect(screen.getByText("계산 전")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "CSV" })).toBeDisabled();
   });
 });
