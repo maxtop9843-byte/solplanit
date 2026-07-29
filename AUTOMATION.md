@@ -120,6 +120,15 @@ Merge only when:
 - The task meets its definition of done
 - The branch is up to date enough to merge safely
 
+### Preview-unavailable fallback
+
+- Preview access is preferred but is not an absolute merge requirement.
+- If the exact PR head passes all required GitHub checks, lint, typecheck, tests, production build, and diff review, and no security, calculation, routing, data-loss, or critical UX defect is found, an unavailable Preview caused only by Vercel limits, protection, DNS, timeout, connection reset, browser restrictions, or execution-environment limits must not stall the queue.
+- In that case, record the failed Preview tools, errors, and retries, then squash merge according to the normal auto-merge policy.
+- Immediately after merge, wait for the matching Production deployment, verify it is `READY`, and inspect the canonical web domain and changed route directly on the web.
+- If Production reveals a real defect, stop new work and repair or roll back the same task before continuing.
+- Never apply this fallback when the Preview or Production build failed because of application code.
+
 Prefer squash merge for task branches.
 
 ## Queue maintenance
