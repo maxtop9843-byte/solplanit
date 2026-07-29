@@ -23,7 +23,7 @@
 .inputField input { width: 100%; min-height: 64px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 22px; }
 .unitToggle { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface); }
 .unitToggle button { min-width: 44px; min-height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-weight: 700; }
-.unitToggle button[aria-pressed="true"] { background: var(--canvas); color: var(--foreground); box-shadow: 0 1px 4px rgba(17, 20, 17, .1); }
+.unitToggle button[aria-pressed="true"] { background: var(--canvas); color: var(--ink); box-shadow: 0 1px 4px rgba(17, 20, 17, .1); }
 .calculatorActions { margin-top: 26px; display: flex; gap: 12px; }
 .panelButton { flex: 1; border: 0; cursor: pointer; }
 .panelButton:disabled { cursor: not-allowed; opacity: .48; }
