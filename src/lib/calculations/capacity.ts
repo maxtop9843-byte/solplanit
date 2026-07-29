@@ -105,7 +105,7 @@ export function estimateInstallableCapacity(input: CapacityInput): CapacityResul
     panelFootprintM2: assumption.panelFootprintM2,
     panelCapacityKw: CAPACITY_METHOD.panelCapacityKw,
     panelCount,
-    installableCapacityKw: round(panelCount * CAPACITY_METHOD.panelCapacityKw, 1),
+    installableCapacityKw: round(panelCount * CAPACITY_METHOD.panelCapacityKw, 2),
     methodVersion: CAPACITY_METHOD.version,
   };
 }
