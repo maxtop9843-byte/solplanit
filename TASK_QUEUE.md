@@ -43,7 +43,7 @@
 | PRO-005 | P1 | DONE | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
 | PRO-006 | P1 | DONE | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
 | CASE-001 | P1 | DONE | Build image-led installation case gallery and case detail pages | UI-001 |
-| COMMUNITY-001 | P1 | IN_REVIEW | Build community categories and structured post model | QUOTE-001 |
+| COMMUNITY-001 | P1 | DONE | Build community categories and structured post model | QUOTE-001 |
 | COMMUNITY-002 | P1 | OPEN | Attach calculation result data to questions and quote posts | COMMUNITY-001 |
 | ACCOUNT-001 | P2 | OPEN | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
 | QA-001 | P0 | DONE | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
@@ -65,7 +65,7 @@
 
 ## Operational verification notes
 
-- COMMUNITY-001 adds `/community`, the five approved categories, privacy and non-guarantee guidance, a typed post model, structured condition fields, example-content labeling, a real homepage entry, responsive layouts, and data-model tests. Keep the task `IN_REVIEW` until exact-head CI and Preview or fallback merge verification complete.
+- COMMUNITY-001 adds `/community`, the five approved categories, privacy and non-guarantee guidance, a typed post model, structured condition fields, example-content labeling, a real homepage entry, responsive layouts, and data-model tests. Exact-head CI run #96 passed; final-head Preview creation was blocked only by Vercel free-plan deployment quota, so merge follows the documented fallback policy.
 - CASE-001 adds a public image-led `/cases` gallery and static detail pages with building, capacity, generation, purpose, assumptions, design considerations, non-guarantee guidance, calculator next actions, responsive behavior, and reduced-motion support. Homepage navigation and featured cards now link to the real case routes. Exact-head lint, typecheck, tests, and production build passed in CI run #93.
 - PRO-006 adds a URL-restorable handoff from the completed general-user result to `/pro`, pre-fills the validated installation capacity, preserves panel/generation/benefit/payback context, rejects invalid payloads, and keeps location plus professional assumptions editable before a fresh PVGIS analysis.
 - PRO-005 adds result-state-gated CSV, JSON, monthly chart PNG, and branded print-to-PDF exports. Every export carries project assumptions, PVGIS source/version, verification and retrieval timestamps, and the non-guarantee disclaimer; CSV/JSON builders have direct unit coverage.
