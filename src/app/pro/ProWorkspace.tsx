@@ -87,7 +87,7 @@ export default function ProWorkspace() {
   }
 
   const maxMonthlyProduction = Math.max(...(result?.monthly.map((item) => item.productionKwh) ?? [1]), 1); const maxHorizonHeight = Math.max(...(result?.horizon.map((item) => item.height) ?? [1]), 1);
-  const importedBenefit = importedCalculation?.annualBenefit;
+  const importedBenefit = importedCalculation?.annualBenefit ?? null;
 
   return (
     <main className="proShell">
