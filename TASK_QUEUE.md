@@ -45,7 +45,7 @@
 | CASE-001 | P1 | DONE | Build image-led installation case gallery and case detail pages | UI-001 |
 | COMMUNITY-001 | P1 | DONE | Build community categories and structured post model | QUOTE-001 |
 | COMMUNITY-002 | P1 | DONE | Attach calculation result data to questions and quote posts | COMMUNITY-001 |
-| ACCOUNT-001 | P2 | OPEN | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
+| ACCOUNT-001 | P2 | DONE | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
 | QA-001 | P0 | DONE | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
 | QA-002 | P1 | OPEN | Compare professional inputs, outputs, downloads, error behavior, and representative results against PVGIS 5.3 | PRO-005 |
 | OPS-001 | P1 | POST_MERGE_VERIFY | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
@@ -65,6 +65,7 @@
 
 ## Operational verification notes
 
+- ACCOUNT-001 adds a privacy-first browser profile, validated saved calculations, saved professional project starters, a responsive `/account` workspace, explicit device-local storage disclosure, and direct reopen links into the general and professional flows. It stores no contact details or precise address data; server authentication and cross-device synchronization remain a future backend integration.
 - COMMUNITY-002 adds a validated, URL-restorable calculation attachment from the general result screen into `/community/new`, limits posts to installation questions or quote review, previews exactly what will be public, excludes detailed address and contact data, and keeps real persistence disabled until ACCOUNT-001. Exact-head lint, typecheck, tests, and production build passed in CI run #99.
 - COMMUNITY-001 adds `/community`, the five approved categories, privacy and non-guarantee guidance, a typed post model, structured condition fields, example-content labeling, a real homepage entry, responsive layouts, and data-model tests. Exact-head CI run #96 passed; final-head Preview creation was blocked only by Vercel free-plan deployment quota, so merge follows the documented fallback policy.
 - CASE-001 adds a public image-led `/cases` gallery and static detail pages with building, capacity, generation, purpose, assumptions, design considerations, non-guarantee guidance, calculator next actions, responsive behavior, and reduced-motion support. Homepage navigation and featured cards now link to the real case routes. Exact-head lint, typecheck, tests, and production build passed in CI run #93.
