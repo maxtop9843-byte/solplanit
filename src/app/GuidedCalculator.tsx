@@ -19,6 +19,7 @@ import {
 } from "../lib/calculations/economics";
 import type { GeoPoint } from "../lib/maps/types";
 import MapLocationPicker, { DEFAULT_SOLPLANIT_LOCATION } from "./MapLocationPicker";
+import ResultSummary from "./ResultSummary";
 
 export default function GuidedCalculator() {
   const [step, setStep] = useState(1);
@@ -104,27 +105,18 @@ export default function GuidedCalculator() {
   const locationLabel = `위도 ${location.latitude.toFixed(4)} · 경도 ${location.longitude.toFixed(4)}`;
   const summary = `${building} · ${area}${areaUnitLabel} · ${locationLabel} · ${goal === "save" ? "전기요금 절감" : "발전 수익"}`;
 
-  if (capacityResult) {
+  if (capacityResult && goal) {
     return (
       <div className="calculatorPanel capacityResultPanel" aria-live="polite">
         <div className="stepHeader">
           <span>{economicsResult ? "발전량·경제성 결과" : "설치 가능 용량 결과"}</span>
           <div className="progressTrack" aria-label="계산 완료"><i style={{ width: "100%" }} /></div>
         </div>
-        <div className="capacityHeadline" role="status">
-          <p className="sectionKicker">입력 조건 기준 예상값</p>
-          <h3>약 {capacityResult.installableCapacityKw.toLocaleString("ko-KR")}kW를 설치할 수 있어요</h3>
-          <p>예상 패널 수 {capacityResult.panelCount.toLocaleString("ko-KR")}장</p>
-        </div>
+
+        <ResultSummary capacity={capacityResult} economics={economicsResult} goal={goal} />
 
         {economicsResult ? (
           <>
-            <dl className="capacityFacts economicsFacts">
-              <div><dt>연간 예상 발전량</dt><dd>{economicsResult.annualGenerationKwh.toLocaleString("ko-KR")}kWh</dd></div>
-              <div><dt>월평균 예상 발전량</dt><dd>{economicsResult.monthlyAverageGenerationKwh.toLocaleString("ko-KR")}kWh</dd></div>
-              <div><dt>{goal === "save" ? "연간 예상 절감액" : "연간 예상 발전 수익"}</dt><dd>{won(economicsResult.annualBenefit)}</dd></div>
-              <div><dt>예상 단순 회수기간</dt><dd>{economicsResult.paybackYears === null ? "계산 불가" : `약 ${economicsResult.paybackYears}년`}</dd></div>
-            </dl>
             {goal === "sell" && <dl className="revenueBreakdown"><div><dt>SMP 수익</dt><dd>{won(economicsResult.annualSmpRevenue)}</dd></div><div><dt>REC 수익</dt><dd>{won(economicsResult.annualRecRevenue)}</dd></div></dl>}
             <details className="assumptionDetails" open>
               <summary>적용한 경제성 가정과 한계</summary>
