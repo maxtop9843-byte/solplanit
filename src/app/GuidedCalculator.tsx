@@ -12,6 +12,7 @@ export default function GuidedCalculator() {
   const [region, setRegion] = useState("");
   const [goal, setGoal] = useState<"save" | "sell" | "">("");
   const [error, setError] = useState("");
+  const [isReviewing, setIsReviewing] = useState(false);
 
   const next = () => {
     setError("");
@@ -20,6 +21,7 @@ export default function GuidedCalculator() {
     if (step === 3 && !region) return setError("설치 지역을 선택해주세요.");
     if (step === 4 && !goal) return setError("계산 목적을 선택해주세요.");
     if (step < 4) setStep((current) => current + 1);
+    else setIsReviewing(true);
   };
 
   const questions = [
@@ -28,6 +30,29 @@ export default function GuidedCalculator() {
     "어느 지역에 설치할 예정인가요?",
     "태양광으로 무엇을 기대하시나요?",
   ];
+
+  const summary = `${building} · ${area}m² · ${region} · ${goal === "save" ? "전기요금 절감" : "발전 수익"}`;
+
+  if (isReviewing) {
+    return (
+      <div className="calculatorPanel" aria-live="polite">
+        <div className="stepHeader">
+          <span>입력 내용 확인</span>
+          <div className="progressTrack" aria-label="4단계 입력 완료"><i style={{ width: "100%" }} /></div>
+        </div>
+        <div className="calculatorReview" role="status">
+          <p className="sectionKicker">계산 전 마지막 확인</p>
+          <h3>입력한 조건이 맞나요?</h3>
+          <p>{summary}</p>
+          <small>다음 계산 작업에서 이 조건을 바탕으로 설치 가능 용량과 예상 결과를 보여드릴 예정이에요.</small>
+        </div>
+        <div className="calculatorActions">
+          <button className="secondaryButton" type="button" onClick={() => setIsReviewing(false)}>수정하기</button>
+          <button className="primaryButton panelButton" type="button" disabled aria-disabled="true">계산 기능 준비 중</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="calculatorPanel" aria-live="polite">
