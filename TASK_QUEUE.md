@@ -36,7 +36,7 @@
 | CALC-002 | P0 | DONE | Implement generation, self-consumption savings, SMP/REC revenue, and payback calculation engine with assumptions and consistency tests | CALC-001 |
 | UI-003 | P0 | DONE | Implement emphasized result cards, numeric count-up, sequential reveal, next-action guidance, and reduced-motion fallback | CALC-002 |
 | QUOTE-001 | P1 | DONE | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
-| PRO-001 | P1 | OPEN | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
+| PRO-001 | P1 | IN_REVIEW | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
 | PRO-002 | P1 | OPEN | Add PVGIS 5.3 server proxy with validation, timeout, retry, caching, rate-limit handling, source/version metadata, and Korean errors | PRO-001 |
 | PRO-003 | P1 | OPEN | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
 | PRO-004 | P1 | OPEN | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
@@ -65,17 +65,12 @@
 
 ## Operational verification notes
 
+- PRO-001 adds the `/pro` map-left, compact input, and result-summary workspace shell. The analysis action remains disabled and explicitly states that PVGIS 5.3 computation is connected in PRO-002; no result or partnership claim is fabricated.
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
 - QUOTE-001 exact-head GitHub CI passed at `0fd6f3e1da48ee84ff6510ea07fd1e7a41a57c4b`. Branch Preview deployments `dpl_HNbTrTLUeGpwXcqWsaChw9Wgn6Vj` and `dpl_2G2Bbt8YfrJZGn13WTzhhmhBW2h4` reached `READY`; final queue-only head Preview creation may remain subject to Vercel's free daily deployment limit. The MVP validates contact fields, privacy consent, and attached calculation integrity while explicitly stating that data is not stored or sent to installers yet.
 - QA-001 exact-head GitHub CI passed and same-SHA Preview `dpl_4TbUvzKnVcxBT97ZkqZmaamUoX1F` reached `READY`. The automated journey covers required-field errors, backward-navigation persistence, capacity calculation, user-entered savings assumptions, economics results, and edit/recalculate actions. Direct desktop/mobile Chromium navigation was blocked by the execution environment with `ERR_BLOCKED_BY_ADMINISTRATOR`; Vercel HTTP output, responsive source inspection, and automated interactions are retained as alternate evidence.
 - UI-003 exact-head GitHub CI passed at `5e97a2fee624d3accff1f72b9276129cb1527567`. Same-SHA Preview creation was blocked only by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; code inspection confirms reduced-motion fallback, responsive single-column mobile cards, sequential reveal, and overflow-safe result typography.
 - CALC-002 exact-head GitHub CI passed at `aa124e6e0cc175867aa4253db6c3983a42b822c7`. Exact-head Preview creation remained blocked by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; the implementation exposes user-entered assumptions and avoids publishing guessed SMP, REC, tariff, or installation-cost values.
-- CALC-001 implementation Preview `dpl_9HydPYBHS6syBeVJSMv8YKUbsDzy` reached `READY`. Later exact-head Preview creation was blocked by Vercel's free daily deployment limit; exact-head GitHub CI remains the authoritative code validation, and final changes preserve capacity precision plus queue status.
-- MAP-001 exact-head GitHub CI passed; Vercel Preview deployment `dpl_Y1Gr4EneKA3J62R1arf8KgWaLdRZ` for the same implementation branch reached `READY`. The final head differs only by a MapLibre type compatibility fix and this queue update; exact-head Preview creation was blocked by Vercel's free daily deployment limit, not an application build error.
-- UX-001 merged through PR #8 at `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` after exact-head CI passed and Preview deployment `dpl_48PVoyhvkn6YXyST9t9MUs2DnMVm` reached `READY`.
-- Production deployment `dpl_7kaJj4FkqwNuU545ynPSxAhbd2fh` for main commit `c44f11871c26fd48b47701482561044e5862b7bf` reached `READY` and serves the canonical `solplanit.vercel.app` alias.
-- UI-001 merged through PR #5 at `d8bed7e311b65a258e4e7f3d9134a0d2e151aa28` after exact-head CI and local Chromium desktop/mobile rendering passed; same-SHA Vercel Preview was unavailable only because of the free deployment limit.
-- UI-002 Preview `dpl_EzSMVneDeDsXkVNFBZhJBHDsdCpi` reached `READY` and returned HTTP 200; the final head differs only by semantics-preserving source compaction and this queue update, while exact-head GitHub CI passed.
 - Keep OPS-001 in `POST_MERGE_VERIFY` until canonical-domain route, sitemap, robots, 404, and server-error smoke checks are fully recorded.
 
 ## Acceptance highlights
