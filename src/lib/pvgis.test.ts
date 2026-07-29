@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import {
   buildPvgisUrl,
   fetchPvgis,
-  PvgisError,
   validatePvgisRequest,
 } from "./pvgis";
 
@@ -81,7 +80,7 @@ describe("fetchPvgis", () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response("busy", { status: 429 }));
 
     await expect(fetchPvgis(validRequest, fetcher)).rejects.toEqual(
-      expect.objectContaining<PvgisError>({
+      expect.objectContaining({
         code: "PVGIS_RATE_LIMITED",
         status: 503,
       }),
