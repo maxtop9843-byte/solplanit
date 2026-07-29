@@ -19,13 +19,31 @@
 .goalGrid small, .inputField small, .calculatorSummary { color: var(--muted); line-height: 1.45; }
 .inputField { display: grid; gap: 10px; }
 .inputField > span { font-weight: 650; }
-.inputField > div { display: flex; align-items: center; gap: 10px; padding: 0 18px; border: 1px solid var(--border); border-radius: 16px; }
+.inputField > div { display: flex; align-items: center; gap: 10px; padding: 0 10px 0 18px; border: 1px solid var(--border); border-radius: 16px; }
 .inputField input { width: 100%; min-height: 64px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 22px; }
+.unitToggle { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface); }
+.unitToggle button { min-width: 44px; min-height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-weight: 700; }
+.unitToggle button[aria-pressed="true"] { background: var(--canvas); color: var(--ink); box-shadow: 0 1px 4px rgba(17, 20, 17, .1); }
 .calculatorActions { margin-top: 26px; display: flex; gap: 12px; }
 .panelButton { flex: 1; border: 0; cursor: pointer; }
+.panelButton:disabled { cursor: not-allowed; opacity: .48; }
 .secondaryButton { min-height: 52px; padding: 0 20px; border: 1px solid var(--border); border-radius: 999px; background: transparent; cursor: pointer; font: inherit; font-weight: 650; }
 .formError { margin: 18px 0 0; color: #b42318; font-size: 14px; }
 .calculatorSummary { margin: 18px 0 0; font-size: 13px; }
+.calculatorReview { margin-top: 34px; }
+.calculatorReview h3, .capacityHeadline h3 { margin: 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.04em; }
+.calculatorReview > p:not(.sectionKicker), .capacityHeadline > p:last-child { color: var(--muted); line-height: 1.6; }
+.capacityResultPanel { min-height: 0; }
+.capacityHeadline { margin-top: 34px; }
+.capacityFacts { margin: 28px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.capacityFacts > div { padding: 16px; border-radius: 14px; background: var(--surface); }
+.capacityFacts dt { color: var(--muted); font-size: 13px; }
+.capacityFacts dd { margin: 7px 0 0; font-size: 18px; font-weight: 750; }
+.assumptionDetails { margin-top: 18px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 16px; }
+.assumptionDetails summary { cursor: pointer; font-weight: 700; }
+.assumptionDetails p, .assumptionDetails li { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.assumptionDetails ul { margin: 10px 0 0; padding-left: 18px; }
+.assumptionDetails a { color: inherit; text-underline-offset: 3px; }
 .resultPreview { padding: 120px 0; }
 .resultPreview > div:first-child { max-width: 760px; }
 .resultCards { margin-top: 48px; display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 16px; }
@@ -35,7 +53,7 @@
 .resultCard small { font-size: 16px; font-weight: 650; }
 .resultCard p { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
 .primaryResult { background: var(--soft-green); border-color: #cfe7d4; }
-.disclaimer { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
+.disclaimer { margin: 18px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
 .processSection { width: 100%; padding: 120px max(24px, calc((100% - 1200px) / 2)); background: var(--surface); }
 .processGrid { margin: 48px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; list-style: none; }
 .processGrid li { padding: 28px 24px; border-top: 1px solid #cfd3ce; }
@@ -61,4 +79,4 @@
 .bottomCta > p { margin: 22px 0 32px; }
 @media (prefers-reduced-motion: reduce) { .progressTrack i { transition: none; } }
 @media (max-width: 900px) { .calculatorEntry, .communitySection { grid-template-columns: 1fr; gap: 44px; } .resultCards { grid-template-columns: 1fr; } .processGrid { grid-template-columns: repeat(2, 1fr); } .caseGrid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .calculatorEntry, .resultPreview, .processSection, .caseSection, .communitySection { width: min(100% - 32px, 1200px); padding: 80px 0; } .processSection { width: 100%; padding-inline: 16px; } .calculatorPanel { min-height: 500px; padding: 24px 18px; border-radius: 22px; } .typeGrid, .goalGrid, .processGrid { grid-template-columns: 1fr; } .sectionIntro h2, .resultPreview h2, .caseSection h2, .communitySection h2, .bottomCta h2 { font-size: 34px; } .sectionHeaderRow { align-items: flex-start; flex-direction: column; } .caseCard { min-height: 360px; border-radius: 22px; } .bottomCta { padding: 80px 20px; } .calculatorActions { position: sticky; bottom: 12px; padding-top: 8px; background: var(--canvas); } }
+@media (max-width: 600px) { .calculatorEntry, .resultPreview, .processSection, .caseSection, .communitySection { width: min(100% - 32px, 1200px); padding: 80px 0; } .processSection { width: 100%; padding-inline: 16px; } .calculatorPanel { min-height: 500px; padding: 24px 18px; border-radius: 22px; } .capacityResultPanel { min-height: 0; } .typeGrid, .goalGrid, .processGrid, .capacityFacts { grid-template-columns: 1fr; } .sectionIntro h2, .resultPreview h2, .caseSection h2, .communitySection h2, .bottomCta h2 { font-size: 34px; } .sectionHeaderRow { align-items: flex-start; flex-direction: column; } .caseCard { min-height: 360px; border-radius: 22px; } .bottomCta { padding: 80px 20px; } .calculatorActions { position: sticky; bottom: 12px; padding-top: 8px; background: var(--canvas); } }

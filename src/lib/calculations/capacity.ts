@@ -1,0 +1,111 @@
+export const AREA_UNITS = ["m2", "pyeong"] as const;
+export type AreaUnit = (typeof AREA_UNITS)[number];
+
+export const BUILDING_TYPES = ["주택", "상가·건물", "공장·창고", "토지"] as const;
+export type BuildingType = (typeof BUILDING_TYPES)[number];
+
+type CapacityAssumption = {
+  usableAreaRatio: number;
+  panelFootprintM2: number;
+};
+
+export const CAPACITY_METHOD = {
+  version: "2026-07-29",
+  panelCapacityKw: 0.45,
+  squareMetersPerPyeong: 3.305785,
+  minimumAreaM2: 5,
+  maximumAreaM2: 1_000_000,
+  assumptions: {
+    주택: { usableAreaRatio: 0.55, panelFootprintM2: 2.6 },
+    "상가·건물": { usableAreaRatio: 0.6, panelFootprintM2: 2.5 },
+    "공장·창고": { usableAreaRatio: 0.7, panelFootprintM2: 2.4 },
+    토지: { usableAreaRatio: 0.65, panelFootprintM2: 3.2 },
+  } satisfies Record<BuildingType, CapacityAssumption>,
+  sources: [
+    {
+      label: "한국에너지공단 신·재생에너지센터 태양광 소개",
+      url: "https://www.knrec.or.kr/biz/korea/intro/kor_solar.do",
+    },
+    {
+      label: "미국 에너지부 Solar Rooftop Potential",
+      url: "https://www.energy.gov/cmei/systems/solar-rooftop-potential",
+    },
+    {
+      label: "미국 에너지부 Solar System Components",
+      url: "https://www.energy.gov/indianenergy/tribal-energy-guide/solar",
+    },
+  ],
+} as const;
+
+export type CapacityInput = {
+  buildingType: BuildingType;
+  area: number;
+  areaUnit: AreaUnit;
+};
+
+export type CapacityResult = {
+  inputArea: number;
+  inputUnit: AreaUnit;
+  areaM2: number;
+  usableAreaM2: number;
+  usableAreaRatio: number;
+  panelFootprintM2: number;
+  panelCapacityKw: number;
+  panelCount: number;
+  installableCapacityKw: number;
+  methodVersion: string;
+};
+
+export class CapacityInputError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CapacityInputError";
+  }
+}
+
+const round = (value: number, digits: number) => {
+  const multiplier = 10 ** digits;
+  return Math.round((value + Number.EPSILON) * multiplier) / multiplier;
+};
+
+export function convertAreaToSquareMeters(area: number, unit: AreaUnit): number {
+  if (!Number.isFinite(area)) throw new CapacityInputError("설치 면적을 숫자로 입력해주세요.");
+  return unit === "pyeong" ? area * CAPACITY_METHOD.squareMetersPerPyeong : area;
+}
+
+export function estimateInstallableCapacity(input: CapacityInput): CapacityResult {
+  if (!BUILDING_TYPES.includes(input.buildingType)) {
+    throw new CapacityInputError("지원하는 건물 유형을 선택해주세요.");
+  }
+  if (!AREA_UNITS.includes(input.areaUnit)) {
+    throw new CapacityInputError("지원하는 면적 단위를 선택해주세요.");
+  }
+
+  const areaM2Raw = convertAreaToSquareMeters(input.area, input.areaUnit);
+  if (areaM2Raw < CAPACITY_METHOD.minimumAreaM2) {
+    throw new CapacityInputError(`설치 면적은 ${CAPACITY_METHOD.minimumAreaM2}m² 이상 입력해주세요.`);
+  }
+  if (areaM2Raw > CAPACITY_METHOD.maximumAreaM2) {
+    throw new CapacityInputError("설치 면적이 너무 큽니다. 1,000,000m² 이하로 입력해주세요.");
+  }
+
+  const assumption = CAPACITY_METHOD.assumptions[input.buildingType];
+  const usableAreaM2Raw = areaM2Raw * assumption.usableAreaRatio;
+  const panelCount = Math.floor(usableAreaM2Raw / assumption.panelFootprintM2);
+  if (panelCount < 1) {
+    throw new CapacityInputError("입력한 조건으로 배치 가능한 패널이 없습니다. 면적을 다시 확인해주세요.");
+  }
+
+  return {
+    inputArea: input.area,
+    inputUnit: input.areaUnit,
+    areaM2: round(areaM2Raw, 2),
+    usableAreaM2: round(usableAreaM2Raw, 2),
+    usableAreaRatio: assumption.usableAreaRatio,
+    panelFootprintM2: assumption.panelFootprintM2,
+    panelCapacityKw: CAPACITY_METHOD.panelCapacityKw,
+    panelCount,
+    installableCapacityKw: round(panelCount * CAPACITY_METHOD.panelCapacityKw, 2),
+    methodVersion: CAPACITY_METHOD.version,
+  };
+}
