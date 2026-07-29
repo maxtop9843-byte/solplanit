@@ -16,6 +16,7 @@
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
+    "maplibre-gl": "5.7.1",
     "next": "16.0.10",
     "react": "19.2.0",
     "react-dom": "19.2.0"
