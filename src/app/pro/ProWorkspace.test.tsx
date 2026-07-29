@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, vi } from "vitest";
-import ProWorkspace from "./ProWorkspace";
+import type { ComponentType } from "react";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 vi.mock("maplibre-gl", () => ({
   default: {
@@ -10,6 +10,8 @@ vi.mock("maplibre-gl", () => ({
     AttributionControl: class {},
   },
 }));
+
+let ProWorkspace: ComponentType;
 
 const pvgisResponse = {
   source: "PVGIS",
@@ -27,7 +29,12 @@ const pvgisResponse = {
   },
 };
 
+beforeAll(async () => {
+  ProWorkspace = (await import("./ProWorkspace")).default;
+});
+
 afterEach(() => vi.clearAllMocks());
+afterAll(() => vi.restoreAllMocks());
 
 describe("ProWorkspace", () => {
   it("shows fixed-system inputs and renders PVGIS outputs", async () => {
