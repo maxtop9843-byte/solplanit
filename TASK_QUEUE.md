@@ -34,7 +34,7 @@
 | MAP-002 | P1 | BLOCKED | Add address-search and reverse-geocoding slots for Kakao or Naver without provider-specific UI coupling | MAP-001; API keys later |
 | CALC-001 | P0 | DONE | Implement installable-capacity estimation by building type and area with explicit assumptions, panel count, units, boundaries, and tests | UX-001 |
 | CALC-002 | P0 | DONE | Implement generation, self-consumption savings, SMP/REC revenue, and payback calculation engine with assumptions and consistency tests | CALC-001 |
-| UI-003 | P0 | OPEN | Implement emphasized result cards, numeric count-up, sequential reveal, next-action guidance, and reduced-motion fallback | CALC-002 |
+| UI-003 | P0 | DONE | Implement emphasized result cards, numeric count-up, sequential reveal, next-action guidance, and reduced-motion fallback | CALC-002 |
 | QUOTE-001 | P1 | OPEN | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
 | PRO-001 | P1 | OPEN | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
 | PRO-002 | P1 | OPEN | Add PVGIS 5.3 server proxy with validation, timeout, retry, caching, rate-limit handling, source/version metadata, and Korean errors | PRO-001 |
@@ -66,6 +66,7 @@
 ## Operational verification notes
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
+- UI-003 exact-head GitHub CI passed at `5e97a2fee624d3accff1f72b9276129cb1527567`. Same-SHA Preview creation was blocked only by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; code inspection confirms reduced-motion fallback, responsive single-column mobile cards, sequential reveal, and overflow-safe result typography.
 - CALC-002 exact-head GitHub CI passed at `aa124e6e0cc175867aa4253db6c3983a42b822c7`. Exact-head Preview creation remained blocked by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; the implementation exposes user-entered assumptions and avoids publishing guessed SMP, REC, tariff, or installation-cost values.
 - CALC-001 implementation Preview `dpl_9HydPYBHS6syBeVJSMv8YKUbsDzy` reached `READY`. Later exact-head Preview creation was blocked by Vercel's free daily deployment limit; exact-head GitHub CI remains the authoritative code validation, and final changes preserve capacity precision plus queue status.
 - MAP-001 exact-head GitHub CI passed; Vercel Preview deployment `dpl_Y1Gr4EneKA3J62R1arf8KgWaLdRZ` for the same implementation branch reached `READY`. The final head differs only by a MapLibre type compatibility fix and this queue update; exact-head Preview creation was blocked by Vercel's free daily deployment limit, not an application build error.
