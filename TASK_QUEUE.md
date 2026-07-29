@@ -38,7 +38,7 @@
 | QUOTE-001 | P1 | DONE | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
 | PRO-001 | P1 | DONE | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
 | PRO-002 | P1 | DONE | Add PVGIS 5.3 server proxy with validation, timeout, retry, caching, rate-limit handling, source/version metadata, and Korean errors | PRO-001 |
-| PRO-003 | P1 | OPEN | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
+| PRO-003 | P1 | IN_REVIEW | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
 | PRO-004 | P1 | OPEN | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
 | PRO-005 | P1 | OPEN | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
 | PRO-006 | P1 | OPEN | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
@@ -65,13 +65,10 @@
 
 ## Operational verification notes
 
+- PRO-003 implements controlled fixed-system inputs for capacity, module technology, mounting, integrated losses, tilt, azimuth, horizon use, optimal-angle options, and PVGIS radiation database selection, with client-side boundary feedback aligned to the PRO-002 proxy contract.
 - PRO-002 adds a version-pinned PVGIS 5.3 `PVcalc` server proxy with strict input boundaries, a 12-second timeout, two bounded retries, one-hour upstream caching, explicit 429 handling, Korean errors, and source/version/verification metadata. The endpoint and parameters were verified against the European Commission Joint Research Centre non-interactive API documentation on 2026-07-30.
 - PRO-001 adds the `/pro` map-left, compact input, and result-summary workspace shell. The analysis action remains disabled and explicitly states that PVGIS 5.3 computation is connected in PRO-002; no result or partnership claim is fabricated. Exact-head CI passed after correcting the hook dependency lint warning. Intermediate Preview builds failed before all route files were committed; no final-head Preview was generated, so post-merge Production verification is required by the Preview fallback policy.
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
-- QUOTE-001 exact-head GitHub CI passed at `0fd6f3e1da48ee84ff6510ea07fd1e7a41a57c4b`. Branch Preview deployments `dpl_HNbTrTLUeGpwXcqWsaChw9Wgn6Vj` and `dpl_2G2Bbt8YfrJZGn13WTzhhmhBW2h4` reached `READY`; final queue-only head Preview creation may remain subject to Vercel's free daily deployment limit. The MVP validates contact fields, privacy consent, and attached calculation integrity while explicitly stating that data is not stored or sent to installers yet.
-- QA-001 exact-head GitHub CI passed and same-SHA Preview `dpl_4TbUvzKnVcxBT97ZkqZmaamUoX1F` reached `READY`. The automated journey covers required-field errors, backward-navigation persistence, capacity calculation, user-entered savings assumptions, economics results, and edit/recalculate actions. Direct desktop/mobile Chromium navigation was blocked by the execution environment with `ERR_BLOCKED_BY_ADMINISTRATOR`; Vercel HTTP output, responsive source inspection, and automated interactions are retained as alternate evidence.
-- UI-003 exact-head GitHub CI passed at `5e97a2fee624d3accff1f72b9276129cb1527567`. Same-SHA Preview creation was blocked only by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; code inspection confirms reduced-motion fallback, responsive single-column mobile cards, sequential reveal, and overflow-safe result typography.
-- CALC-002 exact-head GitHub CI passed at `aa124e6e0cc175867aa4253db6c3983a42b822c7`. Exact-head Preview creation remained blocked by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; the implementation exposes user-entered assumptions and avoids publishing guessed SMP, REC, tariff, or installation-cost values.
 - Keep OPS-001 in `POST_MERGE_VERIFY` until canonical-domain route, sitemap, robots, 404, and server-error smoke checks are fully recorded.
 
 ## Acceptance highlights
