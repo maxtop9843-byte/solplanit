@@ -1,0 +1,49 @@
+.casesPage, .caseDetailPage { min-height: 100vh; background: var(--canvas); color: var(--ink); }
+.caseSiteHeader { width: min(1280px, calc(100% - 48px)); margin: 0 auto; min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.caseHeaderCta, .secondaryCaseLink { color: inherit; font-weight: 700; text-underline-offset: 4px; }
+.casesHero { width: min(1200px, calc(100% - 48px)); margin: 0 auto; padding: 104px 0 72px; }
+.casesHero h1, .caseDetailIntro h1, .caseStory h2, .caseNextAction h2 { margin: 0; font-size: clamp(42px, 6vw, 76px); line-height: 1.02; letter-spacing: -.06em; }
+.casesHero > p:last-child, .caseDetailIntro > p:last-child, .caseNextAction > p { max-width: 720px; color: var(--muted); font-size: 18px; line-height: 1.7; }
+.caseGallery { width: min(1200px, calc(100% - 48px)); margin: 0 auto; padding-bottom: 120px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.galleryCard { overflow: hidden; border-radius: 28px; background: #111; }
+.galleryCard1 { grid-column: span 7; }
+.galleryCard2 { grid-column: span 5; }
+.galleryCard3 { grid-column: 3 / span 8; }
+.galleryCard > a { min-height: 560px; display: grid; grid-template-rows: 1fr auto; color: white; text-decoration: none; }
+.galleryImage { min-height: 290px; background-size: cover; background-position: center; transition: transform .35s ease; }
+.galleryCard:hover .galleryImage, .galleryCard:focus-within .galleryImage { transform: scale(1.018); }
+.galleryContent { margin-top: -1px; padding: 26px 28px 30px; background: #111; }
+.galleryMeta { display: flex; justify-content: space-between; gap: 16px; color: rgba(255,255,255,.72); font-size: 13px; }
+.galleryContent h2 { margin: 22px 0 8px; font-size: clamp(38px, 5vw, 60px); letter-spacing: -.05em; }
+.galleryContent > p { margin: 0; color: rgba(255,255,255,.84); line-height: 1.55; }
+.galleryContent dl { margin: 24px 0 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.galleryContent dl > div { padding-top: 14px; border-top: 1px solid rgba(255,255,255,.2); }
+.galleryContent dt { color: rgba(255,255,255,.6); font-size: 12px; }
+.galleryContent dd { margin: 7px 0 0; font-weight: 700; }
+.galleryLink { margin-top: 28px; display: inline-block; font-weight: 750; }
+.caseDisclaimer { padding: 104px max(24px, calc((100% - 900px) / 2)); text-align: center; background: var(--surface); }
+.caseDisclaimer strong { font-size: 30px; letter-spacing: -.04em; }
+.caseDisclaimer p { margin: 18px auto 30px; max-width: 760px; color: var(--muted); line-height: 1.7; }
+.caseDetailHero { width: min(1280px, calc(100% - 48px)); margin: 36px auto 0; display: grid; grid-template-columns: 1.12fr .88fr; gap: 64px; align-items: center; }
+.caseDetailImage { min-height: 680px; border-radius: 30px; background-size: cover; background-position: center; }
+.caseDetailIntro > p:last-child { margin-top: 28px; }
+.caseFacts { width: min(1100px, calc(100% - 48px)); margin: 0 auto; padding: 112px 0; }
+.caseFacts dl { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.caseFacts dl > div { padding: 24px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); }
+.caseFacts dt { color: var(--muted); font-size: 13px; }
+.caseFacts dd { margin: 12px 0 0; font-size: 23px; font-weight: 750; letter-spacing: -.025em; }
+.caseStory { width: min(1100px, calc(100% - 48px)); margin: 0 auto; padding: 0 0 112px; display: grid; grid-template-columns: 1fr .9fr; gap: 70px; }
+.caseStory h2 { font-size: clamp(38px, 5vw, 62px); }
+.caseStory ol { margin: 0; padding: 0; list-style: none; }
+.caseStory li { padding: 22px 0; display: grid; grid-template-columns: 52px 1fr; gap: 16px; border-top: 1px solid var(--border); }
+.caseStory li span { color: var(--functional-green); font-size: 13px; font-weight: 750; }
+.caseStory li p { margin: 0; font-size: 20px; font-weight: 700; }
+.caseNote { width: min(900px, calc(100% - 48px)); margin: 0 auto 112px; padding: 24px 28px; border: 1px solid #cfe7d4; border-radius: 20px; background: var(--soft-green); }
+.caseNote p { margin: 10px 0 0; color: var(--muted); line-height: 1.65; }
+.caseNextAction { padding: 112px max(24px, calc((100% - 900px) / 2)); text-align: center; background: var(--surface); }
+.caseNextAction h2 { font-size: clamp(38px, 5vw, 62px); }
+.caseNextAction > p { margin: 22px auto 32px; }
+.caseNextAction > div { display: flex; justify-content: center; align-items: center; gap: 24px; }
+@media (prefers-reduced-motion: reduce) { .galleryImage { transition: none; } }
+@media (max-width: 900px) { .galleryCard1, .galleryCard2, .galleryCard3 { grid-column: 1 / -1; } .caseDetailHero, .caseStory { grid-template-columns: 1fr; } .caseDetailImage { min-height: 520px; } .caseFacts dl { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .caseSiteHeader, .casesHero, .caseGallery, .caseDetailHero, .caseFacts, .caseStory, .caseNote { width: min(100% - 32px, 1200px); } .casesHero { padding: 72px 0 48px; } .galleryCard > a { min-height: 500px; } .galleryContent dl, .caseFacts dl { grid-template-columns: 1fr; } .caseDetailHero { margin-top: 12px; gap: 38px; } .caseDetailImage { min-height: 380px; border-radius: 22px; } .caseFacts { padding: 80px 0; } .caseStory { gap: 38px; padding-bottom: 80px; } .caseNextAction > div { flex-direction: column; } }
