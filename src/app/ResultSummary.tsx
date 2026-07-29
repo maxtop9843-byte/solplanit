@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { CapacityResult } from "../lib/calculations/capacity";
 import type { EconomicsResult } from "../lib/calculations/economics";
@@ -73,6 +74,16 @@ export default function ResultSummary({
   goal: Goal;
 }) {
   const benefitLabel = goal === "save" ? "연간 예상 절감액" : "연간 예상 발전 수익";
+  const quoteHref = economics
+    ? `/quote?${new URLSearchParams({
+        capacity: String(capacity.installableCapacityKw),
+        panels: String(capacity.panelCount),
+        generation: String(economics.annualGenerationKwh),
+        benefit: String(economics.annualBenefit),
+        payback: economics.paybackYears === null ? "null" : String(economics.paybackYears),
+        goal,
+      }).toString()}`
+    : null;
 
   return (
     <section className="resultSummary" aria-labelledby="result-summary-heading">
@@ -120,8 +131,9 @@ export default function ResultSummary({
         <div>
           <p className="sectionKicker">다음 단계</p>
           <h4>{economics ? "계산 결과를 바탕으로 견적을 준비해보세요" : "이 용량으로 절감액과 수익을 확인해보세요"}</h4>
-          <p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요. 견적 요청 기능은 다음 단계에서 연결됩니다." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p>
+          <p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p>
         </div>
+        {quoteHref && <Link className="primaryButton panelButton" href={quoteHref}>계산 결과로 견적 준비하기</Link>}
       </div>
     </section>
   );
