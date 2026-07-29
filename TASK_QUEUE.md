@@ -36,7 +36,7 @@
 | CALC-002 | P0 | DONE | Implement generation, self-consumption savings, SMP/REC revenue, and payback calculation engine with assumptions and consistency tests | CALC-001 |
 | UI-003 | P0 | DONE | Implement emphasized result cards, numeric count-up, sequential reveal, next-action guidance, and reduced-motion fallback | CALC-002 |
 | QUOTE-001 | P1 | DONE | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
-| PRO-001 | P1 | IN_REVIEW | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
+| PRO-001 | P1 | DONE | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
 | PRO-002 | P1 | OPEN | Add PVGIS 5.3 server proxy with validation, timeout, retry, caching, rate-limit handling, source/version metadata, and Korean errors | PRO-001 |
 | PRO-003 | P1 | OPEN | Implement PVGIS-style fixed-system inputs: capacity, module technology, mounting, loss, tilt, azimuth, horizon, optimal-angle options, and radiation database | PRO-002 |
 | PRO-004 | P1 | OPEN | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
@@ -65,7 +65,7 @@
 
 ## Operational verification notes
 
-- PRO-001 adds the `/pro` map-left, compact input, and result-summary workspace shell. The analysis action remains disabled and explicitly states that PVGIS 5.3 computation is connected in PRO-002; no result or partnership claim is fabricated.
+- PRO-001 adds the `/pro` map-left, compact input, and result-summary workspace shell. The analysis action remains disabled and explicitly states that PVGIS 5.3 computation is connected in PRO-002; no result or partnership claim is fabricated. Exact-head CI passed after correcting the hook dependency lint warning. Intermediate Preview builds failed before all route files were committed; no final-head Preview was generated, so post-merge Production verification is required by the Preview fallback policy.
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
 - QUOTE-001 exact-head GitHub CI passed at `0fd6f3e1da48ee84ff6510ea07fd1e7a41a57c4b`. Branch Preview deployments `dpl_HNbTrTLUeGpwXcqWsaChw9Wgn6Vj` and `dpl_2G2Bbt8YfrJZGn13WTzhhmhBW2h4` reached `READY`; final queue-only head Preview creation may remain subject to Vercel's free daily deployment limit. The MVP validates contact fields, privacy consent, and attached calculation integrity while explicitly stating that data is not stored or sent to installers yet.
 - QA-001 exact-head GitHub CI passed and same-SHA Preview `dpl_4TbUvzKnVcxBT97ZkqZmaamUoX1F` reached `READY`. The automated journey covers required-field errors, backward-navigation persistence, capacity calculation, user-entered savings assumptions, economics results, and edit/recalculate actions. Direct desktop/mobile Chromium navigation was blocked by the execution environment with `ERR_BLOCKED_BY_ADMINISTRATOR`; Vercel HTTP output, responsive source inspection, and automated interactions are retained as alternate evidence.
