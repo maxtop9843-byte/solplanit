@@ -27,7 +27,7 @@ const pvgisResponse = {
   },
 };
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => vi.clearAllMocks());
 
 describe("ProWorkspace", () => {
   it("shows fixed-system inputs and renders PVGIS outputs", async () => {
