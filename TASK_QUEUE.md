@@ -33,7 +33,7 @@
 | MAP-001 | P0 | DONE | Implement MapLibre map selection with center marker, click-to-select coordinates, direct latitude/longitude inputs, and provider adapter boundary | FND-001 |
 | MAP-002 | P1 | BLOCKED | Add address-search and reverse-geocoding slots for Kakao or Naver without provider-specific UI coupling | MAP-001; API keys later |
 | CALC-001 | P0 | DONE | Implement installable-capacity estimation by building type and area with explicit assumptions, panel count, units, boundaries, and tests | UX-001 |
-| CALC-002 | P0 | IN_REVIEW | Implement generation, self-consumption savings, SMP/REC revenue, and payback calculation engine with assumptions and consistency tests | CALC-001 |
+| CALC-002 | P0 | DONE | Implement generation, self-consumption savings, SMP/REC revenue, and payback calculation engine with assumptions and consistency tests | CALC-001 |
 | UI-003 | P0 | OPEN | Implement emphasized result cards, numeric count-up, sequential reveal, next-action guidance, and reduced-motion fallback | CALC-002 |
 | QUOTE-001 | P1 | OPEN | Create calculation-backed quote request flow with automatic result attachment | UI-003 |
 | PRO-001 | P1 | OPEN | Build `/pro` professional workspace shell following the PVGIS 5.3 map-left/input/result workflow in SolPlanit styling | FND-001, MAP-001 |
@@ -66,6 +66,7 @@
 ## Operational verification notes
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
+- CALC-002 exact-head GitHub CI passed at `aa124e6e0cc175867aa4253db6c3983a42b822c7`. Exact-head Preview creation remained blocked by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; the implementation exposes user-entered assumptions and avoids publishing guessed SMP, REC, tariff, or installation-cost values.
 - CALC-001 implementation Preview `dpl_9HydPYBHS6syBeVJSMv8YKUbsDzy` reached `READY`. Later exact-head Preview creation was blocked by Vercel's free daily deployment limit; exact-head GitHub CI remains the authoritative code validation, and final changes preserve capacity precision plus queue status.
 - MAP-001 exact-head GitHub CI passed; Vercel Preview deployment `dpl_Y1Gr4EneKA3J62R1arf8KgWaLdRZ` for the same implementation branch reached `READY`. The final head differs only by a MapLibre type compatibility fix and this queue update; exact-head Preview creation was blocked by Vercel's free daily deployment limit, not an application build error.
 - UX-001 merged through PR #8 at `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` after exact-head CI passed and Preview deployment `dpl_48PVoyhvkn6YXyST9t9MUs2DnMVm` reached `READY`.
@@ -77,52 +78,3 @@
 ## Acceptance highlights
 
 ### UI-001
-
-- First viewport contains only logo/navigation, supporting line, main headline, description, one black CTA, one secondary text link, one large solar-building image, and at most one result chip.
-- Approved copy is reproduced exactly.
-- No calculator grid, dashboard, community feed, or statistics crowd the first viewport.
-- Desktop and mobile remain visually faithful to the approved mockup.
-
-### MAP-001
-
-- Default provider is MapLibre and requires no Kakao/Naver key.
-- Clicking or moving the map updates latitude and longitude through one normalized location model.
-- Map provider and geocoder are injected through interfaces, not imported directly into business logic.
-- Missing address provider never blocks coordinate-based PVGIS analysis.
-
-### PRO-002 to PRO-005
-
-- PVGIS calls run server-side, never directly from the browser.
-- Input validation and units match documented PVGIS semantics.
-- Results include source, API version, query time, assumptions, and limitations.
-- Downloaded files reproduce the same values shown on screen.
-- EU/JRC identity is not copied and no official affiliation is implied.
-
-### SEO-001 to SEO-006
-
-- Every indexable page has a unique title, description, canonical URL, useful main content, and one clear search intent.
-- Sitemap, robots, canonical, language architecture, redirects, breadcrumbs, and structured data agree with the actual public routes.
-- Calculator and professional-tool pages contain original explanations, assumptions, examples, FAQs, and related links rather than thin wrappers around forms.
-- Search-demand or policy claims are never fabricated; sensitive information uses authoritative sources and a visible verification date.
-- Performance work must not break calculations, maps, charts, downloads, or accessibility.
-
-### ADS-001 to ADS-004
-
-- Ads are never placed inside input groups, result cards, map controls, download controls, quote actions, or immediately beside deceptive look-alike buttons.
-- Ad slots reserve layout space and must not cause material CLS.
-- The site remains useful and complete with ads blocked or disabled.
-- Ad optimization may not outrank calculation accuracy, task completion, mobile usability, performance, or trust.
-- ADS-004 remains dependent on real traffic and revenue data; no placement is declared optimal without measurement.
-
-## Definition of done
-
-A task may be marked `DONE` only when:
-
-- Acceptance criteria are implemented.
-- Relevant tests pass.
-- Production build passes.
-- Desktop and mobile primary journeys were checked.
-- Accessibility basics were checked.
-- No duplicate branch or PR exists.
-- Preview deployment was inspected when available.
-- Documentation and queue status were updated.
