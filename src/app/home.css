@@ -39,6 +39,20 @@
 .capacityFacts > div { padding: 16px; border-radius: 14px; background: var(--surface); }
 .capacityFacts dt { color: var(--muted); font-size: 13px; }
 .capacityFacts dd { margin: 7px 0 0; font-size: 18px; font-weight: 750; }
+.economicsFacts > div:first-child { background: var(--soft-green); }
+.revenueBreakdown { margin: 10px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.revenueBreakdown > div { padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; }
+.revenueBreakdown dt { color: var(--muted); font-size: 13px; }
+.revenueBreakdown dd { margin: 6px 0 0; font-weight: 700; }
+.economicsInputs { margin-top: 24px !important; padding: 22px !important; border: 1px solid var(--border) !important; border-radius: 18px; background: var(--surface); }
+.economicsInputs legend { margin: 0 !important; padding: 0 6px; font-size: 20px !important; }
+.economicsInputs > p { margin: 0 0 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.assumptionGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.assumptionGrid label { min-width: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 8px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--canvas); }
+.assumptionGrid label > span { grid-column: 1 / -1; color: var(--muted); font-size: 12px; font-weight: 650; }
+.assumptionGrid input { min-width: 0; width: 100%; min-height: 40px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; }
+.assumptionGrid b { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.economicsInputs .panelButton { width: 100%; margin-top: 18px; }
 .assumptionDetails { margin-top: 18px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 16px; }
 .assumptionDetails summary { cursor: pointer; font-weight: 700; }
 .assumptionDetails p, .assumptionDetails li { color: var(--muted); font-size: 13px; line-height: 1.6; }
@@ -79,4 +93,4 @@
 .bottomCta > p { margin: 22px 0 32px; }
 @media (prefers-reduced-motion: reduce) { .progressTrack i { transition: none; } }
 @media (max-width: 900px) { .calculatorEntry, .communitySection { grid-template-columns: 1fr; gap: 44px; } .resultCards { grid-template-columns: 1fr; } .processGrid { grid-template-columns: repeat(2, 1fr); } .caseGrid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .calculatorEntry, .resultPreview, .processSection, .caseSection, .communitySection { width: min(100% - 32px, 1200px); padding: 80px 0; } .processSection { width: 100%; padding-inline: 16px; } .calculatorPanel { min-height: 500px; padding: 24px 18px; border-radius: 22px; } .capacityResultPanel { min-height: 0; } .typeGrid, .goalGrid, .processGrid, .capacityFacts { grid-template-columns: 1fr; } .sectionIntro h2, .resultPreview h2, .caseSection h2, .communitySection h2, .bottomCta h2 { font-size: 34px; } .sectionHeaderRow { align-items: flex-start; flex-direction: column; } .caseCard { min-height: 360px; border-radius: 22px; } .bottomCta { padding: 80px 20px; } .calculatorActions { position: sticky; bottom: 12px; padding-top: 8px; background: var(--canvas); } }
+@media (max-width: 600px) { .calculatorEntry, .resultPreview, .processSection, .caseSection, .communitySection { width: min(100% - 32px, 1200px); padding: 80px 0; } .processSection { width: 100%; padding-inline: 16px; } .calculatorPanel { min-height: 500px; padding: 24px 18px; border-radius: 22px; } .capacityResultPanel { min-height: 0; } .typeGrid, .goalGrid, .processGrid, .capacityFacts, .revenueBreakdown, .assumptionGrid { grid-template-columns: 1fr; } .sectionIntro h2, .resultPreview h2, .caseSection h2, .communitySection h2, .bottomCta h2 { font-size: 34px; } .sectionHeaderRow { align-items: flex-start; flex-direction: column; } .caseCard { min-height: 360px; border-radius: 22px; } .bottomCta { padding: 80px 20px; } .calculatorActions { position: sticky; bottom: 12px; padding-top: 8px; background: var(--canvas); } }
