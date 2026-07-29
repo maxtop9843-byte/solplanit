@@ -46,7 +46,7 @@
 | COMMUNITY-001 | P1 | OPEN | Build community categories and structured post model | QUOTE-001 |
 | COMMUNITY-002 | P1 | OPEN | Attach calculation result data to questions and quote posts | COMMUNITY-001 |
 | ACCOUNT-001 | P2 | OPEN | Add shared identity and saved calculations/projects | QUOTE-001, PRO-001 |
-| QA-001 | P0 | OPEN | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
+| QA-001 | P0 | IN_REVIEW | End-to-end desktop and mobile audit of the complete general-user journey | CALC-002, UI-003 |
 | QA-002 | P1 | OPEN | Compare professional inputs, outputs, downloads, error behavior, and representative results against PVGIS 5.3 | PRO-005 |
 | OPS-001 | P1 | POST_MERGE_VERIFY | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
 | SEO-001 | P2 | OPEN | Add metadata, sitemap, robots, canonical URLs, hreflang-ready structure, and structured data foundation | UI-002 |
@@ -66,12 +66,13 @@
 ## Operational verification notes
 
 - Vercel project `solplanit` is connected under the `CalCome` team as project `prj_KPdpTkUuK1oRboXbMYW7T3q1fVC7`.
+- QA-001 adds an automated general-user journey covering required-field errors, backward navigation persistence, capacity calculation, user-entered savings assumptions, economics results, and edit/recalculate actions. Production HTTP rendering is healthy; direct desktop/mobile Chromium navigation was attempted but blocked by the execution environment with `ERR_BLOCKED_BY_ADMINISTRATOR`, so the audit records Vercel HTTP output, responsive source inspection, and exact-head CI as alternate evidence.
 - UI-003 exact-head GitHub CI passed at `5e97a2fee624d3accff1f72b9276129cb1527567`. Same-SHA Preview creation was blocked only by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; code inspection confirms reduced-motion fallback, responsive single-column mobile cards, sequential reveal, and overflow-safe result typography.
 - CALC-002 exact-head GitHub CI passed at `aa124e6e0cc175867aa4253db6c3983a42b822c7`. Exact-head Preview creation remained blocked by Vercel's free daily deployment limit (`api-deployments-free-per-day`), not an application build failure; the implementation exposes user-entered assumptions and avoids publishing guessed SMP, REC, tariff, or installation-cost values.
 - CALC-001 implementation Preview `dpl_9HydPYBHS6syBeVJSMv8YKUbsDzy` reached `READY`. Later exact-head Preview creation was blocked by Vercel's free daily deployment limit; exact-head GitHub CI remains the authoritative code validation, and final changes preserve capacity precision plus queue status.
 - MAP-001 exact-head GitHub CI passed; Vercel Preview deployment `dpl_Y1Gr4EneKA3J62R1arf8KgWaLdRZ` for the same implementation branch reached `READY`. The final head differs only by a MapLibre type compatibility fix and this queue update; exact-head Preview creation was blocked by Vercel's free daily deployment limit, not an application build error.
 - UX-001 merged through PR #8 at `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` after exact-head CI passed and Preview deployment `dpl_48PVoyhvkn6YXyST9t9MUs2DnMVm` reached `READY`.
-- Production deployment `dpl_7A4bdWDSsCbB35anpj2rZSHU1R5M` for main commit `1a939dc4f3f0b327a82f3f377597933a1bf5c5b6` reached `READY` and serves the canonical `solplanit.vercel.app` alias.
+- Production deployment `dpl_7kaJj4FkqwNuU545ynPSxAhbd2fh` for main commit `c44f11871c26fd48b47701482561044e5862b7bf` reached `READY` and serves the canonical `solplanit.vercel.app` alias.
 - UI-001 merged through PR #5 at `d8bed7e311b65a258e4e7f3d9134a0d2e151aa28` after exact-head CI and local Chromium desktop/mobile rendering passed; same-SHA Vercel Preview was unavailable only because of the free deployment limit.
 - UI-002 Preview `dpl_EzSMVneDeDsXkVNFBZhJBHDsdCpi` reached `READY` and returned HTTP 200; the final head differs only by semantics-preserving source compaction and this queue update, while exact-head GitHub CI passed.
 - Keep OPS-001 in `POST_MERGE_VERIFY` until canonical-domain route, sitemap, robots, 404, and server-error smoke checks are fully recorded.
