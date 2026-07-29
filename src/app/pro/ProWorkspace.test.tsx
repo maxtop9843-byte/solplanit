@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ComponentType } from "react";
-import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { afterEach, beforeAll, vi } from "vitest";
 
 vi.mock("maplibre-gl", () => ({
   default: {
@@ -34,7 +34,6 @@ beforeAll(async () => {
 });
 
 afterEach(() => vi.clearAllMocks());
-afterAll(() => vi.restoreAllMocks());
 
 describe("ProWorkspace", () => {
   it("shows fixed-system inputs and renders PVGIS outputs", async () => {
