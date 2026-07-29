@@ -5,12 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const tabs = ["시스템", "손실", "경제성"] as const;
+const INITIAL_LATITUDE = "37.5665";
+const INITIAL_LONGITUDE = "126.9780";
 
 export default function ProWorkspace() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("시스템");
-  const [latitude, setLatitude] = useState("37.5665");
-  const [longitude, setLongitude] = useState("126.9780");
+  const [latitude, setLatitude] = useState(INITIAL_LATITUDE);
+  const [longitude, setLongitude] = useState(INITIAL_LONGITUDE);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -21,7 +23,7 @@ export default function ProWorkspace() {
       if (disposed || !mapContainer.current) return;
       map = new maplibregl.Map({
         container: mapContainer.current,
-        center: [Number(longitude), Number(latitude)],
+        center: [Number(INITIAL_LONGITUDE), Number(INITIAL_LATITUDE)],
         zoom: 11,
         attributionControl: false,
         style: {
@@ -40,7 +42,7 @@ export default function ProWorkspace() {
       map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
       map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
       const marker = new maplibregl.Marker({ color: "#16823B" })
-        .setLngLat([Number(longitude), Number(latitude)])
+        .setLngLat([Number(INITIAL_LONGITUDE), Number(INITIAL_LATITUDE)])
         .addTo(map);
       map.on("click", (event) => {
         const lat = event.lngLat.lat.toFixed(5);
@@ -89,7 +91,7 @@ export default function ProWorkspace() {
               <strong>분석 위치</strong>
               <span>지도를 클릭해 기준점을 선택하세요.</span>
             </div>
-            <button type="button" className="mapToolButton" onClick={() => { setLatitude("37.5665"); setLongitude("126.9780"); }}>서울로 초기화</button>
+            <button type="button" className="mapToolButton" onClick={() => { setLatitude(INITIAL_LATITUDE); setLongitude(INITIAL_LONGITUDE); }}>서울로 초기화</button>
           </div>
           <div ref={mapContainer} className="proMap" aria-label="태양광 분석 위치 선택 지도" />
           <div className="coordinateBar">
