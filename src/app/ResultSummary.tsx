@@ -30,13 +30,10 @@ function useReducedMotion() {
 
 function AnimatedNumber({ value, maximumFractionDigits = 0, prefix = "", suffix = "" }: AnimatedNumberProps) {
   const reducedMotion = useReducedMotion();
-  const [displayValue, setDisplayValue] = useState(reducedMotion ? value : 0);
+  const [animatedValue, setAnimatedValue] = useState(0);
 
   useEffect(() => {
-    if (reducedMotion) {
-      setDisplayValue(value);
-      return;
-    }
+    if (reducedMotion) return;
 
     let frame = 0;
     const startedAt = performance.now();
@@ -45,7 +42,7 @@ function AnimatedNumber({ value, maximumFractionDigits = 0, prefix = "", suffix 
     const tick = (now: number) => {
       const progress = Math.min((now - startedAt) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(value * eased);
+      setAnimatedValue(value * eased);
       if (progress < 1) frame = requestAnimationFrame(tick);
     };
 
@@ -53,6 +50,7 @@ function AnimatedNumber({ value, maximumFractionDigits = 0, prefix = "", suffix 
     return () => cancelAnimationFrame(frame);
   }, [reducedMotion, value]);
 
+  const displayValue = reducedMotion ? value : animatedValue;
   const formatted = useMemo(
     () =>
       displayValue.toLocaleString("ko-KR", {
@@ -69,12 +67,10 @@ export default function ResultSummary({
   capacity,
   economics,
   goal,
-  onQuote,
 }: {
   capacity: CapacityResult;
   economics?: EconomicsResult | null;
   goal: Goal;
-  onQuote?: () => void;
 }) {
   const benefitLabel = goal === "save" ? "연간 예상 절감액" : "연간 예상 발전 수익";
 
@@ -124,9 +120,8 @@ export default function ResultSummary({
         <div>
           <p className="sectionKicker">다음 단계</p>
           <h4>{economics ? "계산 결과를 바탕으로 견적을 준비해보세요" : "이 용량으로 절감액과 수익을 확인해보세요"}</h4>
-          <p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p>
+          <p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요. 견적 요청 기능은 다음 단계에서 연결됩니다." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p>
         </div>
-        {economics && <button type="button" className="primaryButton resultQuoteButton" onClick={onQuote} disabled={!onQuote}>내 조건으로 무료 견적받기</button>}
       </div>
     </section>
   );
