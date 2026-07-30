@@ -35,8 +35,8 @@ afterEach(() => {
 });
 
 describe("ProWorkspace", () => {
-  it("shows fixed-system inputs, renders PVGIS outputs, and enables downloads", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValue(
+  it("shows fixed-system inputs, sends every PVGIS option, renders outputs, and enables downloads", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValue(
       new Response(JSON.stringify(pvgisResponse), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -69,9 +69,42 @@ describe("ProWorkspace", () => {
     expect(screen.getByRole("button", { name: "JSON" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "차트 이미지" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "PDF 보고서" })).toBeEnabled();
-    expect(global.fetch).toHaveBeenCalledWith(
+
+    const request = fetchSpy.mock.calls[0]?.[1] as RequestInit;
+    expect(fetchSpy).toHaveBeenCalledWith(
       "/api/pvgis",
       expect.objectContaining({ method: "POST" }),
+    );
+    expect(JSON.parse(String(request.body))).toEqual(
+      expect.objectContaining({
+        useHorizon: true,
+        radiationDatabase: "PVGIS-SARAH3",
+      }),
+    );
+  });
+
+  it("sends changed horizon and radiation-database selections", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response(JSON.stringify(pvgisResponse), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    render(<ProWorkspace />);
+
+    fireEvent.change(screen.getByLabelText("복사 데이터베이스"), {
+      target: { value: "PVGIS-ERA5" },
+    });
+    fireEvent.click(screen.getByLabelText("PVGIS 지평선 음영 데이터 사용"));
+    fireEvent.click(screen.getByRole("button", { name: "분석 실행" }));
+
+    await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
+    const request = fetchSpy.mock.calls[0]?.[1] as RequestInit;
+    expect(JSON.parse(String(request.body))).toEqual(
+      expect.objectContaining({
+        useHorizon: false,
+        radiationDatabase: "PVGIS-ERA5",
+      }),
     );
   });
 
