@@ -157,12 +157,16 @@ h1 {
   height: min(72vh, 760px);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   border-radius: 32px;
   background-color: var(--surface);
-  background-image: url("https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1800&q=85");
-  background-size: cover;
-  background-position: center;
   animation: imageSettle 760ms 120ms cubic-bezier(.2,.75,.25,1) both;
+}
+
+.visualImage {
+  object-fit: cover;
+  object-position: center;
+  z-index: -1;
 }
 
 .capacityChip {
