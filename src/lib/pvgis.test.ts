@@ -14,6 +14,8 @@ const validRequest = {
   azimuthDegrees: 0,
   mountingPosition: "building" as const,
   moduleTechnology: "crystSi" as const,
+  useHorizon: true,
+  radiationDatabase: "PVGIS-SARAH3" as const,
 };
 
 describe("validatePvgisRequest", () => {
@@ -28,7 +30,9 @@ describe("validatePvgisRequest", () => {
     [{ ...validRequest, systemLossPercent: 101 }, "INVALID_LOSS"],
     [{ ...validRequest, tiltDegrees: -1 }, "INVALID_TILT"],
     [{ ...validRequest, azimuthDegrees: 181 }, "INVALID_AZIMUTH"],
-  ])("rejects invalid boundaries", (input, code) => {
+    [{ ...validRequest, useHorizon: "yes" }, "INVALID_HORIZON"],
+    [{ ...validRequest, radiationDatabase: "PVGIS-CMSAF" }, "INVALID_RADIATION_DATABASE"],
+  ])("rejects invalid boundaries and unsupported PVGIS options", (input, code) => {
     expect(() => validatePvgisRequest(input)).toThrowError(
       expect.objectContaining({ code }),
     );
@@ -36,7 +40,7 @@ describe("validatePvgisRequest", () => {
 });
 
 describe("buildPvgisUrl", () => {
-  it("targets the versioned 5.3 PVcalc endpoint with explicit parameters", () => {
+  it("targets the versioned 5.3 PVcalc endpoint with explicit fixed-system parameters", () => {
     const url = new URL(buildPvgisUrl(validRequest));
 
     expect(`${url.origin}${url.pathname}`).toBe("https://re.jrc.ec.europa.eu/api/v5_3/PVcalc");
@@ -44,7 +48,40 @@ describe("buildPvgisUrl", () => {
     expect(url.searchParams.get("lon")).toBe("126.978");
     expect(url.searchParams.get("peakpower")).toBe("10");
     expect(url.searchParams.get("loss")).toBe("14");
+    expect(url.searchParams.get("angle")).toBe("30");
+    expect(url.searchParams.get("aspect")).toBe("0");
+    expect(url.searchParams.get("mountingplace")).toBe("building");
+    expect(url.searchParams.get("pvtechchoice")).toBe("crystSi");
+    expect(url.searchParams.get("usehorizon")).toBe("1");
+    expect(url.searchParams.get("raddatabase")).toBe("PVGIS-SARAH3");
     expect(url.searchParams.get("outputformat")).toBe("json");
+  });
+
+  it("maps missing tilt and azimuth to the PVGIS optimal-angles option", () => {
+    const url = new URL(buildPvgisUrl({
+      ...validRequest,
+      tiltDegrees: undefined,
+      azimuthDegrees: undefined,
+    }));
+
+    expect(url.searchParams.get("optimalangles")).toBe("1");
+    expect(url.searchParams.has("angle")).toBe(false);
+    expect(url.searchParams.has("aspect")).toBe(false);
+  });
+
+  it("maps an omitted tilt to optimal inclination while preserving azimuth", () => {
+    const url = new URL(buildPvgisUrl({
+      ...validRequest,
+      tiltDegrees: undefined,
+      azimuthDegrees: -20,
+      useHorizon: false,
+      radiationDatabase: "PVGIS-ERA5",
+    }));
+
+    expect(url.searchParams.get("optimalinclination")).toBe("1");
+    expect(url.searchParams.get("aspect")).toBe("-20");
+    expect(url.searchParams.get("usehorizon")).toBe("0");
+    expect(url.searchParams.get("raddatabase")).toBe("PVGIS-ERA5");
   });
 });
 
