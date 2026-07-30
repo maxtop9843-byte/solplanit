@@ -54,7 +54,7 @@
 | SEO-002 | P2 | DONE | Build search-intent landing pages for installation capacity, generation, savings, SMP/REC revenue, rooftop solar, factory solar, and land solar | CALC-002, SEO-001 |
 | SEO-003 | P2 | DONE | Add unique explanatory content, worked examples, FAQs, related-tool links, breadcrumbs, and internal-link architecture to every public calculator and professional entry page | SEO-002 |
 | SEO-004 | P2 | DONE | Add Organization, WebSite, WebPage, BreadcrumbList, FAQPage, SoftwareApplication, and calculation-specific structured data without duplication | SEO-003 |
-| SEO-005 | P2 | OPEN | Optimize Core Web Vitals, image delivery, font loading, bundle size, server rendering, caching, and mobile performance | UI-002, PRO-004 |
+| SEO-005 | P2 | DONE | Optimize Core Web Vitals, image delivery, font loading, bundle size, server rendering, caching, and mobile performance | UI-002, PRO-004 |
 | SEO-006 | P2 | OPEN | Add Google Search Console and Naver Search Advisor verification slots, submission checklist, indexing diagnostics, and canonical-domain checks | SEO-001, OPS-001 |
 | CONTENT-001 | P2 | OPEN | Add trustworthy methodology, data source, calculation assumption, limitation, privacy, terms, contact, and editorial-policy pages | CALC-002, PRO-002 |
 | CONTENT-002 | P2 | OPEN | Build installation guides, quote-review guides, subsidy-information framework, glossary, and expert-reviewed evergreen content hubs | CONTENT-001, SEO-002 |
@@ -66,6 +66,7 @@
 
 ## Operational verification notes
 
+- SEO-005 moves the homepage LCP image and below-the-fold case imagery from CSS backgrounds to `next/image`, supplies responsive `sizes`, high-priority hero fetching, descriptive alternatives, AVIF/WebP negotiation, a bounded device-size set, and a 30-day optimized-image cache. Existing fixed media containers preserve layout stability across desktop and mobile, while reduced-motion behavior remains intact.
 - SEO-004 adds one reusable JSON-LD renderer and page graph builders. Organization and WebSite remain defined once in the root layout; homepage, seven search-intent pages, and `/pro` reference those global IDs while adding unique WebPage, BreadcrumbList, FAQPage, and calculation-specific SoftwareApplication nodes. Automated tests cover unique IDs, global-node deduplication, FAQ answers, and free calculator offers.
 - SEO-003 adds reusable Korean-first explanatory sections to the public calculator, all seven search-intent pages, and the professional entry: worked examples, three FAQs, visible breadcrumbs, and links into calculation, professional analysis, cases, and saved work. Content keeps estimates and field-verification limits explicit and is covered by completeness tests.
 - SEO-002 adds seven Korean-first search-intent landing pages for installation capacity, generation, savings, SMP/REC revenue, rooftop, factory, and land solar. Each page has unique metadata, direct calculator entry, assumptions, a four-step journey, related-page links, responsive layouts, and sitemap inclusion.
