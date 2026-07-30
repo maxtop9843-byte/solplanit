@@ -23,15 +23,18 @@ type AdConsentContextValue = {
 };
 
 const STORAGE_KEY = "solplanit.ad-consent.v1";
-const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
 
 const AdConsentContext = createContext<AdConsentContextValue>({
-  status: "pending",
+  status: "rejected",
   adsEnabled: false,
   acceptAds: () => undefined,
   rejectAds: () => undefined,
   reopenSettings: () => undefined,
 });
+
+function getAdsenseClient() {
+  return process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
+}
 
 function readStoredConsent(): AdConsentStatus {
   try {
@@ -55,11 +58,19 @@ export function useAdConsent() {
 }
 
 export default function AdConsentProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<AdConsentStatus>("pending");
+  const adsenseClient = getAdsenseClient();
+  const advertisingConfigured = Boolean(adsenseClient);
+  const [status, setStatus] = useState<AdConsentStatus>(
+    advertisingConfigured ? "pending" : "rejected",
+  );
 
   useEffect(() => {
+    if (!advertisingConfigured) {
+      return;
+    }
+
     queueMicrotask(() => setStatus(readStoredConsent()));
-  }, []);
+  }, [advertisingConfigured]);
 
   useEffect(() => {
     if (status !== "accepted" || !adsenseClient) {
@@ -77,7 +88,7 @@ export default function AdConsentProvider({ children }: { children: ReactNode })
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(adsenseClient)}`;
     script.dataset.solplanitAdsense = adsenseClient;
     document.head.appendChild(script);
-  }, [status]);
+  }, [adsenseClient, status]);
 
   const acceptAds = useCallback(() => {
     persistConsent("accepted");
@@ -96,19 +107,19 @@ export default function AdConsentProvider({ children }: { children: ReactNode })
   const value = useMemo<AdConsentContextValue>(
     () => ({
       status,
-      adsEnabled: status === "accepted" && Boolean(adsenseClient),
+      adsEnabled: advertisingConfigured && status === "accepted",
       clientId: adsenseClient,
       acceptAds,
       rejectAds,
       reopenSettings,
     }),
-    [acceptAds, rejectAds, reopenSettings, status],
+    [acceptAds, adsenseClient, advertisingConfigured, rejectAds, reopenSettings, status],
   );
 
   return (
     <AdConsentContext.Provider value={value}>
       {children}
-      {status === "pending" ? (
+      {advertisingConfigured && status === "pending" ? (
         <section className={styles.banner} aria-label="광고 개인정보 설정">
           <div className={styles.copy}>
             <strong>광고 개인정보 설정</strong>
@@ -126,11 +137,11 @@ export default function AdConsentProvider({ children }: { children: ReactNode })
             </button>
           </div>
         </section>
-      ) : (
+      ) : advertisingConfigured ? (
         <button className={styles.settings} type="button" onClick={reopenSettings}>
           광고 설정
         </button>
-      )}
+      ) : null}
     </AdConsentContext.Provider>
   );
 }
