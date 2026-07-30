@@ -5,6 +5,7 @@
   grid-template-rows: auto 1fr;
   gap: 8px;
   color: var(--muted);
+  contain: layout paint;
 }
 
 .label {
@@ -16,9 +17,22 @@
 
 .canvas {
   width: 100%;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: var(--surface);
+}
+
+.canvas :global(.adsbygoogle) {
+  display: block;
+  width: 100%;
+  min-height: inherit;
+}
+
+.placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .wide .canvas {
@@ -33,6 +47,13 @@
   min-height: 180px;
 }
 
+.zone[data-ad-zone="blocked"] .canvas,
+.zone[data-ad-zone="disabled"] .canvas,
+.zone[data-ad-zone="consent-pending"] .canvas {
+  background: linear-gradient(90deg, var(--surface), #fafbfa, var(--surface));
+  background-size: 200% 100%;
+}
+
 @media (max-width: 600px) {
   .zone {
     width: min(100% - 32px, 1120px);
@@ -42,5 +63,17 @@
   .content .canvas {
     min-height: 100px;
     border-radius: 16px;
+  }
+
+  .zone[data-mobile-density="one-per-page"] ~ .zone[data-mobile-density="one-per-page"] {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zone[data-ad-zone="blocked"] .canvas,
+  .zone[data-ad-zone="disabled"] .canvas,
+  .zone[data-ad-zone="consent-pending"] .canvas {
+    background: var(--surface);
   }
 }
