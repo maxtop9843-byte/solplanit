@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import AdConsentProvider from "@/components/AdConsentProvider";
 import SiteFooter from "@/components/SiteFooter";
+import { getSearchVerificationConfig } from "@/lib/searchVerification";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 import "./trust/trust.css";
+
+const searchVerification = getSearchVerificationConfig();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -18,6 +21,12 @@ export const metadata: Metadata = {
   creator: SITE_NAME,
   publisher: SITE_NAME,
   category: "태양광 설치",
+  verification: {
+    ...(searchVerification.google ? { google: searchVerification.google } : {}),
+    ...(searchVerification.naver
+      ? { other: { "naver-site-verification": searchVerification.naver } }
+      : {}),
+  },
   openGraph: {
     type: "website",
     locale: "ko_KR",
