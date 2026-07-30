@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SeoGuide from "../../../components/SeoGuide";
 import { getSearchIntentPage, searchIntentPages } from "../../../lib/searchIntentPages";
+import { getIntentSeoGuide } from "../../../lib/seoGuides";
 import "./searchIntent.css";
 
 export function generateStaticParams() {
@@ -100,6 +102,8 @@ export default async function SearchIntentPage({ params }: { params: Promise<{ s
           ))}
         </div>
       </section>
+
+      <SeoGuide content={getIntentSeoGuide(page.slug, page.title)} />
 
       <section className="intentCta" aria-labelledby="cta-title">
         <p className="intentEyebrow">예상값부터 시작</p>
