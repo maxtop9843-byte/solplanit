@@ -8,6 +8,7 @@ describe("AdConsentProvider", () => {
   beforeEach(() => {
     window.localStorage.clear();
     vi.stubEnv("NEXT_PUBLIC_ADSENSE_CLIENT", "ca-pub-test");
+    vi.stubEnv("NEXT_PUBLIC_ADSENSE_POLICY_APPROVED", "confirmed");
   });
 
   afterEach(() => {
@@ -69,5 +70,20 @@ describe("AdConsentProvider", () => {
     expect(screen.getByText("계산기 본문")).toBeInTheDocument();
     expect(screen.queryByLabelText("광고 개인정보 설정")).toBeNull();
     expect(screen.queryByRole("button", { name: "광고 설정" })).toBeNull();
+  });
+
+  it("fails closed when the policy-readiness approval is missing", () => {
+    vi.stubEnv("NEXT_PUBLIC_ADSENSE_POLICY_APPROVED", "");
+
+    render(
+      <AdConsentProvider>
+        <main>계산기 본문</main>
+      </AdConsentProvider>,
+    );
+
+    expect(screen.getByText("계산기 본문")).toBeInTheDocument();
+    expect(screen.queryByLabelText("광고 개인정보 설정")).toBeNull();
+    expect(screen.queryByRole("button", { name: "광고 설정" })).toBeNull();
+    expect(document.querySelector("script[data-solplanit-adsense]")).toBeNull();
   });
 });

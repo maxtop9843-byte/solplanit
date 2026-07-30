@@ -9,6 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { getAdPolicyConfig } from "../lib/adPolicy";
 import styles from "./AdConsentProvider.module.css";
 
 export type AdConsentStatus = "pending" | "accepted" | "rejected";
@@ -32,10 +33,6 @@ const AdConsentContext = createContext<AdConsentContextValue>({
   reopenSettings: () => undefined,
 });
 
-function getAdsenseClient() {
-  return process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
-}
-
 function readStoredConsent(): AdConsentStatus {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -58,8 +55,7 @@ export function useAdConsent() {
 }
 
 export default function AdConsentProvider({ children }: { children: ReactNode }) {
-  const adsenseClient = getAdsenseClient();
-  const advertisingConfigured = Boolean(adsenseClient);
+  const { clientId: adsenseClient, advertisingConfigured } = getAdPolicyConfig();
   const [status, setStatus] = useState<AdConsentStatus>(
     advertisingConfigured ? "pending" : "rejected",
   );
@@ -73,7 +69,7 @@ export default function AdConsentProvider({ children }: { children: ReactNode })
   }, [advertisingConfigured]);
 
   useEffect(() => {
-    if (status !== "accepted" || !adsenseClient) {
+    if (status !== "accepted" || !advertisingConfigured || !adsenseClient) {
       return;
     }
 
@@ -88,7 +84,7 @@ export default function AdConsentProvider({ children }: { children: ReactNode })
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(adsenseClient)}`;
     script.dataset.solplanitAdsense = adsenseClient;
     document.head.appendChild(script);
-  }, [adsenseClient, status]);
+  }, [adsenseClient, advertisingConfigured, status]);
 
   const acceptAds = useCallback(() => {
     persistConsent("accepted");
@@ -108,7 +104,7 @@ export default function AdConsentProvider({ children }: { children: ReactNode })
     () => ({
       status,
       adsEnabled: advertisingConfigured && status === "accepted",
-      clientId: adsenseClient,
+      clientId: advertisingConfigured ? adsenseClient : undefined,
       acceptAds,
       rejectAds,
       reopenSettings,
