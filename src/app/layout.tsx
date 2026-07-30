@@ -15,17 +15,9 @@ export const metadata: Metadata = {
   creator: SITE_NAME,
   publisher: SITE_NAME,
   category: "태양광 설치",
-  alternates: {
-    canonical: "/",
-    languages: {
-      ko: "/",
-      "x-default": "/",
-    },
-  },
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    url: "/",
     siteName: SITE_NAME,
     title: "태양광 설치, 처음부터 끝까지 한 번에 | SolPlanit",
     description: SITE_DESCRIPTION,
