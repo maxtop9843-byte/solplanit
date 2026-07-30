@@ -1,6 +1,6 @@
 import robots from "./robots";
 import sitemap from "./sitemap";
-import { absoluteUrl, PUBLIC_ROUTES, SITE_URL } from "@/lib/site";
+import { absoluteUrl, PUBLIC_ROUTES, SITE_URL } from "../lib/site";
 
 describe("SEO foundation", () => {
   it("builds canonical absolute URLs without duplicate slashes", () => {
