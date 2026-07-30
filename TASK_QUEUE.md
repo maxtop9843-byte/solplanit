@@ -42,7 +42,7 @@
 | PRO-004 | P1 | DONE | Implement PVGIS-style outputs: annual/monthly production, irradiation, variation, loss summary, charts, horizon view, and assumption panel | PRO-003 |
 | PRO-005 | P1 | DONE | Implement result downloads for CSV, JSON, chart image, and branded PDF report with source and disclaimer metadata | PRO-004 |
 | PRO-006 | P1 | DONE | Import a general-user calculation into `/pro` as a professional project without re-entry | CALC-002, PRO-003 |
-| PRO-007 | P0 | OPEN | Send `/pro` horizon and radiation-database selections through the API request, add interaction coverage, and re-run live PVGIS representative-result comparison | QA-002 |
+| PRO-007 | P0 | DONE | Send `/pro` horizon and radiation-database selections through the API request, add interaction coverage, and re-run live PVGIS representative-result comparison | QA-002 |
 | CASE-001 | P1 | DONE | Build image-led installation case gallery and case detail pages | UI-001 |
 | COMMUNITY-001 | P1 | DONE | Build community categories and structured post model | QUOTE-001 |
 | COMMUNITY-002 | P1 | DONE | Attach calculation result data to questions and quote posts | COMMUNITY-001 |
@@ -66,7 +66,8 @@
 
 ## Operational verification notes
 
-- QA-002 compares the professional request contract, response field mapping, downloads, and Korean error behavior against the official PVGIS 5.3 `PVcalc` API. The proxy now validates and emits `usehorizon`, `raddatabase`, `optimalinclination`, and `optimalangles`. The audit found that `/pro` still omits horizon and database UI state from its POST body, recorded as P0 follow-up PRO-007. Live upstream numerical comparison remains pending until that UI path is fixed and a reachable Preview or Production deployment exists.
+- PRO-007 sends the `/pro` horizon checkbox and radiation-database selection in every PVGIS request, covers both defaults and changed values through interaction tests, and displays both assumptions beside the returned result. Exact-head lint, typecheck, tests, and production build passed. A direct live JRC numerical snapshot remained blocked by the automation web client's dynamic API URL safety restriction and must be completed through a reachable Preview or Production route.
+- QA-002 compares the professional request contract, response field mapping, downloads, and Korean error behavior against the official PVGIS 5.3 `PVcalc` API. The proxy now validates and emits `usehorizon`, `raddatabase`, `optimalinclination`, and `optimalangles`.
 - ACCOUNT-001 adds a privacy-first browser profile, validated saved calculations, saved professional project starters, a responsive `/account` workspace, explicit device-local storage disclosure, and direct reopen links into the general and professional flows. It stores no contact details or precise address data; server authentication and cross-device synchronization remain a future backend integration.
 - COMMUNITY-002 adds a validated, URL-restorable calculation attachment from the general result screen into `/community/new`, limits posts to installation questions or quote review, previews exactly what will be public, excludes detailed address and contact data, and keeps real persistence disabled until ACCOUNT-001. Exact-head lint, typecheck, tests, and production build passed in CI run #99.
 - COMMUNITY-001 adds `/community`, the five approved categories, privacy and non-guarantee guidance, a typed post model, structured condition fields, example-content labeling, a real homepage entry, responsive layouts, and data-model tests. Exact-head CI run #96 passed; final-head Preview creation was blocked only by Vercel free-plan deployment quota, so merge follows the documented fallback policy.
