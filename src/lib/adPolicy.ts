@@ -10,12 +10,15 @@ type PublicAdEnvironment = {
   NEXT_PUBLIC_ADSENSE_POLICY_APPROVED?: string;
 };
 
-export function getAdPolicyConfig(
-  environment: PublicAdEnvironment = process.env,
-) {
-  const clientId = environment.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
+export function getAdPolicyConfig(environment?: PublicAdEnvironment) {
+  const source = environment ?? {
+    NEXT_PUBLIC_ADSENSE_CLIENT: process.env.NEXT_PUBLIC_ADSENSE_CLIENT,
+    NEXT_PUBLIC_ADSENSE_POLICY_APPROVED:
+      process.env.NEXT_PUBLIC_ADSENSE_POLICY_APPROVED,
+  };
+  const clientId = source.NEXT_PUBLIC_ADSENSE_CLIENT?.trim();
   const policyApproved =
-    environment.NEXT_PUBLIC_ADSENSE_POLICY_APPROVED?.trim() ===
+    source.NEXT_PUBLIC_ADSENSE_POLICY_APPROVED?.trim() ===
     ADSENSE_POLICY_APPROVAL;
 
   const state: AdPolicyState = !clientId
