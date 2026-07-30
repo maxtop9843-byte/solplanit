@@ -79,7 +79,7 @@ export default function ProWorkspace() {
   async function runAnalysis() {
     if (validationMessage || isAnalyzing) return; setIsAnalyzing(true); setAnalysisError(null);
     try {
-      const response = await fetch("/api/pvgis", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ latitude: Number(latitude), longitude: Number(longitude), peakPowerKw: Number(peakPowerKw), systemLossPercent: Number(systemLossPercent), tiltDegrees: useOptimalTilt ? undefined : Number(tiltDegrees), azimuthDegrees: useOptimalAzimuth ? undefined : Number(azimuthDegrees), mountingPosition, moduleTechnology }) });
+      const response = await fetch("/api/pvgis", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ latitude: Number(latitude), longitude: Number(longitude), peakPowerKw: Number(peakPowerKw), systemLossPercent: Number(systemLossPercent), tiltDegrees: useOptimalTilt ? undefined : Number(tiltDegrees), azimuthDegrees: useOptimalAzimuth ? undefined : Number(azimuthDegrees), mountingPosition, moduleTechnology, useHorizon, radiationDatabase }) });
       const payload = await response.json();
       if (!response.ok) { const message = recordValue(recordValue(payload).error).message; throw new Error(typeof message === "string" ? message : "PVGIS 분석을 완료하지 못했습니다."); }
       setResult(parseAnalysisResult(payload));
