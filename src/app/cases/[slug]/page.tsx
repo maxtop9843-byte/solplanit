@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getInstallationCase, installationCases } from "../caseData";
@@ -5,6 +6,22 @@ import "../cases.css";
 
 export function generateStaticParams() {
   return installationCases.map(({ slug }) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const item = getInstallationCase(slug);
+  if (!item) return {};
+
+  const canonical = `/cases/${item.slug}`;
+  const title = `${item.location} ${item.capacityKw}kW 태양광 설치 사례`;
+
+  return {
+    title,
+    description: `${item.category}의 ${item.purpose} 조건과 예상 연간 발전량 ${item.annualGenerationKwh.toLocaleString("ko-KR")}kWh를 살펴보세요.`,
+    alternates: { canonical, languages: { ko: canonical, "x-default": canonical } },
+    openGraph: { title: `${title} | SolPlanit`, description: item.summary, url: canonical },
+  };
 }
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
