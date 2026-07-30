@@ -1,3 +1,5 @@
+import { TRUST_ROUTES } from "./trustContent";
+
 export const SITE_URL = "https://solplanit.vercel.app";
 
 export const SITE_NAME = "SolPlanit";
@@ -24,6 +26,7 @@ export const PUBLIC_ROUTES = [
   "/cases/gimpo-store-18kw",
   "/community",
   ...SEARCH_INTENT_ROUTES,
+  ...TRUST_ROUTES,
 ] as const;
 
 export function absoluteUrl(path = "/") {
