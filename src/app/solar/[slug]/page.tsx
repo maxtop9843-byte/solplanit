@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import SeoGuide from "../../../components/SeoGuide";
+import StructuredData from "../../../components/StructuredData";
 import { getSearchIntentPage, searchIntentPages } from "../../../lib/searchIntentPages";
 import { getIntentSeoGuide } from "../../../lib/seoGuides";
+import { buildBreadcrumbNode, buildCalculatorNode, buildFaqNode, buildWebPageNode } from "../../../lib/structuredData";
 import "./searchIntent.css";
 
 export function generateStaticParams() {
@@ -32,9 +34,24 @@ export default async function SearchIntentPage({ params }: { params: Promise<{ s
   const related = page.related
     .map((relatedSlug) => getSearchIntentPage(relatedSlug))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
+  const guide = getIntentSeoGuide(page.slug, page.title);
+  const path = `/solar/${page.slug}`;
+  const structuredData = [
+    buildWebPageNode(path, `${page.title} | SolPlanit`, page.description),
+    buildBreadcrumbNode(path, [{ label: "홈", href: "/" }, { label: "태양광 설치 계산", href: "/#calculator" }, { label: page.title }]),
+    buildFaqNode(path, guide.faqs),
+    buildCalculatorNode({
+      path,
+      name: `${page.title} 계산 안내`,
+      description: page.description,
+      features: page.highlights.map((item) => item.title),
+      assumptions: [page.answer, guide.example.note],
+    }),
+  ];
 
   return (
     <main className="intentPage">
+      <StructuredData graph={structuredData} />
       <header className="intentHeader" aria-label="주요 탐색">
         <Link className="intentBrand" href="/">SolPlanit</Link>
         <nav aria-label="관련 메뉴">
@@ -103,7 +120,7 @@ export default async function SearchIntentPage({ params }: { params: Promise<{ s
         </div>
       </section>
 
-      <SeoGuide content={getIntentSeoGuide(page.slug, page.title)} />
+      <SeoGuide content={guide} />
 
       <section className="intentCta" aria-labelledby="cta-title">
         <p className="intentEyebrow">예상값부터 시작</p>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SeoGuide from "../components/SeoGuide";
+import StructuredData from "../components/StructuredData";
 import { homeSeoGuide } from "../lib/seoGuides";
+import { buildBreadcrumbNode, buildCalculatorNode, buildFaqNode, buildWebPageNode } from "../lib/structuredData";
 import GuidedCalculator from "./GuidedCalculator";
 import "./home.css";
 
@@ -16,6 +18,20 @@ export const metadata: Metadata = {
   },
 };
 
+const homeDescription = "건물 유형과 면적을 입력해 태양광 설치 가능 용량, 예상 발전량과 수익·절감액을 확인하고 견적까지 이어가세요.";
+const homeStructuredData = [
+  buildWebPageNode("/", "태양광 설치 계산부터 견적까지 | SolPlanit", homeDescription),
+  buildBreadcrumbNode("/", [{ label: "홈", href: "/" }, { label: "태양광 설치 계산" }]),
+  buildFaqNode("/", homeSeoGuide.faqs),
+  buildCalculatorNode({
+    path: "/",
+    name: "SolPlanit 태양광 설치 계산기",
+    description: homeDescription,
+    features: ["설치 가능 용량 계산", "예상 패널 수", "연간 발전량", "자가소비 절감액", "SMP·REC 판매 수익", "단순 회수기간"],
+    assumptions: ["입력값과 지역 평균을 이용한 사전 검토용 예상치", "구조, 음영, 계통, 요금과 제도 조건에 따라 실제 결과가 달라질 수 있음"],
+  }),
+];
+
 const processSteps = [
   ["01", "설치 가능 용량 확인", "건물 유형과 면적을 입력해 설치할 수 있는 용량을 확인해요."],
   ["02", "수익·절감액 계산", "전기를 직접 사용할지 판매할지 선택하고 예상 금액을 계산해요."],
@@ -26,6 +42,7 @@ const processSteps = [
 export default function HomePage() {
   return (
     <main>
+      <StructuredData graph={homeStructuredData} />
       <header className="siteHeader" aria-label="주요 탐색">
         <Link className="brand" href="/" aria-label="SolPlanit 홈"><span className="brandMark" aria-hidden="true" />SolPlanit</Link>
         <nav className="desktopNav" aria-label="주요 메뉴"><a href="#calculator">설치 알아보기</a><Link href="/cases">설치 사례</Link><Link href="/community">질문·견적</Link><a href="#experts">전문가 찾기</a></nav>
