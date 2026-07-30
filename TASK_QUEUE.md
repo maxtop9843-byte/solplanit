@@ -58,7 +58,7 @@
 | SEO-006 | P2 | OPEN | Add Google Search Console and Naver Search Advisor verification slots, submission checklist, indexing diagnostics, and canonical-domain checks | SEO-001, OPS-001 |
 | CONTENT-001 | P2 | DONE | Add trustworthy methodology, data source, calculation assumption, limitation, privacy, terms, contact, and editorial-policy pages | CALC-002, PRO-002 |
 | CONTENT-002 | P2 | DONE | Build installation guides, quote-review guides, subsidy-information framework, glossary, and expert-reviewed evergreen content hubs | CONTENT-001, SEO-002 |
-| ADS-001 | P3 | OPEN | Create AdSense-ready layout zones that never interrupt the calculator, result interpretation, map controls, quote flow, or primary CTA | SEO-003, CONTENT-001 |
+| ADS-001 | P3 | DONE | Create AdSense-ready layout zones that never interrupt the calculator, result interpretation, map controls, quote flow, or primary CTA | SEO-003, CONTENT-001 |
 | ADS-002 | P3 | OPEN | Add consent-aware ad loading, reserved dimensions, lazy loading, CLS protection, and mobile density rules | ADS-001, SEO-005 |
 | ADS-003 | P3 | OPEN | Run AdSense policy-readiness audit for low-value content, navigation, ownership pages, privacy, misleading claims, accidental clicks, and prohibited placements | ADS-002, CONTENT-002 |
 | ADS-004 | P3 | OPEN | Optimize ad placement using measured viewability and revenue data while preserving task completion, Core Web Vitals, and user trust | ADS-003; traffic data required |
@@ -66,6 +66,7 @@
 
 ## Operational verification notes
 
+- ADS-001 adds two clearly labelled, non-interactive reserved ad zones only after completed informational sections: the homepage process section and the guide index. No zone appears inside the calculator, result interpretation, map, quote, community composer, professional workspace, hero, or primary CTA areas. The reusable component exposes stable placement and format attributes for the consent-aware loader planned in ADS-002, uses restrained neutral styling, and collapses to a mobile-safe height without animation.
 - CONTENT-002 adds a public `/guides` hub with installation preparation, quote review, subsidy-verification framework, and glossary pages. Every guide includes unique metadata, visible review and update information, explicit uncertainty and professional-verification boundaries, related reading, calculator next actions, sitemap coverage, responsive layouts, reduced-motion handling, and automated completeness tests.
 - CONTENT-001 adds a public trust center and eight substantive methodology, source, assumption, limitation, privacy, terms, contact, and editorial-policy pages. Every route has unique metadata and sitemap coverage; a quiet global footer provides a real entry point. Content explicitly separates estimates from field verification, describes browser-local saved data, avoids collecting contact or detailed address data, and is covered by completeness and boundary tests.
 - SEO-005 moves the homepage LCP image and below-the-fold case imagery from CSS backgrounds to `next/image`, supplies responsive `sizes`, high-priority hero fetching, descriptive alternatives, AVIF/WebP negotiation, a bounded device-size set, and a 30-day optimized-image cache. Existing fixed media containers preserve layout stability across desktop and mobile, while reduced-motion behavior remains intact.
