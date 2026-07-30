@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SeoGuide from "../components/SeoGuide";
+import { homeSeoGuide } from "../lib/seoGuides";
 import GuidedCalculator from "./GuidedCalculator";
 import "./home.css";
 
@@ -38,6 +40,7 @@ export default function HomePage() {
       <section className="processSection" aria-labelledby="process-title"><div className="sectionIntro"><p className="sectionKicker">계산 다음도 막막하지 않게</p><h2 id="process-title">태양광 설치, 이렇게 진행돼요</h2></div><ol className="processGrid">{processSteps.map(([number,title,body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>
       <section id="cases" className="caseSection" aria-labelledby="cases-title"><div className="sectionHeaderRow"><div><p className="sectionKicker">실제 설치 사례</p><h2 id="cases-title">비슷한 건물의 선택을 먼저 살펴보세요</h2></div><Link className="secondaryLink" href="/cases">모든 사례 보기 →</Link></div><div className="caseGrid"><Link className="caseCard caseFactory" href="/cases/hwaseong-factory-48kw"><div><span>공장·창고</span><h3>경기 화성 48.6kW</h3><p>넓은 지붕을 활용한 자가소비형 설치</p></div></Link><Link className="caseCard caseHouse" href="/cases/asan-house-6kw"><div><span>주택</span><h3>충남 아산 6.2kW</h3><p>전기요금 절감을 목표로 한 소규모 설치</p></div></Link></div></section>
       <section id="quote" className="communitySection" aria-labelledby="community-title"><div><p className="sectionKicker">질문과 견적</p><h2 id="community-title">계산으로 부족한 부분은 전문가에게 물어보세요</h2><p>비슷한 조건의 설치 사례를 찾아보고, 계산 결과를 첨부해 일반 사용자와 전문가에게 질문할 수 있어요.</p><Link className="secondaryLink" href="/community">커뮤니티 둘러보기 →</Link></div><div className="communityTopics" aria-label="커뮤니티 주제"><span>설치 전 질문</span><span>견적 검토</span><span>설치 후기</span><span>전문가 답변</span><span>실제 발전량</span></div></section>
+      <SeoGuide content={homeSeoGuide} />
       <section id="experts" className="bottomCta" aria-labelledby="bottom-title"><p className="sectionKicker">회원가입 없이 시작</p><h2 id="bottom-title">우리 건물의 태양광 설치 가능성을 지금 확인해보세요</h2><p>간단히 계산하고, 원할 때만 견적을 요청할 수 있어요.</p><a className="primaryButton" href="#calculator">무료로 확인하기</a></section>
     </main>
   );
