@@ -1,7 +1,7 @@
 import { GUIDE_ROUTES } from "./guideContent";
 import { TRUST_ROUTES } from "./trustContent";
 
-export const SITE_URL = "https://solplanit.vercel.app";
+export const SITE_URL = "https://solplanit.com";
 
 export const SITE_NAME = "SolPlanit";
 
