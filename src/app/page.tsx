@@ -1,6 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import GuidedCalculator from "./GuidedCalculator";
 import "./home.css";
+
+export const metadata: Metadata = {
+  title: "태양광 설치 계산부터 견적까지",
+  description: "건물 유형과 면적을 입력해 태양광 설치 가능 용량, 예상 발전량과 수익·절감액을 확인하고 견적까지 이어가세요.",
+  alternates: { canonical: "/", languages: { ko: "/", "x-default": "/" } },
+  openGraph: {
+    title: "태양광 설치, 처음부터 끝까지 한 번에 | SolPlanit",
+    description: "태양광 설치 가능 용량과 예상 발전량·수익을 계산하고 견적까지 이어가세요.",
+    url: "/",
+  },
+};
 
 const processSteps = [
   ["01", "설치 가능 용량 확인", "건물 유형과 면적을 입력해 설치할 수 있는 용량을 확인해요."],
