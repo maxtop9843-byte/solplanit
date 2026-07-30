@@ -11,6 +11,7 @@ export const PUBLIC_ROUTES = [
   "/cases",
   "/cases/hwaseong-factory-48kw",
   "/cases/asan-house-6kw",
+  "/cases/gimpo-store-18kw",
   "/community",
 ] as const;
 
