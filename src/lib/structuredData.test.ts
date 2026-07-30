@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SITE_URL } from "./site";
 import {
   assertUniqueStructuredDataIds,
   buildBreadcrumbNode,
@@ -34,8 +35,8 @@ describe("structured data builders", () => {
   it("references global organization and website instead of duplicating them", () => {
     expect(graph.some((node) => node["@type"] === "Organization" || node["@type"] === "WebSite")).toBe(false);
     expect(graph[0]).toMatchObject({
-      isPartOf: { "@id": "https://solplanit.vercel.app/#website" },
-      publisher: { "@id": "https://solplanit.vercel.app/#organization" },
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      publisher: { "@id": `${SITE_URL}/#organization` },
     });
   });
 
