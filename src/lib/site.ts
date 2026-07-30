@@ -1,3 +1,4 @@
+import { GUIDE_ROUTES } from "./guideContent";
 import { TRUST_ROUTES } from "./trustContent";
 
 export const SITE_URL = "https://solplanit.vercel.app";
@@ -26,6 +27,7 @@ export const PUBLIC_ROUTES = [
   "/cases/gimpo-store-18kw",
   "/community",
   ...SEARCH_INTENT_ROUTES,
+  ...GUIDE_ROUTES,
   ...TRUST_ROUTES,
 ] as const;
 

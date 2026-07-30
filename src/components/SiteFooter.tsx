@@ -20,7 +20,8 @@ export default function SiteFooter() {
           </Link>
           <p>계산부터 견적까지, 쉬운 태양광 설치</p>
         </div>
-        <nav className="siteFooterNav" aria-label="신뢰와 정책">
+        <nav className="siteFooterNav" aria-label="가이드와 신뢰 정책">
+          <Link href="/guides">설치 지식 가이드</Link>
           <Link href="/trust">신뢰·정책 안내</Link>
           {trustLinks.map(([label, href]) => (
             <Link key={href} href={href}>{label}</Link>
