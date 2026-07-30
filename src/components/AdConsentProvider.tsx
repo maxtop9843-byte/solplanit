@@ -9,7 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getAdPolicyConfig } from "@/lib/adPolicy";
+import { getAdPolicyConfig } from "../lib/adPolicy";
 import styles from "./AdConsentProvider.module.css";
 
 export type AdConsentStatus = "pending" | "accepted" | "rejected";
