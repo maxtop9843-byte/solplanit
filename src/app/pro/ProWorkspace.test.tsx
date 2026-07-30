@@ -73,6 +73,38 @@ describe("ProWorkspace", () => {
       "/api/pvgis",
       expect.objectContaining({ method: "POST" }),
     );
+    const request = vi.mocked(global.fetch).mock.calls[0]?.[1];
+    expect(JSON.parse(String(request?.body))).toEqual(
+      expect.objectContaining({
+        useHorizon: true,
+        radiationDatabase: "PVGIS-SARAH3",
+      }),
+    );
+  });
+
+  it("sends changed horizon and radiation database selections", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValue(
+      new Response(JSON.stringify(pvgisResponse), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+    render(<ProWorkspace />);
+
+    fireEvent.change(screen.getByLabelText("복사 데이터베이스"), {
+      target: { value: "PVGIS-ERA5" },
+    });
+    fireEvent.click(screen.getByLabelText("PVGIS 지평선 음영 데이터 사용"));
+    fireEvent.click(screen.getByRole("button", { name: "분석 실행" }));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    const request = vi.mocked(global.fetch).mock.calls[0]?.[1];
+    expect(JSON.parse(String(request?.body))).toEqual(
+      expect.objectContaining({
+        useHorizon: false,
+        radiationDatabase: "PVGIS-ERA5",
+      }),
+    );
   });
 
   it("imports a general-user result into the professional system inputs", async () => {
