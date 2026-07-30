@@ -1,0 +1,46 @@
+.zone {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.label {
+  justify-self: end;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.canvas {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.wide .canvas {
+  min-height: 112px;
+}
+
+.content {
+  width: 100%;
+}
+
+.content .canvas {
+  min-height: 180px;
+}
+
+@media (max-width: 600px) {
+  .zone {
+    width: min(100% - 32px, 1120px);
+  }
+
+  .wide .canvas,
+  .content .canvas {
+    min-height: 100px;
+    border-radius: 16px;
+  }
+}
