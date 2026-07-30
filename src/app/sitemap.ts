@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, PUBLIC_ROUTES } from "@/lib/site";
+import { absoluteUrl, PUBLIC_ROUTES } from "../lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
