@@ -52,7 +52,7 @@
 | OPS-001 | P1 | POST_MERGE_VERIFY | Connect Vercel project, Preview/Production checks, environment validation, and deployment smoke tests | FND-001 |
 | SEO-001 | P2 | DONE | Add metadata, sitemap, robots, canonical URLs, hreflang-ready structure, and structured data foundation | UI-002 |
 | SEO-002 | P2 | DONE | Build search-intent landing pages for installation capacity, generation, savings, SMP/REC revenue, rooftop solar, factory solar, and land solar | CALC-002, SEO-001 |
-| SEO-003 | P2 | OPEN | Add unique explanatory content, worked examples, FAQs, related-tool links, breadcrumbs, and internal-link architecture to every public calculator and professional entry page | SEO-002 |
+| SEO-003 | P2 | DONE | Add unique explanatory content, worked examples, FAQs, related-tool links, breadcrumbs, and internal-link architecture to every public calculator and professional entry page | SEO-002 |
 | SEO-004 | P2 | OPEN | Add Organization, WebSite, WebPage, BreadcrumbList, FAQPage, SoftwareApplication, and calculation-specific structured data without duplication | SEO-003 |
 | SEO-005 | P2 | OPEN | Optimize Core Web Vitals, image delivery, font loading, bundle size, server rendering, caching, and mobile performance | UI-002, PRO-004 |
 | SEO-006 | P2 | OPEN | Add Google Search Console and Naver Search Advisor verification slots, submission checklist, indexing diagnostics, and canonical-domain checks | SEO-001, OPS-001 |
@@ -66,6 +66,7 @@
 
 ## Operational verification notes
 
+- SEO-003 adds reusable Korean-first explanatory sections to the public calculator, all seven search-intent pages, and the professional entry: worked examples, three FAQs, visible breadcrumbs, and links into calculation, professional analysis, cases, and saved work. Content keeps estimates and field-verification limits explicit and is covered by completeness tests.
 - SEO-002 adds seven Korean-first search-intent landing pages for installation capacity, generation, savings, SMP/REC revenue, rooftop, factory, and land solar. Each page has unique metadata, direct calculator entry, assumptions, a four-step journey, related-page links, responsive layouts, and sitemap inclusion.
 - SEO-001 adds canonical site metadata, per-route canonical and ko/x-default alternate foundations, sitemap and robots endpoints, Organization/WebSite JSON-LD, social metadata, and automated coverage for public-route uniqueness and crawler exclusions. Exact-head lint, typecheck, tests, and production build passed in CI run #122. Final deployment verification follows the documented Preview fallback and post-merge procedure.
 - PRO-007 sends the `/pro` horizon checkbox and radiation-database selection in every PVGIS request, covers both defaults and changed values through interaction tests, and displays both assumptions beside the returned result. Exact-head lint, typecheck, tests, and production build passed. A direct live JRC numerical snapshot remained blocked by the automation web client's dynamic API URL safety restriction and must be completed through a reachable Preview or Production route.
