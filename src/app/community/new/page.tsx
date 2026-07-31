@@ -1,11 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { privateActionMetadata } from "@/lib/privateRouteMetadata";
 import { parseCommunityCalculationAttachment } from "../communityAttachment";
 import CommunityPostComposer from "./CommunityPostComposer";
 import "../community.css";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "계산 결과로 질문하기 | SolPlanit",
   description: "태양광 계산 결과를 안전하게 첨부해 설치 전 질문이나 견적 검토 게시물을 준비하세요.",
+  ...privateActionMetadata,
 };
 
 export default async function CommunityNewPage({

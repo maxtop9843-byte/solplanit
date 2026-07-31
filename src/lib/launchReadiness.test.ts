@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getAdPolicyConfig } from "./adPolicy";
 import { GUIDE_ROUTES, guidePages } from "./guideContent";
 import { notFoundMetadata } from "./notFoundMetadata";
+import { privateActionMetadata } from "./privateRouteMetadata";
 import { getSearchVerificationConfig } from "./searchVerification";
 import { PUBLIC_ROUTES, SEARCH_INTENT_ROUTES, SITE_URL } from "./site";
 import { TRUST_ROUTES, trustPages } from "./trustContent";
@@ -40,6 +41,14 @@ describe("LAUNCH-001 readiness contract", () => {
 
   it("keeps not-found responses out of search indexes", () => {
     expect(notFoundMetadata.robots).toMatchObject({
+      index: false,
+      follow: false,
+      googleBot: { index: false, follow: false },
+    });
+  });
+
+  it("keeps private action routes out of search indexes", () => {
+    expect(privateActionMetadata.robots).toMatchObject({
       index: false,
       follow: false,
       googleBot: { index: false, follow: false },
