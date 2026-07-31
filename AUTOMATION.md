@@ -97,6 +97,49 @@ For calculation tasks, add tests for:
 - Do not mark a task complete when validation is incomplete.
 - Do not replace real checks with optimistic statements.
 
+## Deployment mode automatic switching
+
+At every run, determine whether Vercel is currently able to create and expose a usable Preview or Production deployment. Apply exactly one mode.
+
+### 1. `NORMAL_DEPLOY_MODE`
+
+Use this mode when Preview or Production deployment is available.
+
+- Require the exact PR head Preview to reach `READY` when the platform creates it.
+- Inspect the representative desktop and mobile user flow before merge when browser access is available.
+- After squash merge, require the matching merge SHA Production deployment to reach `READY`.
+- Recheck `https://solplanit.com` and every changed public route.
+- If accumulated `PENDING_VISUAL_VERIFICATION` work exists, validate that batch before starting a new feature.
+
+### 2. `DEPLOY_LIMIT_MODE`
+
+Use this mode when Preview or Production cannot be created or opened only because of Vercel free-plan limits, protection policy, administrator blocking, DNS, timeout, connection reset, execution-environment networking, or browser-tool limitations, and there is no evidence of an application-code deployment failure.
+
+- Do not stop development solely because visual deployment verification is unavailable.
+- If the exact PR head passes required GitHub checks, lint, typecheck, tests, production build, diff review, and no security, calculation, routing, data-loss, or critical UX defect is found, squash merge the task.
+- Mark the merged task `PENDING_VISUAL_VERIFICATION` instead of `DONE` and continue to the next eligible task on the following run.
+- Record the failed Preview or Production function, exact error, attempted retries, merged task ID, PR, and merge SHA.
+- Do not create empty operational commits merely to retrigger deployment while the known platform limit is still active.
+
+Accumulation limits:
+
+- Allow at most 5 unverified merged tasks or one calendar day of accumulated work, whichever is reached first.
+- Once the limit is reached, do not merge additional ordinary feature work until an integrated deployment verification is completed.
+- Changes involving core calculation formulas, authentication or authorization, payments, permanent data storage or deletion, destructive migrations, or large routing migrations are not eligible for `DEPLOY_LIMIT_MODE` merge and must wait for real deployment verification.
+- Never apply this mode when Preview or Production build failed because of application code.
+
+### Deployment recovery transition
+
+As soon as deployment becomes available again:
+
+1. Stop selecting new feature work.
+2. Deploy the latest `main` once.
+3. Confirm the exact latest main SHA reaches Production `READY`.
+4. Perform one integrated desktop and mobile UX audit covering every accumulated `PENDING_VISUAL_VERIFICATION` task.
+5. Verify discovery, inputs, calculations, results, quote and community handoff, professional PVGIS flow, downloads, URL restoration, refresh and back navigation, errors and empty states, keyboard focus, touch targets, reduced motion, responsive layout, canonical, sitemap, robots, 404, and runtime errors as applicable.
+6. If a real defect is found, repair or minimally roll back before any new feature.
+7. If the integrated audit succeeds, change the accumulated tasks to `DONE` and reset the pending counter.
+
 ## Pull request protocol
 
 A task branch should produce one pull request containing:
@@ -108,7 +151,7 @@ A task branch should produce one pull request containing:
 - Known limitations
 - Queue update
 
-Keep the PR as draft until implementation and local validation are complete. Mark ready only after checks and Preview verification are satisfactory.
+Keep the PR as draft until implementation and code validation are complete. In `NORMAL_DEPLOY_MODE`, mark ready after Preview verification is satisfactory. In `DEPLOY_LIMIT_MODE`, mark ready after all code gates pass and the external deployment blocker is documented.
 
 ## Merge policy
 
@@ -116,27 +159,21 @@ Merge only when:
 
 - Required checks pass
 - No unresolved review threads remain
-- Preview is healthy or the deployment blocker is explicitly resolved
-- The task meets its definition of done
+- The task meets its definition of done for the active deployment mode
 - The branch is up to date enough to merge safely
+- No disallowed high-risk change is being merged without real deployment verification
 
-### Preview-unavailable fallback
-
-- Preview access is preferred but is not an absolute merge requirement.
-- If the exact PR head passes all required GitHub checks, lint, typecheck, tests, production build, and diff review, and no security, calculation, routing, data-loss, or critical UX defect is found, an unavailable Preview caused only by Vercel limits, protection, DNS, timeout, connection reset, browser restrictions, or execution-environment limits must not stall the queue.
-- In that case, record the failed Preview tools, errors, and retries, then squash merge according to the normal auto-merge policy.
-- Immediately after merge, wait for the matching Production deployment, verify it is `READY`, and inspect the canonical web domain and changed route directly on the web.
-- If Production reveals a real defect, stop new work and repair or roll back the same task before continuing.
-- Never apply this fallback when the Preview or Production build failed because of application code.
+Preview access is preferred but is not an absolute merge requirement under `DEPLOY_LIMIT_MODE`.
 
 Prefer squash merge for task branches.
 
 ## Queue maintenance
 
-When a task is completed:
-
-- Change its status to `DONE`.
-- Record any newly discovered work as separate tasks.
+- In `NORMAL_DEPLOY_MODE`, change a fully validated task to `DONE`.
+- In `DEPLOY_LIMIT_MODE`, change a code-validated merged task to `PENDING_VISUAL_VERIFICATION` and allow the next eligible task to proceed.
+- Record the accumulated pending count and the oldest pending merge date.
+- When deployment returns and the integrated audit succeeds, convert all verified pending tasks to `DONE` and reset the count.
+- Record newly discovered work as separate tasks.
 - Do not bundle newly discovered work into the current task unless required for correctness or safety.
 
 ## Product priority
