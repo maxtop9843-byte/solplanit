@@ -18,21 +18,25 @@ describe("GuidedCalculator general-user journey", () => {
   it("validates required inputs and completes capacity plus savings calculations", () => {
     render(<GuidedCalculator />);
 
-    expect(screen.getByText("1 / 4 · 어디에 설치할 예정인가요?")).toBeInTheDocument();
+    expect(screen.getByText("1/4")).toBeInTheDocument();
+    expect(screen.getAllByText("어디에 설치할 예정인가요?").length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
 
-    expect(screen.getByText("2 / 4 · 태양광을 설치할 공간은 얼마나 되나요?")).toBeInTheDocument();
+    expect(screen.getByText("2/4")).toBeInTheDocument();
+    expect(screen.getAllByText("태양광을 설치할 공간은 얼마나 되나요?").length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
     expect(screen.getByRole("alert")).toHaveTextContent("0보다 큰 설치 면적을 입력해주세요.");
 
     fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
 
-    expect(screen.getByText("3 / 4 · 설치 위치를 지도에서 선택해주세요")).toBeInTheDocument();
+    expect(screen.getByText("3/4")).toBeInTheDocument();
+    expect(screen.getAllByText("설치 위치를 지도에서 선택해주세요").length).toBeGreaterThan(0);
     expect(screen.getByLabelText("지도 위치 선택기")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "다음 단계" }));
 
-    expect(screen.getByText("4 / 4 · 태양광으로 무엇을 기대하시나요?")).toBeInTheDocument();
+    expect(screen.getByText("4/4")).toBeInTheDocument();
+    expect(screen.getAllByText("태양광으로 무엇을 기대하시나요?").length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "입력 내용 확인하기" }));
     expect(screen.getByRole("alert")).toHaveTextContent("계산 목적을 선택해주세요.");
 
