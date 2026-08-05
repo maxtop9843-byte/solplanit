@@ -19,6 +19,7 @@ export default function CommunityPage() {
         <nav aria-label="커뮤니티 메뉴">
           <Link href="/cases">설치 사례</Link>
           <Link href="/pro">전문가용</Link>
+          <Link className="communityHeaderCta" href="/#calculator">내 조건 계산</Link>
         </nav>
       </header>
 
@@ -27,8 +28,23 @@ export default function CommunityPage() {
         <h1 id="community-page-title">계산 다음의 궁금증을<br />조건과 함께 나눠보세요</h1>
         <div>
           <p>태양광 용량과 건물 조건을 함께 기록하면 비슷한 사례를 찾고 더 구체적인 답변을 받을 수 있어요.</p>
-          <a className="communityPrimary" href="#categories">주제 살펴보기</a>
+          <div className="communityHeroActions">
+            <Link className="communityPrimary" href="/#calculator">내 조건 계산하기</Link>
+            <a className="communitySecondary" href="#categories">주제 먼저 살펴보기</a>
+          </div>
         </div>
+      </section>
+
+      <section className="communityJourney" aria-labelledby="community-journey-title">
+        <div className="communitySectionIntro">
+          <p>SolPlanit 연결 흐름</p>
+          <h2 id="community-journey-title">계산한 조건이 더 좋은 답변으로 이어져요</h2>
+        </div>
+        <ol className="communityJourneyGrid">
+          <li><span>01</span><strong>내 건물 계산</strong><p>면적과 목적을 입력해 추천 용량과 예상값을 확인해요.</p></li>
+          <li><span>02</span><strong>조건을 첨부해 질문</strong><p>계산 결과를 안전하게 가져와 설치 전 질문이나 견적 검토를 준비해요.</p></li>
+          <li><span>03</span><strong>전문가 답변 비교</strong><p>가정과 현장 조건을 분리한 답변을 참고해 다음 결정을 준비해요.</p></li>
+        </ol>
       </section>
 
       <section id="categories" className="categorySection" aria-labelledby="category-title">

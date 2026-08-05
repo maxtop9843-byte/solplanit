@@ -25,6 +25,25 @@ export default function QuoteRequestForm({ calculation }: { calculation: QuoteCa
     }
   };
 
+  const hasCalculation = calculation.capacityKw > 0 && calculation.panelCount > 0 && calculation.annualGenerationKwh > 0;
+
+  if (!hasCalculation) {
+    return (
+      <main className={styles.page}>
+        <a className={styles.back} href="/#calculator">← 계산기로 돌아가기</a>
+        <section className={styles.emptyState} aria-labelledby="quote-empty-title">
+          <p className={styles.kicker}>견적 준비 전 확인</p>
+          <h1 id="quote-empty-title">먼저 내 건물 조건을 계산해주세요</h1>
+          <p>추천 설치 용량과 예상 발전량을 계산하면, 같은 조건을 바탕으로 견적 요청 내용을 준비할 수 있어요.</p>
+          <div className={styles.emptyStateActions}>
+            <a className={styles.emptyPrimary} href="/#calculator">무료로 내 조건 계산하기</a>
+            <a className={styles.emptySecondary} href="/community">설치 전 질문 살펴보기</a>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (submitted) {
     return <section className={styles.confirmation} role="status"><p>견적 요청 준비 완료</p><h1>계산 결과와 연락 정보를 확인했어요</h1><p>현재는 견적 연결 MVP 화면으로, 실제 업체 전송은 계정·전문가 연결 기능이 추가된 뒤 시작됩니다. 입력 내용은 서버에 저장되지 않았어요.</p><a href="/home">계산기로 돌아가기</a></section>;
   }
