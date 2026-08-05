@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { QuoteRequestInputError, validateQuoteRequest, type QuoteCalculationAttachment } from "../../lib/quotes/request";
 import styles from "./quote.module.css";
@@ -30,14 +31,14 @@ export default function QuoteRequestForm({ calculation }: { calculation: QuoteCa
   if (!hasCalculation) {
     return (
       <main className={styles.page}>
-        <a className={styles.back} href="/#calculator">← 계산기로 돌아가기</a>
+        <Link className={styles.back} href="/#calculator">← 계산기로 돌아가기</Link>
         <section className={styles.emptyState} aria-labelledby="quote-empty-title">
           <p className={styles.kicker}>견적 준비 전 확인</p>
           <h1 id="quote-empty-title">먼저 내 건물 조건을 계산해주세요</h1>
           <p>추천 설치 용량과 예상 발전량을 계산하면, 같은 조건을 바탕으로 견적 요청 내용을 준비할 수 있어요.</p>
           <div className={styles.emptyStateActions}>
-            <a className={styles.emptyPrimary} href="/#calculator">무료로 내 조건 계산하기</a>
-            <a className={styles.emptySecondary} href="/community">설치 전 질문 살펴보기</a>
+            <Link className={styles.emptyPrimary} href="/#calculator">무료로 내 조건 계산하기</Link>
+            <Link className={styles.emptySecondary} href="/community">설치 전 질문 살펴보기</Link>
           </div>
         </section>
       </main>
