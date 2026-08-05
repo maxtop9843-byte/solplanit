@@ -47,6 +47,17 @@ export default function GuidedCalculator() {
   const areaUnitLabel = areaUnit === "m2" ? "m²" : "평";
   const won = (value: number) => `${value.toLocaleString("ko-KR")}원`;
 
+  // 라이브 프리뷰용 예상 용량 계산
+  const getLiveCapacity = () => {
+    if (!building || !area || numericArea <= 0) return null;
+    try {
+      const result = estimateInstallableCapacity({ buildingType: building, area: numericArea, areaUnit });
+      return result.installableCapacityKw;
+    } catch {
+      return null;
+    }
+  };
+
   const next = () => {
     setError("");
     if (step === 1 && !building) return setError("설치할 건물 유형을 선택해주세요.");
@@ -97,8 +108,8 @@ export default function GuidedCalculator() {
 
   const questions = [
     "어디에 설치할 예정인가요?",
-    "태양광을 설치할 공간은 얼마나 되나요?",
     "설치 위치를 지도에서 선택해주세요",
+    "태양광을 설치할 공간은 얼마나 되나요?",
     "태양광으로 무엇을 기대하시나요?",
   ];
 
@@ -178,16 +189,51 @@ export default function GuidedCalculator() {
     );
   }
 
+  const liveCapacity = getLiveCapacity();
+
   return (
-    <div className="calculatorPanel" aria-live="polite">
-      <div className="stepHeader"><span>{step} / 4 · {questions[step - 1]}</span><div className="progressTrack" aria-label={`4단계 중 ${step}단계`}><i style={{ width: `${step * 25}%` }} /></div></div>
-      {step === 1 && <fieldset><legend>{questions[0]}</legend><div className="typeGrid">{BUILDING_TYPES.map((type) => <label key={type} className="typeOption"><input type="radio" name="building" checked={building === type} onChange={() => setBuilding(type)} /><span>{type}</span></label>)}</div></fieldset>}
-      {step === 2 && <fieldset><legend>{questions[1]}</legend><label className="inputField"><span>설치 가능 면적</span><div><input inputMode="decimal" type="number" min="0" value={area} onChange={(event) => setArea(event.target.value)} aria-describedby="area-help" /><div className="unitToggle" aria-label="면적 단위">{(["m2", "pyeong"] as const).map((unit) => <button key={unit} type="button" aria-pressed={areaUnit === unit} onClick={() => setAreaUnit(unit)}>{unit === "m2" ? "m²" : "평"}</button>)}</div></div><small id="area-help">정확하지 않아도 괜찮아요. 옥상이나 토지에서 실제로 사용할 수 있는 대략적인 면적을 입력해주세요.</small></label></fieldset>}
-      {step === 3 && <fieldset><legend>{questions[2]}</legend><MapLocationPicker value={location} onChange={updateLocation} /></fieldset>}
-      {step === 4 && <fieldset><legend>{questions[3]}</legend><div className="goalGrid"><label className="typeOption"><input type="radio" name="goal" checked={goal === "save"} onChange={() => setGoal("save")} /><span><strong>전기요금 절감</strong><small>생산한 전기를 건물에서 직접 사용해요.</small></span></label><label className="typeOption"><input type="radio" name="goal" checked={goal === "sell"} onChange={() => setGoal("sell")} /><span><strong>발전 수익 확인</strong><small>생산한 전기를 판매하는 경우를 살펴봐요.</small></span></label></div></fieldset>}
-      {error && <p className="formError" role="alert">{error}</p>}
-      <div className="calculatorActions">{step > 1 && <button className="secondaryButton" type="button" onClick={() => { setError(""); setStep((current) => current - 1); }}>이전</button>}<button className="primaryButton panelButton" type="button" onClick={next}>{step === 4 ? "입력 내용 확인하기" : "다음 단계"}</button></div>
-      <p className="calculatorSummary">{building}{area ? ` · ${area}${areaUnitLabel}` : ""}{step >= 3 ? ` · ${locationLabel}` : ""}{goal ? ` · ${goal === "save" ? "전기요금 절감" : "발전 수익"}` : ""}</p>
+    <div className="calculatorPanel calculatorPanelWizard" aria-live="polite">
+      <div className="stepHeader">
+        <div className="stepIndicator">
+          <span className="stepNumber">{step}/4</span>
+          <span className="stepQuestion">{questions[step - 1]}</span>
+        </div>
+        <div className="progressTrack" aria-label={`4단계 중 ${step}단계`}><i style={{ width: `${step * 25}%` }} /></div>
+        <div className="stepDots" aria-hidden="true">
+          {[1, 2, 3, 4].map((num) => (
+            <div key={num} className={`stepDot ${num <= step ? 'active' : ''}`} />
+          ))}
+        </div>
+      </div>
+
+      <div className="calculatorContent">
+        <div className="calculatorMain">
+          {step === 1 && <fieldset><legend>{questions[0]}</legend><div className="typeGrid">{BUILDING_TYPES.map((type) => <label key={type} className="typeOption"><input type="radio" name="building" checked={building === type} onChange={() => setBuilding(type)} /><span>{type}</span></label>)}</div></fieldset>}
+          {step === 2 && <fieldset><legend>{questions[2]}</legend><label className="inputField"><span>설치 가능 면적</span><div><input inputMode="decimal" type="number" min="0" value={area} onChange={(event) => setArea(event.target.value)} aria-describedby="area-help" /><div className="unitToggle" aria-label="면적 단위">{(["m2", "pyeong"] as const).map((unit) => <button key={unit} type="button" aria-pressed={areaUnit === unit} onClick={() => setAreaUnit(unit)}>{unit === "m2" ? "m²" : "평"}</button>)}</div></div><small id="area-help">정확하지 않아도 괜찮아요. 옥상이나 토지에서 실제로 사용할 수 있는 대략적인 면적을 입력해주세요.</small></label></fieldset>}
+          {step === 3 && <fieldset><legend>{questions[1]}</legend><MapLocationPicker value={location} onChange={updateLocation} /></fieldset>}
+          {step === 4 && <fieldset><legend>{questions[3]}</legend><div className="goalGrid"><label className="typeOption"><input type="radio" name="goal" checked={goal === "save"} onChange={() => setGoal("save")} /><span><strong>전기요금 절감</strong><small>생산한 전기를 건물에서 직접 사용해요.</small></span></label><label className="typeOption"><input type="radio" name="goal" checked={goal === "sell"} onChange={() => setGoal("sell")} /><span><strong>발전 수익 확인</strong><small>생산한 전기를 판매하는 경우를 살펴봐요.</small></span></label></div></fieldset>}
+          {error && <p className="formError" role="alert">{error}</p>}
+          <div className="calculatorActions">{step > 1 && <button className="secondaryButton" type="button" onClick={() => { setError(""); setStep((current) => current - 1); }}>이전</button>}<button className="primaryButton panelButton" type="button" onClick={next}>{step === 4 ? "입력 내용 확인하기" : "다음 단계"}</button></div>
+          <p className="calculatorSummary">{building}{area ? ` · ${area}${areaUnitLabel}` : ""}{step >= 3 ? ` · ${locationLabel}` : ""}{goal ? ` · ${goal === "save" ? "전기요금 절감" : "발전 수익"}` : ""}</p>
+        </div>
+
+        <aside className="calculatorPreview">
+          <div className="previewCard">
+            <div className="previewLabel">예상 설치 용량</div>
+            <div className="previewValue">
+              {liveCapacity !== null ? (
+                <>
+                  <span className="previewNumber">{liveCapacity.toFixed(1)}</span>
+                  <span className="previewUnit">kW</span>
+                </>
+              ) : (
+                <span className="previewPlaceholder">—</span>
+              )}
+            </div>
+            <div className="previewHint">실시간 업데이트</div>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
