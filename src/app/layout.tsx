@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
 import AdConsentProvider from "@/components/AdConsentProvider";
 import SiteFooter from "@/components/SiteFooter";
@@ -6,6 +7,13 @@ import { getSearchVerificationConfig } from "@/lib/searchVerification";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 import "./trust/trust.css";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
 
 const searchVerification = getSearchVerificationConfig();
 
@@ -76,8 +84,16 @@ const structuredData = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={spaceGrotesk.variable}>
+      <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+        />
+      </head>
       <body>
+        <a className="skipLink" href="#main-content">본문으로 건너뛰기</a>
         <AdConsentProvider>
           {children}
           <SiteFooter />
