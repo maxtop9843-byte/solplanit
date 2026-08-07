@@ -9,14 +9,14 @@ Continue SolPlanit development safely and autonomously from the latest `main`, c
 Read and obey in this order:
 
 1. `AUTOMATION.md`
-2. `TASK_QUEUE.md`
-3. `DESIGN.md`
-4. `PRODUCT_SPEC.md`
-5. `CONTENT.md`
+2. `DESIGN.md` (repository root — the single source of design truth)
+3. `REDESIGN-PROMPT.md`
+4. `docs/CALCULATION_SPEC.md`
+5. `docs/OPEN_OPS_ITEMS.md`
 6. Existing shared code and tests
 7. Task-specific documentation
 
-Do not reinterpret the product into a generic solar calculator directory or a generic green SaaS landing page.
+Everything under `docs/archive/` is a deprecated earlier direction and must not be read or followed.
 
 ## Mandatory connector invocation gate
 

@@ -4,24 +4,21 @@
 
 SolPlanit is a Korean-first solar installation planning and expert-connection platform.
 
-## Mandatory reading
+## Design truth
 
-Before modifying code or documentation, read:
+The single source of design truth for this repository is `DESIGN.md` in the root. Nothing else.
 
-1. `AUTOMATION.md`
-2. `TASK_QUEUE.md`
-3. `DESIGN.md`
-4. `PRODUCT_SPEC.md`
-5. `CONTENT.md`
+## Work instructions
+
+Follow `REDESIGN-PROMPT.md` for what to build and in what order.
+
+## Archived documents
+
+Every document under `docs/archive/` is a deprecated earlier direction. Do not read it, do not cite
+it, and do not restore anything from it.
 
 ## Non-negotiable constraints
 
-- Do not turn the homepage into a crowded dashboard.
-- Keep the first viewport image-led and minimal.
-- Main CTA is black.
-- Green is functional, not decorative.
-- General-user and professional flows remain separated by URL.
-- Use approved copy from `CONTENT.md`.
-- Every calculation must expose assumptions, units, and limitations.
-- Do not imply guaranteed savings, revenue, installation approval, or payback.
-- Complete exactly one queue task per automation run.
+- Do not invent color, font, or spacing values that are not in `DESIGN.md`. If a value you need is
+  missing, ask the user instead of choosing one.
+- Green and yellow are forbidden colors.
