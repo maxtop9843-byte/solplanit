@@ -1,62 +1,62 @@
 .wrapper {
-  display: grid;
-  gap: 14px;
+  display:grid;
+  gap:14px;
 }
 
 .map {
-  width: 100%;
-  min-height: 330px;
-  overflow: hidden;
-  border: 1px solid #dfe3dd;
-  border-radius: 22px;
-  background: #eef1ec;
+  width:100%;
+  min-height:330px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--surface-card);
 }
 
 .help {
-  margin: 0;
-  color: #6f746f;
-  font-size: 0.9rem;
-  line-height: 1.55;
+  margin:0;
+  color:var(--text-secondary);
+  font-size:0.9rem;
+  line-height:1.55;
 }
 
 .coordinates {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:12px;
 }
 
 .coordinates label {
-  display: grid;
-  gap: 7px;
-  color: #424742;
-  font-size: 0.88rem;
-  font-weight: 700;
+  display:grid;
+  gap:7px;
+  color:var(--text-secondary);
+  font-size:0.88rem;
+  font-weight:700;
 }
 
 .coordinates input {
-  min-height: 48px;
-  width: 100%;
-  border: 1px solid #d9ddd7;
-  border-radius: 12px;
-  padding: 0 12px;
-  background: #fff;
-  color: #111411;
-  font: inherit;
+  min-height:48px;
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:0 12px;
+  background:var(--surface-field);
+  color:var(--text-primary);
+  font:inherit;
 }
 
 .coordinates input:focus-visible,
 .map:focus-visible {
-  outline: 3px solid rgba(17, 20, 17, 0.2);
-  outline-offset: 2px;
+  outline:3px solid var(--line-strong);
+  outline-offset:2px;
 }
 
-@media (max-width: 640px) {
+@media (max-width:640px) {
   .map {
-    min-height: 260px;
-    border-radius: 16px;
+    min-height:260px;
+    border-radius:16px;
   }
 
   .coordinates {
-    grid-template-columns: 1fr;
+    grid-template-columns:1fr;
   }
 }

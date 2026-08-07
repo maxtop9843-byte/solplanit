@@ -18,8 +18,12 @@ Before modifying code or documentation, read:
 
 - Do not turn the homepage into a crowded dashboard.
 - Keep the first viewport image-led and minimal.
-- Main CTA is black.
-- Green is functional, not decorative.
+- Sky Blue (`--accent`) is the only accent colour, and it is reserved for
+  action. Never decorate with it.
+- Hierarchy comes from size and space, never from font weight.
+- Every colour, type step, space step and radius resolves through a token in
+  `globals.css`. No literal hex or magic px in components.
+- Real photographs only for installations, sites and customers. See `DESIGN.md`.
 - General-user and professional flows remain separated by URL.
 - Use approved copy from `CONTENT.md`.
 - Every calculation must expose assumptions, units, and limitations.

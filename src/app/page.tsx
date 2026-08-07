@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import AdZone from "../components/AdZone";
-import AnimatedNumber from "../components/AnimatedNumber";
+import HeroStage from "../components/HeroStage";
 import Reveal from "../components/Reveal";
 import SeoGuide from "../components/SeoGuide";
 import StructuredData from "../components/StructuredData";
 import { homeSeoGuide } from "../lib/seoGuides";
 import { buildBreadcrumbNode, buildCalculatorNode, buildFaqNode, buildWebPageNode } from "../lib/structuredData";
+import { installationCases } from "./cases/caseData";
 import GuidedCalculator from "./GuidedCalculator";
+import { primaryNav, processSteps, testimonials, trustFigures } from "./homeContent";
 import "./home.css";
 
 export const metadata: Metadata = {
@@ -36,85 +38,272 @@ const homeStructuredData = [
   }),
 ];
 
-const processSteps = [
-  ["01", "설치 가능 용량 확인", "건물 유형과 면적을 입력해 설치할 수 있는 용량을 확인해요."],
-  ["02", "수익·절감액 계산", "전기를 직접 사용할지 판매할지 선택하고 예상 금액을 계산해요."],
-  ["03", "무료 견적 요청", "계산 결과를 첨부해 여러 전문가에게 견적을 요청해요."],
-  ["04", "비교하고 결정", "전문가 답변과 실제 설치 사례를 비교한 뒤 선택해요."],
-];
+const [leadCase, ...restCases] = installationCases;
 
 export default function HomePage() {
   return (
     <main id="main-content">
       <StructuredData graph={homeStructuredData} />
-      <header className="siteHeader" aria-label="주요 탐색">
-        <div className="siteHeaderInner">
-          <Link className="brand" href="/" aria-label="SolPlanit 홈">
-            <span className="brandMark" aria-hidden="true">
-              <svg viewBox="0 0 32 32" fill="none">
-                <rect x="3" y="8" width="24" height="18" rx="4" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M3 14.3h24M3 19.7h24M11.4 8v18M19.6 8v18" stroke="currentColor" strokeWidth="1" opacity="0.5" />
-                <circle cx="24.5" cy="7" r="4" fill="var(--amber)" />
-              </svg>
-            </span>
-            SolPlanit
-          </Link>
-          <nav className="desktopNav" aria-label="주요 메뉴"><a href="#calculator">설치 알아보기</a><Link href="/cases">설치 사례</Link><Link href="/community">질문·견적</Link><a href="#experts">전문가 찾기</a></nav>
-          <Link className="proLink" href="/pro">전문가용</Link>
-        </div>
+
+      {/* ---------- navigation: floating pill over the hero ---------- */}
+      <header className="pillNav" aria-label="주요 탐색">
+        <Link className="pillNavBrand" href="/" aria-label="SolPlanit 홈">
+          <span className="pillNavMark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4.4" fill="currentColor" />
+              <path
+                d="M12 1.6v3.2M12 19.2v3.2M1.6 12h3.2M19.2 12h3.2M4.66 4.66l2.26 2.26M17.08 17.08l2.26 2.26M19.34 4.66l-2.26 2.26M6.92 17.08l-2.26 2.26"
+                stroke="currentColor"
+                strokeWidth="1.1"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
+          SolPlanit
+        </Link>
+        <nav className="pillNavLinks" aria-label="주요 메뉴">
+          {primaryNav.map((item) => (
+            <Link key={item.href} href={item.href}>{item.label}</Link>
+          ))}
+        </nav>
+        <Link className="pillNavCta" href="/quote">무료 견적</Link>
       </header>
-      <section className="hero" aria-labelledby="page-title">
+
+      {/* ---------- 1. hero ---------- */}
+      <HeroStage className="hero" aria-labelledby="page-title">
+        <div className="heroSky" aria-hidden="true">
+          <video
+            className="heroSkyMedia"
+            src="/media/hero-sky.mp4"
+            poster="/media/hero-sky-poster.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
+        </div>
+
+        <div className="heroRoof">
+          <Image
+            className="heroRoofMedia"
+            src="/images/hero-rooftop.jpg"
+            alt="해질 무렵 햇빛을 받는 주택 지붕 위에 설치된 태양광 패널"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+          />
+        </div>
+
+        <span className="heroScrim" aria-hidden="true" />
+
         <div className="heroCopy">
-          <p className="eyebrow">복잡한 태양광 설치, 더 쉽게</p>
-          <h1 id="page-title">태양광 설치,<br />처음부터 끝까지 <span style={{ whiteSpace: "nowrap" }}>한 번에</span></h1>
-          <p className="description">주소와 설치 면적만 입력하면 설치 가능한 용량과 예상 수익을 확인하고, 내 조건에 맞는 견적까지 받아볼 수 있어요.</p>
-          <div className="heroActions"><a className="primaryButton" href="#calculator">무료로 확인하기</a><Link className="secondaryLink" href="/cases">실제 설치 사례 보기 <span aria-hidden="true">→</span></Link></div>
-        </div>
-        <div className="heroVisual">
-          <div className="heroFrame">
-            <Image className="visualImage" src="/images/hero-rooftop.jpg" alt="골든아워 햇빛 아래 태양광 패널이 촘촘히 설치된 모던 주택 지붕" fill priority fetchPriority="high" sizes="(max-width: 980px) calc(100vw - 32px), min(58vw, 835px)" />
-            <span className="heroCorner tl" aria-hidden="true" />
-            <span className="heroCorner br" aria-hidden="true" />
+          <p className="label label-inverse">주택 태양광 · 상담부터 사후관리까지</p>
+          <h1 id="page-title">
+            태양광 설치,
+            <br />
+            처음부터 끝까지 한 번에
+          </h1>
+          <p className="heroLede">
+            우리 집에 몇 kW를 올릴 수 있는지, 실제로 얼마가 줄어드는지 먼저 계산해보세요.
+          </p>
+          <div className="heroActions">
+            <Link className="primaryButton" href="/quote">무료 견적 받기</Link>
+            <Link className="heroGhost" href="/cases">시공사례 보기</Link>
           </div>
-          <div className="capacityChip" aria-label="예상 설치 용량 약 23.4킬로와트">
-            <div className="capacityChipInner"><span>이 건물의 예상 설치 용량</span><strong className="num">약 23.4kW</strong></div>
+        </div>
+
+        <a className="heroHint" href="#trust" aria-label="아래 내용 보기">
+          <span aria-hidden="true" />
+          스크롤
+        </a>
+      </HeroStage>
+
+      {/* ---------- 2. trust figures: typographic strip, no cards ---------- */}
+      <section id="trust" className="trustStrip" aria-labelledby="trust-title">
+        <div className="shell">
+          <h2 id="trust-title" className="trustStripLede">
+            수천만 원짜리 결정입니다. 그래서 <em>확인할 수 있는 것</em>만 말씀드립니다.
+          </h2>
+          <dl className="trustFigures">
+            {trustFigures.map((item, index) => (
+              <Reveal as="div" key={item.label} delay={index * 70} className="trustFigure">
+                <dt>
+                  <span className="figure num">
+                    {item.figure}
+                    {item.unit && <i>{item.unit}</i>}
+                  </span>
+                  {item.label}
+                </dt>
+                <dd>{item.note}</dd>
+              </Reveal>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ---------- 3. cases: full-bleed photography, never boxed ---------- */}
+      <section id="cases" className="caseBleed" aria-labelledby="cases-title">
+        <div className="shell caseIntro">
+          <p className="label">시공 사례</p>
+          <h2 id="cases-title">지붕이 다르면 설계도 달라집니다.</h2>
+          <Link className="textLink" href="/cases">사례 전체 보기</Link>
+        </div>
+
+        <figure className="caseLead">
+          <div className="caseLeadFrame">
+            <Image
+              src={leadCase.imageUrl}
+              alt={`${leadCase.location} ${leadCase.capacityKw}kW ${leadCase.category} 태양광 설치 현장`}
+              fill
+              sizes="100vw"
+            />
           </div>
-        </div>
+          <figcaption className="shell caseLeadMeta">
+            <div>
+              <p className="label">{leadCase.category} · {leadCase.location}</p>
+              <h3>{leadCase.title}</h3>
+              <p className="caseSummary">{leadCase.summary}</p>
+              <Link className="textLink" href={`/cases/${leadCase.slug}`}>이 사례 자세히 보기</Link>
+            </div>
+            <dl className="caseSpecs">
+              <div><dt>설치 용량</dt><dd className="num">{leadCase.capacityKw}kW</dd></div>
+              <div><dt>패널 수</dt><dd className="num">{leadCase.panelCount}장</dd></div>
+              <div><dt>연간 예상 발전량</dt><dd className="num">{leadCase.annualGenerationKwh.toLocaleString("ko-KR")}kWh</dd></div>
+            </dl>
+          </figcaption>
+        </figure>
+
+        <ul className="caseRow">
+          {restCases.slice(0, 2).map((item) => (
+            <li key={item.slug}>
+              <Link href={`/cases/${item.slug}`}>
+                <div className="caseRowFrame">
+                  <Image
+                    src={item.imageUrl}
+                    alt={`${item.location} ${item.capacityKw}kW ${item.category} 태양광 설치 현장`}
+                    fill
+                    sizes="(max-width: 860px) 100vw, 50vw"
+                  />
+                </div>
+                <p className="label">{item.category} · {item.location}</p>
+                <h3><span className="num">{item.capacityKw}kW</span> {item.purpose}</h3>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
-      <section id="calculator" className="calculatorEntry" aria-labelledby="calculator-title">
-        <Reveal as="div" className="sectionIntro"><p className="sectionKicker">간단한 사전 확인</p><h2 id="calculator-title">우리 건물에는 태양광을 얼마나 설치할 수 있을까?</h2><p>한 화면에 하나의 질문만 답하면 돼요. 건물 유형, 면적, 지역, 목표를 차례로 확인합니다.</p></Reveal>
-        <Reveal as="div" delay={120}><GuidedCalculator /></Reveal>
-      </section>
-      <section className="resultPreview" aria-labelledby="result-title">
-        <Reveal as="div"><p className="sectionKicker">결과는 한눈에</p><h2 id="result-title">이 조건이라면 이렇게 예상돼요</h2><p>입력한 정보를 바탕으로 설치 용량부터 발전량, 절감액까지 순서대로 보여드려요.</p></Reveal>
-        <div className="resultCards">
-          <Reveal as="article" delay={0} className="resultCard primaryResult"><span>추천 설치 용량</span><strong><AnimatedNumber value={23.4} maximumFractionDigits={1} suffix="kW" /></strong><p>약 42장의 패널 기준</p></Reveal>
-          <Reveal as="article" delay={90} className="resultCard"><span>연간 예상 발전량</span><strong><AnimatedNumber value={28460} suffix="kWh" /></strong><p>지역별 일사량 반영</p></Reveal>
-          <Reveal as="article" delay={180} className="resultCard"><span>월 예상 절감액</span><strong>약 <AnimatedNumber value={38} suffix="만원" /></strong><p>자가소비 기준 예시</p></Reveal>
-        </div>
-        <p className="disclaimer">예상 결과이며 실제 설치 가능 여부와 비용은 현장 조건 및 전문가 검토에 따라 달라질 수 있어요.</p>
-      </section>
-      <section className="processSection" aria-labelledby="process-title">
-        <Reveal as="div" className="sectionIntro"><p className="sectionKicker">계산 다음도 막막하지 않게</p><h2 id="process-title">태양광 설치, 이렇게 진행돼요</h2></Reveal>
-        <ol className="processGrid">{processSteps.map(([number, title, body], index) => (
-          <Reveal as="li" key={number} delay={index * 80}><span className="num">{number}</span><h3>{title}</h3><p>{body}</p></Reveal>
-        ))}</ol>
-      </section>
+
       <AdZone placement="home-after-process" />
-      <section id="cases" className="caseSection" aria-labelledby="cases-title">
-        <Reveal as="div" className="sectionHeaderRow"><div><p className="sectionKicker">실제 설치 사례</p><h2 id="cases-title">비슷한 건물의 선택을 먼저 살펴보세요</h2></div><Link className="secondaryLink" href="/cases">모든 사례 보기 <span aria-hidden="true">→</span></Link></Reveal>
-        <div className="caseGrid">
-          <Reveal as="div" delay={0}><Link className="caseCard" href="/cases/hwaseong-factory-48kw"><Image className="caseImage" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1400&q=80" alt="태양광 패널이 설치된 공장 지붕" fill sizes="(max-width: 900px) calc(100vw - 48px), 690px" /><span className="caseOverlay" aria-hidden="true" /><div><span>공장·창고</span><h3>경기 화성 48.6kW</h3><p>넓은 지붕을 활용한 자가소비형 설치</p></div></Link></Reveal>
-          <Reveal as="div" delay={100}><Link className="caseCard" href="/cases/asan-house-6kw"><Image className="caseImage" src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=1200&q=80" alt="태양광 패널이 설치된 주택" fill sizes="(max-width: 900px) calc(100vw - 48px), 510px" /><span className="caseOverlay" aria-hidden="true" /><div><span>주택</span><h3>충남 아산 6.2kW</h3><p>전기요금 절감을 목표로 한 소규모 설치</p></div></Link></Reveal>
+
+      {/* ---------- 4. process: serif, editorial two-column ---------- */}
+      <section id="process" className="process" aria-labelledby="process-title">
+        <div className="shell processGrid">
+          <div className="processAside">
+            <p className="label">진행 과정</p>
+            <h2 id="process-title" className="serif">
+              설치는 하루면 끝나지만, 판단은 그 전에 끝나 있어야 합니다.
+            </h2>
+            <p className="processAsideNote">
+              상담에서 사후관리까지 네 단계에서 각각 무엇을 확인하는지 미리 공개합니다.
+              결정에 필요한 정보를 설치 이후에 알게 되는 일이 없도록 하기 위해서예요.
+            </p>
+          </div>
+
+          <ol className="processList">
+            {processSteps.map((step, index) => (
+              <Reveal as="li" key={step.index} delay={index * 60}>
+                <span className="processIndex num">{step.index}</span>
+                <div>
+                  <h3 className="serif">{step.title}</h3>
+                  <p className="processLede">{step.lede}</p>
+                  <p className="processBody">{step.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
         </div>
       </section>
-      <section id="quote" className="communitySection" aria-labelledby="community-title">
-        <Reveal as="div"><p className="sectionKicker">질문과 견적</p><h2 id="community-title">계산으로 부족한 부분은 전문가에게 물어보세요</h2><p>비슷한 조건의 설치 사례를 찾아보고, 계산 결과를 첨부해 일반 사용자와 전문가에게 질문할 수 있어요.</p><Link className="secondaryLink" href="/community">커뮤니티 둘러보기 <span aria-hidden="true">→</span></Link></Reveal>
-        <Reveal as="div" delay={120} className="communityTopics" aria-label="커뮤니티 주제"><span>설치 전 질문</span><span>견적 검토</span><span>설치 후기</span><span>전문가 답변</span><span>실제 발전량</span></Reveal>
+
+      {/* ---------- 5. economics: a working instrument ---------- */}
+      <section id="economics" className="economics" aria-labelledby="economics-title">
+        <div className="shell economicsGrid">
+          <div className="economicsIntro">
+            <p className="label">예상 절감액</p>
+            <h2 id="economics-title">얼마가 줄어드는지, 직접 계산해보세요.</h2>
+            <p className="economicsNote">
+              건물 유형과 면적, 설치 지역을 입력하면 설치 가능 용량과 연간 예상 발전량을 계산합니다.
+              단가는 임의로 넣지 않아요. 고지서와 계약서에서 확인한 값을 직접 입력하시면
+              그 조건에서의 절감액과 단순 회수기간을 보여드립니다.
+            </p>
+            <p className="economicsCaveat">
+              계산 결과는 사전 검토용 예상치입니다. 실제 설치 가능 여부와 발전량, 절감액은
+              현장 조건과 계약, 제도에 따라 달라질 수 있어요.
+            </p>
+            <Link className="textLink" href="/trust/methodology">계산 방법론과 한계 보기</Link>
+          </div>
+          <div className="economicsPanel">
+            <GuidedCalculator />
+          </div>
+        </div>
       </section>
+
+      {/* ---------- 6. what owners report ---------- */}
+      <section className="voices" aria-labelledby="voices-title">
+        <div className="shell">
+          <p className="label">설치한 사람들</p>
+          {testimonials.length > 0 ? (
+            <>
+              <h2 id="voices-title" className="serif">직접 설치한 분들의 이야기.</h2>
+              <ul className="voiceList">
+                {testimonials.map((item) => (
+                  <Reveal as="li" key={item.name + item.region} className="voice">
+                    {item.portrait && (
+                      <div className="voicePortrait">
+                        <Image src={item.portrait} alt={`${item.region} ${item.name} 님`} fill sizes="220px" />
+                      </div>
+                    )}
+                    <blockquote className="serif">{item.quote}</blockquote>
+                    <p className="voiceWho">
+                      {item.name} · {item.region}
+                      <span className="num">{item.system}</span>
+                    </p>
+                  </Reveal>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <div className="voicesRecord">
+              <h2 id="voices-title" className="serif">
+                광고 문구보다, 먼저 설치한 사람들의 기록이 정확합니다.
+              </h2>
+              <p>
+                커뮤니티에는 설치 후기와 실제 발전량이 그대로 올라옵니다. 좋은 결과만
+                골라 보여드리는 대신, 비슷한 조건의 집이 실제로 어떤 숫자를 받았는지
+                직접 확인하시는 편이 낫다고 생각해요.
+              </p>
+              <Link className="textLink" href="/community">설치 후기와 실제 발전량 보기</Link>
+            </div>
+          )}
+        </div>
+      </section>
+
       <SeoGuide content={homeSeoGuide} />
-      <section id="experts" className="bottomCta" aria-labelledby="bottom-title">
-        <Reveal as="div"><p className="sectionKicker">회원가입 없이 시작</p><h2 id="bottom-title">우리 건물의 태양광 설치 가능성을 지금 확인해보세요</h2><p>간단히 계산하고, 원할 때만 견적을 요청할 수 있어요.</p><a className="primaryButton" href="#calculator">무료로 확인하기</a></Reveal>
+
+      {/* ---------- 7. closing ---------- */}
+      <section className="closing" aria-labelledby="closing-title">
+        <div className="shell closingInner">
+          <p className="label label-inverse">무료 · 회원가입 없이</p>
+          <h2 id="closing-title">우리 집에 태양광이 맞는지부터 확인해보세요.</h2>
+          <p className="closingNote">
+            현장 조건을 보지 않고 설치를 권하지 않습니다. 맞지 않으면 맞지 않다고 말씀드려요.
+          </p>
+          <div className="closingActions">
+            <Link className="primaryButton" href="/quote">무료 견적 받기</Link>
+            <Link className="closingGhost" href="#economics">먼저 계산해보기</Link>
+          </div>
+        </div>
       </section>
     </main>
   );

@@ -16,7 +16,7 @@
 
 .resultIntro > p:last-child {
   margin: 0;
-  color: var(--muted);
+  color: var(--text-secondary);
 }
 
 .resultCardGrid {
@@ -29,18 +29,26 @@
   --result-order: 0;
   min-width: 0;
   padding: 24px;
-  border-radius: var(--radius-lg);
-  background: var(--canvas-raised);
-  box-shadow: var(--shadow-xs), inset 0 0 0 1px var(--line);
-  animation: result-card-enter 360ms var(--ease-out) both;
+  border-radius: var(--radius-feature);
+  background: var(--surface-field);
+  box-shadow:
+    var(--shadow-hairline),
+    inset 0 0 0 1px var(--line);
+  animation: result-card-enter 360ms var(--ease) both;
   animation-delay: calc(var(--result-order) * 60ms);
 }
 
 .resultCardPrimary {
   grid-column: 1 / -1;
   padding: clamp(26px, 5vw, 40px);
-  background: linear-gradient(160deg, var(--soft-green), var(--canvas-raised) 70%);
-  box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--border-green);
+  background: linear-gradient(
+    160deg,
+    var(--accent-wash),
+    var(--surface-field) 70%
+  );
+  box-shadow:
+    var(--shadow-hairline),
+    inset 0 0 0 1px var(--accent-ring);
   animation-name: result-card-primary-enter;
 }
 
@@ -50,7 +58,7 @@
 }
 
 .resultCard span {
-  color: var(--ink-soft);
+  color: var(--text-secondary);
   font-size: 0.92rem;
   font-weight: 650;
 }
@@ -59,19 +67,19 @@
   display: block;
   margin: 10px 0 8px;
   overflow-wrap: anywhere;
-  color: var(--ink);
+  color: var(--text-primary);
   font-size: clamp(1.8rem, 5vw, 3.2rem);
   line-height: 1;
   letter-spacing: -0.045em;
 }
 
 .resultCardPrimary strong {
-  color: var(--green-strong);
+  color: var(--accent-press);
   font-size: clamp(2.8rem, 9vw, 5.4rem);
 }
 
 .resultCard small {
-  color: var(--muted);
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -81,9 +89,9 @@
   justify-content: space-between;
   gap: 24px;
   padding: 24px;
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  animation: result-card-enter 360ms 300ms var(--ease-out) both;
+  border-radius: var(--radius-feature);
+  background: var(--surface-card);
+  animation: result-card-enter 360ms 300ms var(--ease) both;
 }
 
 .resultNextAction h4 {
@@ -95,7 +103,7 @@
 .resultNextAction p:last-child {
   max-width: 680px;
   margin: 0;
-  color: var(--muted);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -105,21 +113,44 @@
 }
 
 @keyframes result-card-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes result-card-primary-enter {
-  from { opacity: 0; transform: translateY(8px) scale(1.01); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(1.01);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (max-width: 720px) {
-  .resultCardGrid { grid-template-columns: 1fr; }
-  .resultCardPrimary { grid-column: auto; }
-  .resultCard { padding: 20px; }
-  .resultNextAction { align-items: stretch; flex-direction: column; }
-  .resultQuoteButton { width: 100%; }
+  .resultCardGrid {
+    grid-template-columns: 1fr;
+  }
+  .resultCardPrimary {
+    grid-column: auto;
+  }
+  .resultCard {
+    padding: 20px;
+  }
+  .resultNextAction {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .resultQuoteButton {
+    width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

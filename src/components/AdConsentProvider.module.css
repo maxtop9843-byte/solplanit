@@ -1,118 +1,118 @@
 .banner {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  left: 24px;
-  z-index: 50;
-  width: min(720px, calc(100% - 48px));
-  margin-left: auto;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 18px 54px rgba(17, 20, 17, 0.14);
-  color: var(--foreground);
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  left:24px;
+  z-index:50;
+  width:min(720px, calc(100% - 48px));
+  margin-left:auto;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--surface-field);
+  box-shadow:0 18px 54px var(--line);
+  color:var(--text-primary);
 }
 
 .copy {
-  display: grid;
-  gap: 6px;
+  display:grid;
+  gap:6px;
 }
 
 .copy strong {
-  font-size: 15px;
+  font-size:15px;
 }
 
 .copy p {
-  margin: 0;
-  max-width: 470px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.55;
+  margin:0;
+  max-width:470px;
+  color:var(--text-secondary);
+  font-size:13px;
+  line-height:1.55;
 }
 
 .actions {
-  display: flex;
-  flex: 0 0 auto;
-  gap: 8px;
+  display:flex;
+  flex:0 0 auto;
+  gap:8px;
 }
 
 .primary,
 .secondary,
 .settings {
-  min-height: 42px;
-  padding: 0 16px;
-  border-radius: 12px;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 650;
-  cursor: pointer;
+  min-height:42px;
+  padding:0 16px;
+  border-radius:12px;
+  font:inherit;
+  font-size:13px;
+  font-weight:650;
+  cursor:pointer;
 }
 
 .primary {
-  border: 1px solid #111;
-  background: #111;
-  color: #fff;
+  border:1px solid var(--text-primary);
+  background:var(--text-primary);
+  color:var(--text-inverse);
 }
 
 .secondary {
-  border: 1px solid var(--border);
-  background: #fff;
-  color: var(--foreground);
+  border:1px solid var(--line);
+  background:var(--surface-field);
+  color:var(--text-primary);
 }
 
 .settings {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 40;
-  min-height: 36px;
-  padding: 0 12px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.96);
-  color: var(--muted);
-  box-shadow: 0 8px 24px rgba(17, 20, 17, 0.08);
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:40;
+  min-height:36px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  background:var(--surface-field);
+  color:var(--text-secondary);
+  box-shadow:0 8px 24px var(--line-soft);
 }
 
 .primary:focus-visible,
 .secondary:focus-visible,
 .settings:focus-visible {
-  outline: 3px solid rgba(22, 130, 59, 0.28);
-  outline-offset: 2px;
+  outline:3px solid var(--accent-ring);
+  outline-offset:2px;
 }
 
-@media (max-width: 680px) {
+@media (max-width:680px) {
   .banner {
-    right: 16px;
-    bottom: 16px;
-    left: 16px;
-    width: auto;
-    padding: 18px;
-    align-items: stretch;
-    flex-direction: column;
-    gap: 16px;
-    border-radius: 18px;
+    right:16px;
+    bottom:16px;
+    left:16px;
+    width:auto;
+    padding:18px;
+    align-items:stretch;
+    flex-direction:column;
+    gap:16px;
+    border-radius:18px;
   }
 
   .actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display:grid;
+    grid-template-columns:1fr 1fr;
   }
 
   .primary,
   .secondary {
-    width: 100%;
+    width:100%;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion:reduce) {
   .primary,
   .secondary,
   .settings {
-    scroll-behavior: auto;
+    scroll-behavior:auto;
   }
 }

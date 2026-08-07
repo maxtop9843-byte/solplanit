@@ -37,7 +37,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ slu
       </header>
 
       <section className="caseDetailHero">
-        <div className="caseDetailImage" role="img" aria-label={`${item.location} ${item.category} 태양광 설치 사례 이미지`} style={{ backgroundImage: `linear-gradient(180deg, transparent 45%, rgba(0,0,0,.52)), url(${item.imageUrl})` }} />
+        <div className="caseDetailImage" role="img" aria-label={`${item.location} ${item.category} 태양광 설치 사례 이미지`} style={{ backgroundImage: `linear-gradient(180deg, transparent 45%, var(--scrim)), url(${item.imageUrl})` }} />
         <div className="caseDetailIntro">
           <p className="sectionKicker">{item.category} · {item.location}</p>
           <h1>{item.capacityKw}kW<br />{item.title}</h1>
