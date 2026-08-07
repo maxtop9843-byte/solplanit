@@ -140,30 +140,36 @@
 /* Panels fill the lower diagonal and dissolve upward into the sky.
    A single angled gradient does both jobs: it sets the diagonal and softens
    it. A clip-path would give the same line with a hard edge. */
+/* The 188deg tilt spans ~26% of the gradient axis across a desktop width, so
+   the layer's top edge is only invisible if the transparent stop clears that
+   much. Any less and one end of the edge starts already half-opaque, which
+   draws exactly the hard line this dissolve exists to avoid. */
 .heroRoof {
   bottom: 0;
-  height: 64%;
+  height: 78%;
   z-index: 1;
   translate: 0 var(--roof-shift);
   -webkit-mask-image: linear-gradient(
     188deg,
-    transparent 6%,
-    rgba(0, 0, 0, 0.5) 26%,
-    black 48%
+    transparent 28%,
+    rgba(0, 0, 0, 0.62) 40%,
+    black 55%
   );
   mask-image: linear-gradient(
     188deg,
-    transparent 6%,
-    rgba(0, 0, 0, 0.5) 26%,
-    black 48%
+    transparent 28%,
+    rgba(0, 0, 0, 0.62) 40%,
+    black 55%
   );
 }
 
-/* Framed on the array itself rather than the scene around it, so the lower
-   band reads as panels and the upper band stays sky. */
+/* The source photograph carries its own sky, mountains and treeline across
+   its upper 43%. Including any of that puts a second horizon under the
+   video's, and the two never line up. Framing below it means the panels
+   emerge straight out of the sky with nothing to contradict. */
 .heroRoofMedia {
   object-fit: cover;
-  object-position: center 64%;
+  object-position: center 80%;
 }
 
 .heroScrim {
@@ -280,18 +286,18 @@
   }
 
   .heroRoof {
-    height: 78%;
+    height: 84%;
     -webkit-mask-image: linear-gradient(
       184deg,
-      transparent 2%,
-      rgba(0, 0, 0, 0.5) 20%,
-      black 40%
+      transparent 14%,
+      rgba(0, 0, 0, 0.5) 30%,
+      black 52%
     );
     mask-image: linear-gradient(
       184deg,
-      transparent 2%,
-      rgba(0, 0, 0, 0.5) 20%,
-      black 40%
+      transparent 14%,
+      rgba(0, 0, 0, 0.5) 30%,
+      black 52%
     );
   }
 
@@ -411,11 +417,14 @@
   margin: var(--space-xl) 0 0;
 }
 
+/* 21:9 letterboxed the case photography so hard you could not tell what the
+   installation was. 16:9 keeps the full-bleed presentation and still shows
+   the roof. */
 .caseLeadFrame {
   position: relative;
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  aspect-ratio: 21 / 9;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--surface-card);
 }
