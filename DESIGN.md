@@ -1,291 +1,151 @@
 # SolPlanit Design System
 
-## 1. Design objective
+This document replaces every earlier design note in this repository. Where it
+disagrees with an older file, comment, or component, this document wins.
+
+## 1. What the design is for
 
-SolPlanit must feel like a premium solar-installation decision service, not a crowded calculator directory and not a generic green SaaS template.
+A homeowner putting a multi-thousand-dollar system on their own roof is not
+asking "is this pretty". They are asking **"can I trust these people?"**
+
+Every decision below answers that question. Restraint over spectacle. Evidence
+over adjectives. The work speaks through real photographs of real
+installations and through numbers whose assumptions are published.
+
+## 2. Tokens
+
+All tokens are declared in `src/app/globals.css` under `:root`. **Nothing
+downstream may contain a literal hex, rgba, or magic pixel value.** If a
+component needs a value that does not exist, add a token — do not inline it.
+
+### Colour
+
+| Token | Value | Use |
+|---|---|---|
+| `--parchment` | `#fdfdf7` | Page background. Never pure white across a large area. |
+| `--sand` | `#f5f2de` | Card and panel surfaces. |
+| `--sand-deep` | `#ece7cf` | Pressed / alternate surface. |
+| `--paper` | `#ffffff` | Small surfaces only — input fills, toggles. |
+| `--ink` | `#000000` | Primary text. |
+| `--ink-60` | `#666666` | Secondary text. |
+| `--ink-45` | `#8f8f88` | Tertiary text, disclaimers. |
+| `--sky` | `#0096f7` | **The only accent.** |
+| `--night` | `#0a0e14` | Inverse surfaces: closing block, footer, hero base. |
 
-The first viewport should communicate one idea immediately:
+Semantic aliases (`--surface-page`, `--text-secondary`, `--accent`, …) sit on
+top of these primitives. Components reference the semantic layer.
+
+**Sky Blue is reserved for action.** Primary buttons, focus rings, the
+selected state of a control, and the calculator progress bar. It is never used
+to decorate, to tint a background, or to draw attention to something that is
+not clickable. There is no second accent — no green, no amber.
 
-> SolPlanit makes the full solar-installation journey easier.
+### Type
 
-Visual formula:
+Three families, loaded through `next/font` and self-hosted:
 
-- Apple-style information restraint and whitespace
-- Awesomic-style image-led storytelling
-- Linear-style precise state transitions
-- Wise-style beginner-friendly guided calculation flow
-
-This file is the highest-priority design reference for every UI addition or change.
-
-## 2. First-screen rule
-
-The first viewport contains only:
-
-- Logo and restrained navigation
-- Supporting line
-- Main headline
-- Short description
-- One black primary CTA
-- One text-link secondary action
-- One large real-world solar installation image
-- At most one small floating result chip
-
-Do not place calculation forms, result grids, statistics, community feeds, professional dashboards, or multiple promotional cards in the first viewport.
-
-### Approved hero copy
-
-**Supporting line**
-
-> 복잡한 태양광 설치, 더 쉽게
-
-**Headline**
-
-> 태양광 설치,  
-> 처음부터 끝까지 한 번에
-
-**Description**
-
-> 주소와 설치 면적만 입력하면 설치 가능한 용량과 예상 수익을 확인하고, 내 조건에 맞는 견적까지 받아볼 수 있어요.
-
-**Primary CTA**
-
-> 무료로 확인하기
-
-**Secondary link**
-
-> 실제 설치 사례 보기 →
-
-## 3. Color system
-
-The interface is predominantly monochrome.
-
-- Canvas: `#FFFFFF`
-- Secondary surface: `#F6F7F5`
-- Primary text: `#111411`
-- Secondary text: `#6F746F`
-- Border: `#E4E7E3`
-- Primary CTA: `#111111`
-- Primary CTA text: `#FFFFFF`
-- Functional green: `#16823B`
-- Soft green surface: `#EDF7EF`
-- Optional sunlight tint: `#FFF8DE`
-
-### Color rules
-
-- Black is the main CTA color.
-- Green is reserved for selected states, progress, verified values, charts, and important calculated results.
-- Yellow may be used only as a soft result emphasis, never as a dominant page color.
-- Do not use multiple decorative accent colors in one viewport.
-- Do not create green gradients for generic decoration.
-
-## 4. Typography
-
-Use Korean-first typography.
-
-Recommended:
-
-- `Pretendard Variable`
-- fallback: `SUIT Variable`, `Inter`, `system-ui`, sans-serif
-
-Desktop scale:
-
-- Hero headline: 64–72px, weight 650–700, line-height 1.05
-- Section headline: 44–52px, weight 650–700
-- Card headline: 24–32px, weight 600–700
-- Body large: 18–20px, line-height 1.55
-- Body: 16px, line-height 1.6
-- Caption: 13–14px
-
-Mobile scale:
-
-- Hero headline: 40–48px
-- Section headline: 32–38px
-- Card headline: 22–26px
-
-Avoid oversized Korean typography that causes awkward line breaks. Headlines should feel carved and deliberate, not inflated.
-
-## 5. Layout and shapes
-
-- Page max width: 1200–1280px
-- Hero max width: 1440px
-- Section spacing: 96–144px desktop, 64–88px mobile
-- Content cards: 20–28px radius
-- Inputs: 12–16px radius
-- Buttons: full pill or 14–16px radius
-- Result cards: 20–24px radius
-
-Use whitespace and subtle surface shifts before shadows.
-
-Shadows:
-
-- Default cards: no shadow or extremely subtle shadow
-- Floating result chip: soft shadow allowed
-- Do not stack multiple heavy shadows
-
-## 6. Image direction
-
-Images are a core part of the brand.
-
-Use:
-
-- Real houses, commercial buildings, factories, warehouses, and land with solar installations
-- Clear daylight and believable Korean architectural context where available
-- Wide, calm compositions with room for text
-- Large image bands that separate sections
-- Image-led installation case cards
-
-Avoid:
-
-- Generic eco stock imagery with hands holding a globe
-- Cartoon sun, spinning clouds, or mascot-style panels
-- Over-saturated green filters
-- Dense text overlays on photography
-- Unrealistic futuristic solar cities for ordinary user flows
-
-## 7. Hero composition
-
-Recommended desktop composition:
-
-- Left: text and actions
-- Right or full-width lower band: large solar-building image
-- Optional floating chip:
-  - label: `이 건물의 예상 설치 용량`
-  - value: `약 23.4kW`
-
-The chip must remain subordinate to the image and headline.
-
-## 8. Guided calculator
-
-The calculator begins after the hero CTA or the first scroll.
-
-Primary question:
-
-> 우리 건물에는 태양광을 얼마나 설치할 수 있을까?
-
-Steps:
-
-1. 건물 정보
-2. 설치 결과
-3. 수익·절감 확인
-4. 견적받기
-
-Rules:
-
-- One dominant question per step
-- Advanced inputs hidden behind optional expansion
-- Previous answers summarized compactly
-- The next action must be visually obvious
-- Forms should not resemble a spreadsheet
-- Use plain Korean before technical terminology
-
-## 9. Result cards
-
-Results must be more visually prominent than input cards.
-
-Recommended hierarchy:
-
-1. Recommended installation capacity
-2. Annual expected generation
-3. Monthly or annual savings/revenue
-4. Estimated payback period
-5. Estimated panel count
-
-Emphasis methods:
-
-- Larger numeric typography
-- One soft green primary result card
-- Subtle border contrast
-- Sequential entrance motion
-- Clear unit labels
-
-Do not rely on color alone. Numbers, labels, spacing, and card hierarchy must remain understandable in grayscale.
-
-## 10. Motion system
-
-Motion guides the journey. It is never decorative wallpaper.
-
-### Entry
-
-- Hero headline: opacity 0→1, translateY 12px→0
-- Description and CTA: 80ms stagger
-- Hero image: subtle scale 1.02→1
-- Optional result chip appears after approximately 700–1000ms
-
-### CTA transition
-
-On `무료로 확인하기`:
-
-- Smooth-scroll to calculator
-- Calculator scale 0.98→1 and fade in
-- Focus the first meaningful field
-
-### Step transition
-
-- Duration: 180–240ms
-- Opacity and 8px vertical motion
-- No bounce
-- Progress line fills toward the next step
-
-### Calculation result
-
-- Numeric count-up: 600–900ms
-- Result card stagger: 60ms
-- Primary result card may briefly scale 1.01→1
-- Final CTA activates after results settle
-
-### Hover and press
-
-- Hover: translateY(-1px), 140ms
-- Press: scale(0.985), 80–100ms
-
-### Scroll reveal
-
-- Opacity and translateY 12px
-- Duration: 300–400ms
-- Run once
-
-### Accessibility
-
-Respect `prefers-reduced-motion`. Replace animated movement with immediate or short opacity transitions.
-
-## 11. Navigation
-
-General navigation:
-
-- 설치 알아보기
-- 설치 사례
-- 질문·견적
-- 전문가 찾기
-
-Professional entry:
-
-- 전문가용
-
-Keep the navigation visually quiet. The hero CTA remains the dominant action.
-
-## 12. Pro workspace
-
-The `/pro` area may be denser but must share the same visual language.
-
-- White or very light canvas
-- Hairline borders
-- Compact controls
-- Monochrome charts with restrained green highlights
-- Clear project summary
-- No decorative dashboard clutter
-
-The professional area is a precision workspace, while `/home` is a guided decision journey.
-
-## 13. Prohibited patterns
-
-- Generic green gradient hero
-- More than one filled CTA in a viewport
-- Multiple competing result cards with equal visual weight
-- Excessive badges
-- Glassmorphism as a default surface
-- Floating cards everywhere
-- Continuous decorative animation
-- Large icon grids on the first screen
-- Dense text over hero photography
-- SaaS-template purple/blue gradients
-- First-screen dashboard previews that obscure the service promise
+- `--font-sans` — Noto Sans KR. Display, headings, body, UI.
+- `--font-serif` — Noto Serif KR. Reserved for the process and trust
+  narratives. Nowhere else.
+- `--font-num` — Inter. Numerals only, with real tabular figures so capacity
+  and money columns align.
+
+**Hierarchy comes from size and space, never from weight.** Weights stop at
+500. Display type is 200. A headline that needs to shout should get bigger and
+be given more room around it — it does not get bolder.
+
+Tracking follows optical size. `--tracking-display` is `-0.047em`, which is
+the specified −4.5px at 96px.
+
+`word-break: keep-all` is set on `body` and is not optional. Without it the
+browser breaks Hangul mid-eojeol and every headline reads as a typo.
+
+### Space, radius, elevation
+
+- Space scale: `--space-3xs` (4px) → `--space-4xl` (120px).
+- Section rhythm: `--section-space`, which clamps between 96px and 120px.
+- Radius: `--radius-control` 12px (buttons, inputs, cards),
+  `--radius-feature` 18px (panels), `--radius-pill` 24px (the hero
+  navigation). One radius per role — sections do not each invent their own.
+- Elevation: `--shadow-hairline` is `0 0.5px 2px rgba(0,0,0,0.12)`. That is
+  the ceiling for most surfaces. `--shadow-raised` adds one very soft ambient
+  layer. There is no third step, and nothing glows.
+
+## 3. Layout
+
+Each section of the homepage has its own layout grammar. Repeating a
+"heading + three cards" block down the page is the single fastest way to make
+a site look generated, so the page never does it:
+
+1. **Hero** — full-bleed media, copy anchored bottom-left.
+2. **Trust figures** — typographic strip. Hairline rules, no cards.
+3. **Cases** — full-bleed photography running to the screen edges, metadata
+   set beneath the frame.
+4. **Process** — editorial two-column: sticky serif column, long numbered
+   reading column.
+5. **Economics** — a working instrument. Reading column plus live calculator.
+6. **Voices** — asymmetric editorial spread.
+7. **Closing** — inverse surface, left-aligned, flowing into the footer.
+
+## 4. The hero
+
+The sky-to-array transition **completes inside one viewport** and is already
+composed at rest. A visitor who never scrolls still sees the whole idea.
+
+- Sky layer: the generated video (`/media/hero-sky.mp4`), blurred so it reads
+  as the out-of-focus plane.
+- Array layer: a real photograph, filling the lower diagonal.
+- The two are joined by a single angled gradient mask, not a clip-path — the
+  clip gives the diagonal but leaves a hard edge.
+- `HeroStage` exposes `--hero-progress` (0→1) for parallax. Under
+  `prefers-reduced-motion` the scroll listener never attaches.
+
+## 5. Motion
+
+Motion exists to explain state, never to announce arrival.
+
+- Permitted: hover and focus transitions, the calculator's progress bar, a
+  restrained scroll reveal, hero parallax.
+- Not permitted: every element fading up from below on scroll; springy
+  overshoot; anything that moves without communicating something.
+- `prefers-reduced-motion: reduce` is honoured globally in `globals.css` and
+  specifically in `HeroStage`.
+
+## 6. Imagery
+
+| Where | Rule |
+|---|---|
+| Hero array, case studies, before/after, customer portraits, crews on site | **Real photographs only.** No generated imagery, ever. |
+| Diagrams, calculation visualisations, abstract explanatory graphics | Generated or illustrated content is fine. |
+
+The reason is practical: a homeowner judges workmanship from panel alignment,
+cable runs and mounting hardware. Generated images get those details subtly
+wrong, and the moment a visitor notices, the trust is gone.
+
+Atmosphere is not workmanship. The hero's sky is generated; the roof beneath
+it is not.
+
+If a required photograph does not exist, leave an explicit placeholder with
+its aspect ratio and art direction recorded, and report it. Do not fill the
+gap with stock.
+
+## 7. Copy
+
+- Everyday Korean before industry vocabulary.
+- Say what the reader gets, not what the system does.
+- Never imply guaranteed savings, revenue, payback, or installation approval.
+- Make uncertainty visible without making it frightening. Every calculated
+  figure ships with its assumptions and limits.
+
+## 8. Anti-patterns
+
+None of these may appear:
+
+- Purple-to-blue gradient heroes, glassmorphism cards, unmotivated blur or glow.
+- Every section built as "heading + three cards".
+- Feature grids of circular icon badges with two lines of text under each.
+- Uniform fade-up-on-scroll applied to everything.
+- Stock illustration, hand-drawn icon sets, decorative 3D blobs.
+- Different radii or shadow strengths invented per section.
+- Large areas of pure white.
+- Bold weight used to create hierarchy.

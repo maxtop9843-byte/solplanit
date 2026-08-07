@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Inter, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import type { ReactNode } from "react";
 import AdConsentProvider from "@/components/AdConsentProvider";
 import SiteFooter from "@/components/SiteFooter";
@@ -8,12 +8,32 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 import "./trust/trust.css";
 
-const spaceGrotesk = Space_Grotesk({
+/* Korean-first display and body face. Weights stop at 500 — the design
+   system builds hierarchy from scale and space, never from bold. */
+const notoSansKr = Noto_Sans_KR({
+  weight: ["200", "300", "400", "500"],
+  variable: "--font-noto-sans-kr",
+  display: "swap",
+  preload: false,
+});
+
+/* Editorial serif, used only for the process and trust narratives. */
+const notoSerifKr = Noto_Serif_KR({
+  weight: ["300", "400"],
+  variable: "--font-noto-serif-kr",
+  display: "swap",
+  preload: false,
+});
+
+/* Numerals. Carries real tabular figures so money and capacity columns align. */
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-space-grotesk",
+  weight: ["300", "400", "500"],
+  variable: "--font-inter",
   display: "swap",
 });
+
+const fontVariables = `${notoSansKr.variable} ${notoSerifKr.variable} ${inter.variable}`;
 
 const searchVerification = getSearchVerificationConfig();
 
@@ -84,14 +104,7 @@ const structuredData = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ko" className={spaceGrotesk.variable}>
-      <head>
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
-        />
-      </head>
+    <html lang="ko" className={fontVariables}>
       <body>
         <a className="skipLink" href="#main-content">본문으로 건너뛰기</a>
         <AdConsentProvider>
