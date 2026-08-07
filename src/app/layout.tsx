@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import AdConsentProvider from "@/components/AdConsentProvider";
 import SiteFooter from "@/components/SiteFooter";
 import { getSearchVerificationConfig } from "@/lib/searchVerification";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -78,10 +77,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="ko">
       <body>
-        <AdConsentProvider>
-          {children}
-          <SiteFooter />
-        </AdConsentProvider>
+        {children}
+        <SiteFooter />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}

@@ -30,7 +30,7 @@ describe("SEO foundation", () => {
     expect(policy.sitemap).toBe(absoluteUrl("/sitemap.xml"));
     expect(rules[0]?.allow).toBe("/");
     expect(rules[0]?.disallow).toEqual(
-      expect.arrayContaining(["/api/", "/account", "/community/new", "/quote"]),
+      expect.arrayContaining(["/api/", "/account", "/community/new"]),
     );
   });
 });

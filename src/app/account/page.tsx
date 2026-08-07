@@ -12,7 +12,7 @@ export default function AccountPage() {
     <main className="accountShell">
       <header className="accountHeader">
         <Link className="accountBrand" href="/">SolPlanit</Link>
-        <nav aria-label="계정 페이지 탐색"><Link href="/#calculator">일반 계산</Link><Link href="/pro">전문가용</Link><Link href="/community">질문·견적</Link></nav>
+        <nav aria-label="계정 페이지 탐색"><Link href="/#calculator">일반 계산</Link><Link href="/pro">전문가용</Link></nav>
       </header>
       <section className="accountHero" aria-labelledby="account-title">
         <p className="accountKicker">내 작업 공간</p>

@@ -68,7 +68,6 @@ export default function ResultSummary({ capacity, economics, goal }: { capacity:
     payback: economics.paybackYears === null ? "null" : String(economics.paybackYears),
     goal,
   } : null;
-  const quoteHref = sharedParameters ? `/quote?${new URLSearchParams(sharedParameters).toString()}` : null;
   const proHref = sharedParameters ? `/pro?${new URLSearchParams({ source: "general", ...sharedParameters }).toString()}` : null;
   const communityHref = sharedParameters ? `/community/new?${new URLSearchParams(sharedParameters).toString()}` : null;
   const accountHref = "/account";
@@ -96,9 +95,8 @@ export default function ResultSummary({ capacity, economics, goal }: { capacity:
       </div>
 
       <div className="resultNextAction" role="region" aria-label="다음 행동 안내">
-        <div><p className="sectionKicker">다음 단계</p><h4>{economics ? "계산 결과를 바탕으로 견적을 준비해보세요" : "이 용량으로 절감액과 수익을 확인해보세요"}</h4><p>{economics ? "현장 조건을 확인할 전문가에게 계산 결과를 함께 전달하면 비교가 쉬워져요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p></div>
+        <div><p className="sectionKicker">다음 단계</p><h4>{economics ? "이 숫자가 어디서 왔는지 확인해보세요" : "이 용량으로 절감액과 수익을 확인해보세요"}</h4><p>{economics ? "계산에 쓰인 데이터 출처와 가정을 그대로 공개합니다. 실제 결과는 현장 조건에 따라 달라질 수 있어요." : "확인한 단가와 조건을 입력하면 발전량, 절감액 또는 수익, 회수기간을 계산할 수 있어요."}</p></div>
         {economics && sharedParameters && <SaveCalculationButton calculation={{ href: proHref ?? "/pro", capacityKw: capacity.installableCapacityKw, panelCount: capacity.panelCount, annualGenerationKwh: economics.annualGenerationKwh, annualBenefit: economics.annualBenefit, paybackYears: economics.paybackYears, goal }} />}
-        {quoteHref && <Link className="primaryButton panelButton" href={quoteHref}>계산 결과로 견적 준비하기</Link>}
         {communityHref && <Link className="secondaryButton panelButton" href={communityHref}>계산 결과로 질문하기</Link>}
         {proHref && <Link className="secondaryButton panelButton" href={proHref}>전문가 분석으로 이어가기</Link>}
         <Link className="secondaryButton panelButton" href={accountHref}>내 작업 보기</Link>

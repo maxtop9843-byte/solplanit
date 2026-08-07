@@ -1,49 +1,69 @@
 # 리디자인 진행 상태
 
-## 1. 문서 정리   [완료] 2026-08-08
+## 1. 문서 정리              [완료] 2026-08-08
 
 - 브랜치: main → redesign-tool-first
 - 아카이브: `docs/archive/` 로 이동 (삭제 아님)
-  - `DESIGN.md`
-  - `CONTENT.md`
-  - `TASK_QUEUE.md`
-  - `PRODUCT_SPEC.md`
-  - `docs/QA_GENERAL_USER_JOURNEY.md`
-  - `docs/ADSENSE_POLICY_READINESS.md`
+  - `DESIGN.md`, `CONTENT.md`, `TASK_QUEUE.md`, `PRODUCT_SPEC.md`
+  - `docs/QA_GENERAL_USER_JOURNEY.md`, `docs/ADSENSE_POLICY_READINESS.md`
 - 유지:
   - `docs/CALCULATION_SPEC.md` — PRODUCT_SPEC §6 계산식 추출. 코드가 구현 중인 살아있는 계약
-  - `docs/OPEN_OPS_ITEMS.md` — TASK_QUEUE 의 미완 OPS-001·LAUNCH-001 발췌. 운영 항목이 묻히면 안 됨
-  - `AGENTS.md` — 전면 교체. 디자인 진실은 루트 DESIGN.md 하나
-  - `README.md` — 디자인 방향 절 제거, DESIGN.md 참조로 대체
-  - `AUTOMATION.md` — source priority·task selection 갱신. 브랜치·검증·PR 절차는 유지
-  - `docs/QA-002-PVGIS-5.3-VALIDATION.md`, `docs/SEARCH_ENGINE_SUBMISSION.md`,
-    `docs/PRODUCTION_RECOVERY.md`, `docs/PRODUCTION_REVERIFY_2026-07-31.md`, `reports/ops/`
-    — 계산·배포·운영 절차 문서이므로 무조건 유지
-- 커밋:
-  - `2605c6b` chore: 아카이브 이동
-  - `38d06ef` chore: 문서 분리
-  - `f0a8bf6` chore: 진입 규약 갱신
-  - `75083f7` fix: 링크
+  - `docs/OPEN_OPS_ITEMS.md` — TASK_QUEUE 의 미완 OPS-001·LAUNCH-001 발췌
+  - `AGENTS.md` 전면 교체, `README.md` 디자인 절 교체, `AUTOMATION.md` source priority 갱신
+  - PVGIS 검증·검색엔진 제출·배포 기록 문서는 전부 유지
+- 커밋: `2605c6b`, `38d06ef`, `f0a8bf6`, `75083f7`, `0013514`, `6c03f2e`
 
-## 2. 레퍼런스 분석  [대기]
+## 2. 레퍼런스 분석          [완료] 2026-08-08
 
-## 3. 감사와 삭제    [대기]
+- Augen Pro / Steep DESIGN.md 전문을 WebFetch로 직접 확인
+- Augen Pro: 웨이트 350 단일 체계, 위계는 크기로만, 볼드·세미볼드 금지. 그림자 없이
+  `#fdfdfd on #f2f2f4` 톤 차이 + 0.5px 헤어라인으로만 층 생성. 액센트 `#0071e3` 는
+  링크·태그 테두리로만 쓰고 면으로 절대 채우지 않음. 텍스트가 콘텐츠의 약 95%
+- Steep: 스탯 카드는 축·격자선 없이 큰 수치 + 변화 한 줄. peach `#fbe1d1` 면은
+  페이지당 최대 1회. 전체 97% 무채색
+- 치환 결정: Augen 히어로의 3D 렌더 자리에 계산기 입력 카드, 라운드 54px→16px,
+  액센트 `#0071e3` 폐기(캔버스 위 4.20:1 AA 미달), Steep 90px 세리프와 peach 폐기,
+  PP Neue Montreal/Signifier → Pretendard Variable + Geist Mono
+- 미해결: 스킬 `frontend-design` 는 이 환경에 설치돼 있지 않아 로드하지 못했다.
+  `design-taste-frontend` 만 로드했다
 
-## 4. 토큰 구현      [대기]
+## 3. 감사와 삭제            [완료] 2026-08-08
 
-## 5. 홈 재구축      [대기]
+- 삭제(홈): 히어로 이미지와 용량 칩, 시공 사례 섹션(Unsplash 스톡을 실제 시공으로 표기),
+  광고 블록, 진행 과정 4단계, 커뮤니티 유도 섹션, 중복 SEO 섹션과 브레드크럼,
+  견적 CTA
+- 삭제(전역): 광고 시스템 전부(`AdZone`, `AdConsentProvider`, `adPolicy` + CSS + 테스트),
+  `/quote` 라우트와 `lib/quotes` 전부(이름·휴대전화·주소를 수집하던 유일한 폼),
+  `.env.example` 의 ADSENSE 변수 4개, `next.config.ts` 의 `images` 블록(next/image 사용처 0건),
+  죽은 CSS 규칙
+- 내비게이션: 홈·`/solar/*`·`/trust`·`/account` 에서 `/cases`·`/community` 링크 제거
+- 남김: trust 8개 페이지, 스킵 링크, PVGIS 계산 로직 전부
+- 검증: lint 통과, typecheck 통과, 테스트 88/88 통과, 프로덕션 빌드 통과,
+  dev 서버 렌더링 확인(콘솔 에러 0건, `/quote` 라우트 트리에서 사라짐)
+- 미해결:
+  - `/cases` 3개 페이지가 여전히 Unsplash 스톡 사진을 실제 시공 사례로 표기한다.
+    지시서는 홈 섹션과 내비게이션만 제거 대상으로 적었으므로 라우트는 남겼다.
+    사이트의 정직함과 정면으로 충돌하므로 아래 확인 사항 참조
+  - `/community`, `/cases` 라우트가 sitemap 과 `PUBLIC_ROUTES` 에 그대로 남아 색인 대상이다
+  - `ResultSummary` 의 "계산 결과로 질문하기"(→`/community`), "내 작업 보기"(→`/account`)
+    버튼은 남아 있다. 홈 재구축(5단계) 범위로 판단해 건드리지 않았다
+  - `docs/OPEN_OPS_ITEMS.md` 의 LAUNCH-001 검증 계약 중 광고 관련 항목은 광고 제거로
+    무효가 되었다. 재작성 필요
 
-## 6. 한국어 카피    [대기]
-
-## 7. 검수          [대기]
+## 4. 토큰 구현              [대기]
+## 5. 홈 재구축              [대기]
+## 6. 한국어 카피            [대기]
+## 7. 검수                   [대기]
 
 ---
 
 ## 사용자 확인이 필요한 사항
 
-- 새 `DESIGN.md` 와 `REDESIGN-PROMPT.md` 가 아직 저장소 루트에 없다. 현재 `C:\Users\coms\solplanit\`
-  (저장소 상위 폴더)에 있다. `AGENTS.md` 와 `AUTOMATION.md` 가 이미 두 파일을 가리키고 있으므로
-  루트에 넣어야 참조가 유효해진다.
-- `redesign/visual-refresh-2026-08` 브랜치는 지시대로 삭제하지 않고 그대로 두었다. 원격에도 남아 있다.
-- 광고 코드(`src/lib/adPolicy.ts`, 광고 존 컴포넌트)는 아직 저장소에 남아 있다. 이번 작업은 문서만
-  다뤘으므로 코드 제거는 3단계(감사와 삭제) 대상이다.
+1. **`/cases` 라우트를 어떻게 할지.** 스톡 사진 3장을 "경기 화성 48.6kW" 같은 실제
+   시공 사례로 표기하고 있다. 지시서 3절은 "최우선 제거" 라고 했지만 대상으로 적은 것은
+   홈 섹션과 내비게이션 링크였다. 라우트 자체를 지울지, 사진 없는 정직한 형태로
+   다시 쓸지 결정이 필요하다. 지금은 링크만 내려간 상태로 살아 있다.
+2. **`/community` 라우트를 어떻게 할지.** 같은 상황이다. 내비게이션에서는 내렸지만
+   라우트와 sitemap 항목은 남아 있다.
+3. **`.claude/launch.json` 을 새로 만들었다.** dev 서버를 띄워 렌더링을 검증하기 위한
+   설정 파일이다. 필요 없으면 지워도 된다.
