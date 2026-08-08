@@ -1,12 +1,18 @@
-/* 홈은 블록 두 개로 끝난다. 상단바 → 도구 → 근거 → 푸터. */
-
 .block {
-  width: min(var(--width-tool), calc(100% - var(--space-8)));
+  width: min(var(--width-content), calc(100% - var(--space-12)));
   margin: 0 auto;
   padding-top: var(--section-gap);
 }
 
 .block h1 {
+  margin: 0;
+  font-size: var(--text-hero);
+  line-height: var(--lh-hero);
+  letter-spacing: var(--ls-hero);
+  font-weight: var(--fw-hero);
+}
+
+.block h2 {
   margin: 0;
   font-size: var(--text-display);
   line-height: var(--lh-display);
@@ -14,31 +20,100 @@
   font-weight: var(--fw-display);
 }
 
-.block h2 {
-  margin: 0;
-  font-size: var(--text-heading);
-  line-height: var(--lh-heading);
-  letter-spacing: var(--ls-heading);
-  font-weight: var(--fw-heading);
-}
-
 .blockLead {
-  margin: var(--space-2) 0 0;
+  margin: var(--space-4) 0 0;
+  max-width: 560px;
   color: var(--ink-muted);
   font-size: var(--text-body);
   line-height: var(--lh-body);
 }
 
-/* 도구 */
+.homeEyebrow {
+  margin: 0 0 var(--space-4);
+  color: var(--ink-muted);
+  font-family: var(--font-num);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
 
-.tool { margin-top: var(--space-6); display: grid; gap: var(--space-6); }
+/* 첫 화면: 설명과 계산기를 한 제품 화면처럼 병렬 배치한다. */
+.blockTool {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(480px, 1.18fr);
+  align-items: start;
+  gap: var(--space-16);
+}
+
+.toolIntro {
+  min-width: 0;
+  padding-top: var(--space-8);
+}
+
+.homeFlow {
+  margin-top: var(--space-12);
+  border-top: var(--border-hairline);
+}
+
+.homeFlowCurrent,
+.homeFlow > a {
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-hairline);
+}
+
+.homeFlowCurrent { grid-template-columns: 34px minmax(0, 1fr); }
+.homeFlow .num { color: var(--ink-muted); font-size: var(--text-caption); }
+.homeFlow strong { font-size: var(--text-body); font-weight: 450; }
+.homeFlow p { margin: 2px 0 0; color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
+.homeFlow > a { transition: padding var(--dur-fast) var(--ease); }
+.homeFlow > a:hover { padding-left: var(--space-2); }
+.homeFlow > a:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+
+.homePromise {
+  margin: var(--space-6) 0 0;
+  color: var(--ink-muted);
+  font-size: var(--text-caption);
+  line-height: var(--lh-caption);
+}
+
+.calculatorStage {
+  overflow: hidden;
+  border: var(--border-hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.calculatorStageHeader {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0 var(--space-8);
+  border-bottom: var(--border-hairline);
+  color: var(--ink-muted);
+  font-size: var(--text-caption);
+}
+
+.calculatorStageHeader .num {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* 계산기 */
+.tool { display: grid; gap: 0; }
 
 .toolCard {
   padding: var(--space-8);
   display: grid;
   gap: var(--space-6);
-  border: var(--border-hairline);
-  border-radius: var(--radius-card);
+  border: 0;
+  border-radius: 0;
   background: var(--surface);
 }
 
@@ -65,9 +140,7 @@
 }
 
 .field select { font-family: var(--font-kr); }
-
 .fieldRow { display: flex; align-items: center; gap: var(--space-2); }
-
 .unitToggle { display: flex; gap: var(--space-1); }
 
 .unitToggle button {
@@ -92,14 +165,17 @@
 }
 
 .fieldError { margin: 0; color: var(--ink); font-size: var(--text-caption); }
-
 .choiceRow { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .choiceRow label { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 48px; color: var(--ink); font-size: var(--text-body); font-weight: var(--fw-body); }
 .choiceRow input { width: 18px; height: 18px; color: var(--ink); accent-color: var(--ink); }
 
 /* 결과 */
-
-.toolResult { display: grid; gap: var(--space-4); animation: tool-result-enter var(--dur-base) var(--ease) both; }
+.toolResult {
+  padding: 0 var(--space-8) var(--space-8);
+  display: grid;
+  gap: var(--space-4);
+  animation: tool-result-enter var(--dur-base) var(--ease) both;
+}
 
 .resultRows { margin: 0; display: grid; gap: 0; }
 
@@ -113,15 +189,8 @@
 }
 
 .resultRows dt { color: var(--ink-muted); font-size: var(--text-caption); }
+.resultRows dd { margin: 0; font-size: var(--text-num-row); font-weight: var(--fw-body); text-align: right; }
 
-.resultRows dd {
-  margin: 0;
-  font-size: var(--text-num-row);
-  font-weight: var(--fw-body);
-  text-align: right;
-}
-
-/* 페이지 전체에서 색이 있는 면은 여기 한 곳뿐이다. */
 .resultFill {
   display: grid;
   gap: var(--space-2);
@@ -131,16 +200,23 @@
 }
 
 .resultFill span { color: var(--result-ink-muted); font-size: var(--text-caption); }
-
-.resultFill strong {
-  color: var(--result-ink);
-  font-size: var(--text-num-result);
-  font-weight: var(--fw-body);
-  line-height: 1;
-}
-
+.resultFill strong { color: var(--result-ink); font-size: var(--text-num-result); font-weight: var(--fw-body); line-height: 1; }
 .resultSource { margin: 0; color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
 .resultSource a { text-decoration: underline; text-underline-offset: 3px; }
+
+.resultNextStep {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-top: var(--border-hairline);
+  border-bottom: var(--border-hairline);
+}
+
+.resultNextStep p { margin: 0; color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
+.resultNextStep a { min-height: 48px; display: inline-flex; align-items: center; font-size: var(--text-body); }
+.resultNextStep a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .toolDetails { border-top: var(--border-hairline); padding-top: var(--space-4); }
 .toolDetails summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; font-size: var(--text-body); font-weight: var(--fw-body); }
@@ -150,50 +226,53 @@
 .toolDetails a { text-decoration: underline; text-underline-offset: 3px; }
 
 .assumptionGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
-
-.assumptionGrid label {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: var(--space-1) var(--space-2);
-  padding: var(--space-3);
-  border: var(--border-hairline);
-  border-radius: var(--radius-input);
-  background: var(--surface);
-}
-
+.assumptionGrid label { min-width: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--space-1) var(--space-2); padding: var(--space-3); border: var(--border-hairline); border-radius: var(--radius-input); background: var(--surface); }
 .assumptionGrid label > span { grid-column: 1 / -1; color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); }
 .assumptionGrid input { min-width: 0; width: 100%; min-height: 40px; border: 0; background: transparent; color: var(--ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-body); }
 .assumptionGrid b { color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); white-space: nowrap; }
 
 /* 근거 */
-
-.evidenceRows { margin: var(--space-6) 0 0; display: grid; gap: 0; border-top: var(--border-hairline); }
-
-.evidenceRows > div {
+.blockEvidence {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: var(--space-4);
-  padding: var(--space-3) 0;
-  border-bottom: var(--border-hairline);
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: var(--space-16);
 }
 
+.evidenceIntro { padding-top: var(--space-2); }
+.evidenceMethodLink { min-height: 48px; margin-top: var(--space-6); display: inline-flex; align-items: center; font-size: var(--text-body); }
+.evidenceMethodLink:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.evidenceRows { margin: 0; display: grid; gap: 0; border-top: var(--border-hairline); }
+.evidenceRows > div { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: var(--space-4); padding: var(--space-4) 0; border-bottom: var(--border-hairline); }
 .evidenceRows dt { color: var(--ink-muted); font-size: var(--text-caption); }
 .evidenceRows dd { margin: 0; font-size: var(--text-body); line-height: var(--lh-body); }
-
-.evidenceMore { margin: var(--space-4) 0 0; font-size: var(--text-body); }
-.evidenceMore a { min-height: 48px; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 3px; }
 
 @keyframes tool-result-enter {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (max-width: 1023px) {
+  .blockTool,
+  .blockEvidence { grid-template-columns: 1fr; gap: var(--space-12); }
+  .toolIntro { padding-top: 0; }
+  .homeFlow { max-width: 640px; }
+  .calculatorStage { width: min(100%, 720px); }
+  .blockEvidence .blockLead { max-width: 640px; }
+}
+
 @media (max-width: 767px) {
-  .block { width: min(100% - var(--space-8), var(--width-tool)); }
+  .block { width: min(100% - var(--space-8), var(--width-content)); }
+  .blockTool, .blockEvidence { gap: var(--space-8); }
+  .homeFlowCurrent, .homeFlow > a { min-height: 72px; grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .homeFlowCurrent { grid-template-columns: 28px minmax(0, 1fr); }
+  .homeFlow p { display: none; }
+  .calculatorStageHeader { padding: 0 var(--space-6); }
   .toolCard { padding: var(--space-6); }
+  .toolResult { padding: 0 var(--space-6) var(--space-6); }
   .resultFill { padding: var(--space-6); }
+  .resultNextStep { grid-template-columns: 1fr; gap: var(--space-2); }
   .assumptionGrid { grid-template-columns: 1fr; }
   .evidenceRows > div { grid-template-columns: 1fr; gap: var(--space-1); }
 }

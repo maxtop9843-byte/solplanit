@@ -17,6 +17,7 @@
   --font-num: var(--font-num-loaded), 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
 
   /* 타입 스케일 — 한글 */
+  --text-hero:      46px;  --lh-hero:     1.18;  --ls-hero:     -0.018em;  --fw-hero:     300;
   --text-display:   32px;  --lh-display:  1.30;  --ls-display:  -0.01em;   --fw-display:  300;
   --text-heading:   24px;  --lh-heading:  1.35;  --ls-heading:  -0.008em;  --fw-heading:  350;
   --text-subhead:   19px;  --lh-subhead:  1.45;  --ls-subhead:  -0.005em;  --fw-subhead:  350;
@@ -24,7 +25,7 @@
   --text-caption:   13px;  --lh-caption:  1.60;  --ls-caption:  0;         --fw-caption:  450;
 
   /* 타입 스케일 — 숫자 */
-  --text-num-result: 48px; --ls-num: -0.02em;
+  --text-num-result: 60px; --ls-num: -0.02em;
   --text-num-row:    20px;
 
   /* 간격 */
@@ -53,8 +54,9 @@
 @media (max-width: 767px) {
   :root {
     --section-gap:     56px;
+    --text-hero:       34px;
     --text-display:    26px;
-    --text-num-result: 36px;
+    --text-num-result: 48px;
   }
 }
 
@@ -64,7 +66,6 @@ html {
   word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
-  /* 본문에 섞인 숫자까지 자릿수가 흔들리지 않게 한다. */
   font-variant-numeric: tabular-nums;
   background: var(--canvas);
   color: var(--ink);
@@ -85,7 +86,6 @@ button, input, select, textarea { font: inherit; }
   letter-spacing: var(--ls-num);
 }
 
-/* 포커스는 키보드 탐색에서 항상 보인다 */
 :focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
@@ -107,18 +107,17 @@ button, input, select, textarea { font: inherit; }
 }
 
 .skipLink:focus-visible { left: var(--space-4); }
-
 #main:focus { outline: none; }
 
-/* 상단바는 투명하고 헤어라인이 없다. */
 .siteHeader {
-  width: min(var(--width-tool), calc(100% - var(--space-8)));
-  height: var(--space-16);
+  width: min(var(--width-content), calc(100% - var(--space-12)));
+  min-height: 72px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
+  border-bottom: var(--border-hairline);
   background: transparent;
 }
 
@@ -137,10 +136,7 @@ button, input, select, textarea { font: inherit; }
   font-weight: var(--fw-caption);
 }
 
-.desktopNav a {
-  transition: color var(--dur-fast) var(--ease);
-}
-
+.desktopNav a { transition: color var(--dur-fast) var(--ease); }
 .desktopNav a:hover {
   color: var(--ink);
   text-decoration: underline;
@@ -170,7 +166,6 @@ h1 {
   font-weight: var(--fw-body);
   transition: opacity var(--dur-fast) var(--ease);
 }
-
 .primaryButton:hover { opacity: 0.86; }
 
 .secondaryButton {
@@ -189,9 +184,8 @@ h1 {
   font-weight: var(--fw-body);
 }
 
-/* 중립성 배너와 푸터는 모든 페이지에 공통으로 붙는다. */
 .neutralityBanner {
-  width: min(var(--width-tool), calc(100% - var(--space-8)));
+  width: min(var(--width-content), calc(100% - var(--space-12)));
   margin: var(--section-gap) auto 0;
   padding: var(--space-8);
   border: var(--border-hairline);
@@ -201,12 +195,13 @@ h1 {
 
 .neutralityBanner p {
   margin: 0;
+  max-width: 760px;
   font-size: var(--text-body);
   line-height: var(--lh-body);
 }
 
 .siteFooter {
-  width: min(var(--width-tool), calc(100% - var(--space-8)));
+  width: min(var(--width-content), calc(100% - var(--space-12)));
   margin: var(--section-gap) auto 0;
   padding: var(--space-6) 0 var(--section-gap);
   border-top: var(--border-hairline);
@@ -242,7 +237,6 @@ h1 {
 
 .siteFooterNav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
-/* 문장 속 인라인 링크가 아닌 독립 탐색 링크는 터치 타깃 48px 를 지킨다. */
 .brand,
 .desktopNav a,
 .siteFooterNav a,
@@ -254,13 +248,14 @@ h1 {
 
 @media (max-width: 767px) {
   .siteHeader {
-    width: min(100% - var(--space-8), var(--width-tool));
-    height: 64px;
+    width: min(100% - var(--space-8), var(--width-content));
+    min-height: 64px;
     gap: var(--space-4);
   }
   .desktopNav { gap: var(--space-4); }
+  .desktopNav a:nth-child(n + 3) { display: none; }
   .neutralityBanner,
-  .siteFooter { width: min(100% - var(--space-8), var(--width-tool)); }
+  .siteFooter { width: min(100% - var(--space-8), var(--width-content)); }
   .neutralityBanner { padding: var(--space-6); }
   .primaryButton, .secondaryButton { width: 100%; }
 }
