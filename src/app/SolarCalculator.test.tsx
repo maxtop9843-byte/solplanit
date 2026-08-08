@@ -32,6 +32,18 @@ describe("SolarCalculator", () => {
     expect(screen.getByRole("link", { name: /가정과 출처 보기/ })).toHaveAttribute("href", "/trust/methodology");
   });
 
+  it("makes unavailable money results explicit instead of inventing numbers", () => {
+    render(<SolarCalculator />);
+
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+
+    expect(screen.getByRole("note", { name: "아직 제공하지 않는 금액 결과" })).toHaveTextContent(
+      "설치비·보조금·전기요금 절감액은 아직 표시하지 않습니다.",
+    );
+    expect(screen.getByText(/2026년 공식 지원 자료와 한국전력 요금 모델 검증이 끝난 값만/)).toBeInTheDocument();
+  });
+
   it("lets a user say they do not know the roof area without inventing a result", () => {
     render(<SolarCalculator />);
 

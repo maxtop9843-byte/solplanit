@@ -136,6 +136,11 @@ export default function SolarCalculator() {
             <Link href={preciseAnalysisHref}>정밀 발전량 계산하기 →</Link>
           </div>
 
+          <div className="resultAvailability" role="note" aria-label="아직 제공하지 않는 금액 결과">
+            <strong>설치비·보조금·전기요금 절감액은 아직 표시하지 않습니다.</strong>
+            <p>2026년 공식 지원 자료와 한국전력 요금 모델 검증이 끝난 값만 보여드리기 위해, 지금은 임의 금액을 만들지 않습니다.</p>
+          </div>
+
           <details className="toolDetails">
             <summary>이 숫자는 어떻게 계산했나요?</summary>
             <p>패널 한 장을 {capacity.panelCapacityKw}kW로 보고, 통로와 점검 공간을 포함해 한 장당 {capacity.panelFootprintM2}m²가 필요하다고 계산했습니다. {building}은 지붕 면적의 약 {Math.round(capacity.usableAreaRatio * 100)}%를 실제 배치 가능 면적으로 봅니다.</p>
