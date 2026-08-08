@@ -1,42 +1,183 @@
-# SolPlanit Calculation Specification
+# SolPlanit Calculation Specification — Search-first V3
 
-Extracted from `PRODUCT_SPEC.md` §6 on 2026-08-08 when the rest of that document was archived.
+이 문서는 SolPlanit의 계산 엔진과 결과 표시가 따라야 하는 **현재 정본 계약**이다.
 
-This is a live engineering contract: the calculation code and its tests implement exactly these
-formulas. The redesign changes presentation, not arithmetic. Any change here requires a matching
-change in the calculation modules and their tests.
+과거 `PRODUCT_SPEC.md`에서 옮겨온 단순 발전량·SMP·REC 공식은 더 이상 주택용 기본 화면의 제품 계약이 아니다. 새 계산기는 이 문서의 데이터 경계와 검증 원칙을 먼저 따른다.
 
-The remaining sections of the old product specification are archived at
-`docs/archive/PRODUCT_SPEC.md` and are no longer valid.
+---
 
-## Calculation baseline
+## 0. 절대 원칙
 
-- Daily generation = capacity (kW) × average daily generation hours
-- Monthly generation = capacity × average daily generation hours × days in month
-- Annual generation = capacity × average daily generation hours × 365
-- Monthly REC quantity = monthly generation (kWh) × REC weight ÷ 1000
-- REC revenue = REC quantity × REC price
-- SMP revenue = monthly generation × SMP price
-- Total generation revenue = SMP revenue + REC revenue
+1. 일반 사용자에게 스스로 알기 어려운 전문 변수를 기본 입력으로 요구하지 않는다.
+2. 입력하지 않은 값이나 확인하지 않은 데이터를 그럴듯한 숫자로 채우지 않는다.
+3. `0`과 `확인된 정보 없음`을 구분한다.
+4. 공식 데이터, 계산 가정, 기준일, 출처를 결과 가까이에 표시할 수 있어야 한다.
+5. 주택용 절감 계산과 발전사업자용 SMP·REC 계산을 분리한다.
+6. 정확한 단일값보다 범위가 정직한 경우 범위로 표시한다.
+7. 사용자에게 노출되는 모든 계산값은 테스트 가능한 계산 모듈에서 나온다.
 
-All results must be presented as estimates. Regional solar resource, roof geometry, shading,
-structural conditions, equipment efficiency, losses, tariff rules, and market prices may change
-actual results.
+---
 
-## Professional analysis source
+## 1. 계산 영역 분리
 
-Professional generation estimates come from the European Commission JRC PVGIS 5.3 non-interactive
-API rather than the baseline formulas above. The verified parameter mapping, response field mapping,
-and error behaviour are recorded in `docs/QA-002-PVGIS-5.3-VALIDATION.md`.
+### A. 설치 가능 용량
 
-## Required test coverage
+목적: `우리 지붕에 얼마나 설치할 수 있나요?`
 
-For every calculation change, cover:
+기본 입력 후보:
 
-- Units
-- Boundary values
-- Rounding
-- Missing inputs
-- Invalid inputs
-- Assumption changes
-- Monthly and annual consistency
+- 건물 종류
+- 지붕 면적, 알고 있을 때만
+
+원칙:
+
+- 지붕 면적을 모르면 임의 면적을 만들어 용량을 계산하지 않는다.
+- 면적 대비 설치 가능 용량에 적용하는 모듈 면적·배치 여유·사용 가능 면적 비율은 근거와 가정으로 관리한다.
+- 구조 안전, 음영, 옥상 장애물, 법규 검토가 필요한 한계를 결과에 표시한다.
+- 패널 수와 용량은 동일한 모듈 사양 가정을 사용해 서로 일관되어야 한다.
+
+### B. 위치 기반 발전량
+
+목적: `우리 지역에서 얼마나 발전하나요?`
+
+기본 입력:
+
+- 위치 또는 지역
+- 설치 용량
+
+상세 조건:
+
+- 경사
+- 방위
+- 필요한 경우에만 추가 시스템 조건
+
+기본 공개 계산은 JRC PVGIS 5.3처럼 검증된 위치 기반 데이터를 사용한다. API 파라미터와 응답 매핑은 `docs/QA-002-PVGIS-5.3-VALIDATION.md`를 따른다.
+
+과거의 아래 단순식은 **주택용 공개 계산기의 기본 엔진으로 사용하지 않는다.**
+
+- `일 발전량 = 설치 용량 × 평균 일 발전시간`
+- `연 발전량 = 설치 용량 × 평균 일 발전시간 × 365`
+
+`평균 일 발전시간`을 일반 사용자에게 입력시키지 않는다. 기존 코드 호환이나 회귀 테스트에 남아 있다면 `legacy`로 취급하고 새 페이지가 의존하지 않게 단계적으로 제거한다.
+
+PVGIS를 조회할 수 없는 경우 임의의 전국 평균값으로 대체하지 않는다. 재시도 가능한 오류, 데이터 없음, 간단 추정 가능 여부를 구분한다.
+
+### C. 설치비와 보조금
+
+목적: `설치하면 실제로 얼마가 드나요?`
+
+데이터 원칙:
+
+- 한국에너지공단, 정부, 지자체의 공식 사업 기준과 공고를 우선한다.
+- 지역, 연도, 대상, 용량 조건, 지원액 또는 지원율, 확인일, 출처를 함께 저장한다.
+- 공식 사업 기준단가와 실제 시장 견적은 같은 값처럼 섞지 않는다.
+- 확인되지 않은 지역의 지원금은 다른 지역 값으로 추정하지 않는다.
+
+결과 상태:
+
+- `확인됨`: 공식 출처와 기준일이 있는 값
+- `조건부`: 대상·기간·용량 등 조건 충족 여부가 추가로 필요한 값
+- `확인된 정보 없음`: 현재 데이터셋에서 확인하지 못한 경우
+
+### D. 전기요금 절감
+
+목적: `태양광을 설치하면 전기요금이 얼마나 줄어드나요?`
+
+기본 입력 후보:
+
+- 지역
+- 월 전기 사용량(kWh) 또는 사용자가 알고 있는 월 전기요금
+- 설치 용량 또는 앞선 계산기의 설치 용량
+
+원칙:
+
+- 단일 고정 `원/kWh` 값으로 한국전력 주택용 요금을 대체하지 않는다.
+- 금액 비교를 제공하려면 검증된 한국전력 요금 모델을 사용한다.
+- 사용자가 월 전기요금만 아는 경우 사용량을 역산할 수 있다는 근거가 검증되기 전에는 정확한 kWh로 가장하지 않는다.
+- 발전량과 실제 자가소비량은 같은 개념이 아니다. 시간대별 부하 정보가 없는 상태에서 정확한 자가소비율을 안다고 가정하지 않는다.
+- 자가소비에 불확실성이 있으면 사용자가 전문 비율을 입력하게 하는 대신, 근거가 명시된 시나리오 범위 또는 금액 계산 보류 중 더 정직한 방식을 선택한다.
+
+`DATA-002`가 완료되기 전에는 새 공개 페이지에서 확정적인 전기요금 절감액을 만들지 않는다.
+
+### E. 회수기간
+
+목적: `몇 년이면 설치비를 회수하나요?`
+
+최소 계산:
+
+`단순 회수기간 = 확인된 실부담액 ÷ 검증된 연간 절감액`
+
+둘 중 하나라도 검증되지 않았으면 확정 회수기간을 표시하지 않는다.
+
+금융비용, 유지관리비, 성능저하 등을 반영할 때는 상세 조건 또는 별도 시나리오로 분리하고 기본 결과와 섞지 않는다.
+
+### F. 발전사업자 수익
+
+주택용 절감 흐름과 별도 영역으로 유지한다.
+
+기존 공식:
+
+- `월 REC 수량 = 월 발전량(kWh) × REC 가중치 ÷ 1000`
+- `REC 수익 = REC 수량 × REC 가격`
+- `SMP 수익 = 월 발전량 × SMP 가격`
+- `총 발전수익 = SMP 수익 + REC 수익`
+
+이 공식은 발전사업자 계산기에서만 사용한다. SMP, REC, REC 가중치를 주택용 계산기의 기본 입력에 노출하지 않는다. 가격과 가중치는 기준일과 출처가 있는 경우에만 자동값으로 제공한다.
+
+---
+
+## 2. 공통 결과 모델
+
+새 계산기는 가능하면 결과를 다음 메타데이터와 함께 다룬다.
+
+- 계산값과 단위
+- 상태: `verified | estimated | unavailable | error`
+- 사용한 사용자 입력
+- 자동 적용한 가정
+- 데이터 출처
+- 데이터 또는 공고 기준일
+- 계산 시점
+- 결과의 주요 한계
+
+`estimated`는 임의값이라는 뜻이 아니다. 공개된 근거와 명시된 가정을 사용했지만 실제 현장값과 차이가 날 수 있다는 뜻으로만 사용한다.
+
+---
+
+## 3. UI와 계산 엔진 경계
+
+- UI는 계산 결과를 임의로 보정하거나 새 숫자를 만들지 않는다.
+- 입력 필드가 존재하면 실제 계산에 영향을 줘야 한다.
+- 전문 변수는 `상세 조건`을 열었을 때만 나타나야 하며, 기본값이 있다면 근거를 설명할 수 있어야 한다.
+- 외부 데이터 로딩, 오류, 데이터 없음은 각각 다른 상태로 표시한다.
+- 한 계산기의 결과를 다음 계산기에 넘길 때 단위와 출처 메타데이터를 잃지 않는다.
+
+---
+
+## 4. 마이그레이션 규칙
+
+기존 코드에 과거 계산 공식과 입력이 남아 있을 수 있다.
+
+1. 새 페이지는 legacy 평균 일 발전시간 기반 발전량 계산에 새로 의존하지 않는다.
+2. 주택용 화면에서 SMP·REC 로직을 다시 끌어오지 않는다.
+3. 기존 계산을 제거하거나 변경할 때 테스트도 함께 변경한다.
+4. 계산 결과가 달라지는 변경은 UI 리디자인과 섞어서 조용히 처리하지 말고 PR에서 계산 변경임을 명시한다.
+5. `REBUILD-001`에서는 검증되지 않은 비용·보조금·절감액을 화면 완성도를 위해 임시 숫자로 채우지 않는다.
+
+---
+
+## 5. Required test coverage
+
+모든 계산 변경은 최소한 다음을 검증한다.
+
+- 단위
+- 경계값
+- 반올림
+- 누락 입력
+- 잘못된 입력
+- `0`과 `정보 없음` 구분
+- 가정 변경
+- 월간·연간 일관성
+- 출처·기준일 메타데이터 유지
+- 외부 데이터 오류와 재시도 상태
+
+비용·보조금·전기요금·발전량처럼 외부 기준이 바뀌는 계산은 fixture 또는 버전이 고정된 테스트 데이터를 사용해 재현 가능해야 한다.
