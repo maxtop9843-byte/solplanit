@@ -153,7 +153,7 @@ describe("SolarCalculator", () => {
   it("links a capacity result to the precise generation calculator", () => {
     render(<SolarCalculator />);
     fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
-    fireEvent.click(screen.getByRole("button", { name: /설치 가능 용량 계산하기/ }));
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     const link = screen.getByRole("link", { name: /정밀 발전량 계산하기/ });
     expect(link).toHaveAttribute("href", expect.stringContaining("/pro?source=general&capacity=9.45"));
