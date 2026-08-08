@@ -21,11 +21,6 @@ export const SEARCH_INTENT_ROUTES = [
 export const PUBLIC_ROUTES = [
   "/",
   "/pro",
-  "/cases",
-  "/cases/hwaseong-factory-48kw",
-  "/cases/asan-house-6kw",
-  "/cases/gimpo-store-18kw",
-  "/community",
   ...SEARCH_INTENT_ROUTES,
   ...GUIDE_ROUTES,
   ...TRUST_ROUTES,

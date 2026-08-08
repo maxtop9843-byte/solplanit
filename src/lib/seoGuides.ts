@@ -3,7 +3,7 @@ import type { SeoGuideContent } from "../components/SeoGuide";
 const commonLinks = [
   { href: "/#calculator", label: "설치 가능 용량 계산", description: "건물 유형과 면적으로 예상 설치 규모를 확인합니다." },
   { href: "/pro", label: "전문가 발전량 분석", description: "좌표, 경사, 방위와 손실률을 반영해 더 정밀하게 검토합니다." },
-  { href: "/cases", label: "설치 사례 비교", description: "비슷한 건물과 설치 목적의 예시를 살펴봅니다." },
+  { href: "/trust/assumptions", label: "가정과 한계", description: "이 계산이 무엇을 전제했고 어디까지만 말할 수 있는지 밝힙니다." },
 ];
 
 export const homeSeoGuide: SeoGuideContent = {

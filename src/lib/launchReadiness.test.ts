@@ -9,8 +9,6 @@ import { TRUST_ROUTES, trustPages } from "./trustContent";
 const requiredLaunchRoutes = [
   "/",
   "/pro",
-  "/cases",
-  "/community",
   "/guides",
   "/trust",
 ] as const;
