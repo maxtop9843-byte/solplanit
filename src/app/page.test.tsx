@@ -6,7 +6,7 @@ describe("HomePage", () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole("heading", { name: /태양광 설치, 감이 아니라 숫자로 결정하세요/ }),
+      screen.getByRole("heading", { name: /태양광 설치,\s*감이 아니라 숫자로 결정하세요/ }),
     ).toBeInTheDocument();
     expect(screen.getByText(/계정 없음 · 영업 연락 없음 · 계산 근거 공개/)).toBeInTheDocument();
   });
@@ -24,7 +24,7 @@ describe("HomePage", () => {
   it("states where every number comes from", () => {
     render(<HomePage />);
 
-    expect(screen.getByRole("heading", { name: /결과보다 먼저, 근거를 확인할 수 있게/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /결과보다 먼저,\s*근거를 확인할 수 있게/ })).toBeInTheDocument();
     expect(screen.getByText(/PVGIS 5.3/)).toBeInTheDocument();
     expect(screen.getByText("갱신일")).toBeInTheDocument();
   });
