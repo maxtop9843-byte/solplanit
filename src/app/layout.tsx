@@ -97,7 +97,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="ko" className={`${pretendard.variable} ${geistMono.variable}`}>
       <body>
-        {children}
+        <a className="skipLink" href="#main">본문으로 건너뛰기</a>
+        <div id="main" tabIndex={-1}>{children}</div>
         <SiteFooter />
         <script
           type="application/ld+json"
