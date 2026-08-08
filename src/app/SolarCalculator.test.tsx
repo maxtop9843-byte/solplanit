@@ -141,13 +141,18 @@ describe("SolarCalculator", () => {
     expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
   });
 
-  it("rejects an area below the documented minimum", () => {
+  it("uses the calculation contract for the same area error on blur and submit", () => {
     render(<SolarCalculator />);
 
-    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "1" } });
-    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    const areaInput = screen.getByLabelText("지붕 면적");
+    fireEvent.change(areaInput, { target: { value: "1" } });
+    fireEvent.blur(areaInput);
 
-    expect(screen.getByRole("alert")).toHaveTextContent("5m² 이상 넣어주세요");
+    const expectedMessage = "패널 한 장도 놓기 어려운 면적입니다. 5m² 이상 넣어주세요.";
+    expect(screen.getByRole("alert")).toHaveTextContent(expectedMessage);
+
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    expect(screen.getByRole("alert")).toHaveTextContent(expectedMessage);
   });
 
   it("links a capacity result to the precise generation calculator", () => {
