@@ -24,6 +24,7 @@ export default function SolarCalculator() {
   const [error, setError] = useState("");
   const focusAreaOnReturnRef = useRef(false);
   const areaInputRef = useRef<HTMLInputElement>(null);
+  const unknownAreaHelpRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,7 +32,12 @@ export default function SolarCalculator() {
   }, [capacity]);
 
   useEffect(() => {
-    if (!areaUnknown && focusAreaOnReturnRef.current) {
+    if (areaUnknown) {
+      unknownAreaHelpRef.current?.focus();
+      return;
+    }
+
+    if (focusAreaOnReturnRef.current) {
       areaInputRef.current?.focus();
       focusAreaOnReturnRef.current = false;
     }
@@ -134,7 +140,13 @@ export default function SolarCalculator() {
               </button>
             </>
           ) : (
-            <div className="fieldUnknown" id="unknown-area-help" role="status">
+            <div
+              ref={unknownAreaHelpRef}
+              className="fieldUnknown"
+              id="unknown-area-help"
+              role="status"
+              tabIndex={-1}
+            >
               <strong>면적을 모르면 용량을 임의로 계산하지 않습니다.</strong>
               <p>지붕 면적을 확인한 뒤 다시 계산해 주세요. 주소나 건물 정보만으로 면적을 추정하는 기능은 공식 근거를 확인한 뒤 추가할 예정입니다.</p>
               <div className="fieldUnknownActions">
