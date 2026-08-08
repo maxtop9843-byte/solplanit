@@ -16,8 +16,8 @@ describe("SolarCalculator", () => {
 
     // 주택 100m² → 55m² 배치 가능 → 2.6m²/장 → 21장 → 9.45kW
     expect(screen.getByText("설치 가능 용량")).toBeInTheDocument();
-    expect(screen.getByText("9.5 kW")).toBeInTheDocument();
-    expect(screen.getByText("21 장")).toBeInTheDocument();
+    expect(screen.getByText("9.5kW")).toBeInTheDocument();
+    expect(screen.getByText("21장")).toBeInTheDocument();
   });
 
   it("keeps exactly one result-fill surface", () => {
@@ -34,7 +34,7 @@ describe("SolarCalculator", () => {
     fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "1" } });
     fireEvent.click(screen.getByRole("button", { name: "계산하기" }));
 
-    expect(screen.getByRole("alert")).toHaveTextContent("5m² 이상");
+    expect(screen.getByRole("alert")).toHaveTextContent("5m² 이상 넣어주세요");
   });
 
   it("calculates economics only from user-entered assumptions", () => {

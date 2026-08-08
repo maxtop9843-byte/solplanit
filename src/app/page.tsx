@@ -30,10 +30,10 @@ const homeStructuredData = [
 ];
 
 const evidence = [
-  ["발전량", "유럽집행위원회 JRC PVGIS 5.3 공개 일사량"],
   ["설치 용량", "건물 유형별 배치 가능 비율과 패널 규격 가정"],
+  ["발전량", "유럽집행위원회 JRC PVGIS 5.3 공개 일사량"],
   ["갱신일", "2026-08-08"],
-  ["한계", "현장 조건에 따라 달라집니다"],
+  ["한계", "지붕 상태와 음영은 현장에서 봐야 압니다"],
 ];
 
 export default function HomePage() {
@@ -51,12 +51,13 @@ export default function HomePage() {
       <main>
         <section className="block blockTool" aria-labelledby="tool-title">
           <h1 id="tool-title">우리 건물에 태양광, 얼마나 올릴 수 있나요</h1>
-          <p className="blockLead">지붕 면적과 건물 유형만 넣으면 배치 가능한 용량을 계산합니다.</p>
+          <p className="blockLead">건물 유형과 지붕 면적만 넣으면 됩니다. 무리한 용량은 권하지 않습니다.</p>
           <SolarCalculator />
         </section>
 
         <section className="block blockEvidence" aria-labelledby="evidence-title">
           <h2 id="evidence-title">이 숫자가 어디서 왔는지</h2>
+          <p className="blockLead">맞지 않으면 맞지 않다고 말씀드립니다. 계산에 쓴 가정을 숨기지 않습니다.</p>
           <dl className="evidenceRows">
             {evidence.map(([label, value]) => (
               <div key={label}><dt>{label}</dt><dd>{value}</dd></div>

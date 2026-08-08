@@ -6,7 +6,7 @@ export const SITE_URL = "https://solplanit.com";
 export const SITE_NAME = "SolPlanit";
 
 export const SITE_DESCRIPTION =
-  "태양광 설치 가능 용량과 예상 발전량·수익을 계산하고, 견적과 전문가 분석까지 이어가는 태양광 설치 의사결정 플랫폼";
+  "태양광 설치 가능 용량과 예상 발전량을 계산하고, 계산에 쓴 가정과 출처를 그대로 공개하는 무료 도구입니다. 시공사가 아니며 견적을 중개하지 않습니다.";
 
 export const SEARCH_INTENT_ROUTES = [
   "/solar/solar-installation-capacity",

@@ -69,31 +69,31 @@ const round = (value: number, digits: number) => {
 };
 
 export function convertAreaToSquareMeters(area: number, unit: AreaUnit): number {
-  if (!Number.isFinite(area)) throw new CapacityInputError("설치 면적을 숫자로 입력해주세요.");
+  if (!Number.isFinite(area)) throw new CapacityInputError("면적을 숫자로 넣어주세요. 예: 100");
   return unit === "pyeong" ? area * CAPACITY_METHOD.squareMetersPerPyeong : area;
 }
 
 export function estimateInstallableCapacity(input: CapacityInput): CapacityResult {
   if (!BUILDING_TYPES.includes(input.buildingType)) {
-    throw new CapacityInputError("지원하는 건물 유형을 선택해주세요.");
+    throw new CapacityInputError("건물 유형을 다시 선택해주세요.");
   }
   if (!AREA_UNITS.includes(input.areaUnit)) {
-    throw new CapacityInputError("지원하는 면적 단위를 선택해주세요.");
+    throw new CapacityInputError("면적 단위를 다시 선택해주세요.");
   }
 
   const areaM2Raw = convertAreaToSquareMeters(input.area, input.areaUnit);
   if (areaM2Raw < CAPACITY_METHOD.minimumAreaM2) {
-    throw new CapacityInputError(`설치 면적은 ${CAPACITY_METHOD.minimumAreaM2}m² 이상 입력해주세요.`);
+    throw new CapacityInputError(`패널 한 장도 놓기 어려운 면적입니다. ${CAPACITY_METHOD.minimumAreaM2}m² 이상 넣어주세요.`);
   }
   if (areaM2Raw > CAPACITY_METHOD.maximumAreaM2) {
-    throw new CapacityInputError("설치 면적이 너무 큽니다. 1,000,000m² 이하로 입력해주세요.");
+    throw new CapacityInputError("이 도구가 다루는 범위를 넘었습니다. 1,000,000m² 이하로 넣어주세요.");
   }
 
   const assumption = CAPACITY_METHOD.assumptions[input.buildingType];
   const usableAreaM2Raw = areaM2Raw * assumption.usableAreaRatio;
   const panelCount = Math.floor(usableAreaM2Raw / assumption.panelFootprintM2);
   if (panelCount < 1) {
-    throw new CapacityInputError("입력한 조건으로 배치 가능한 패널이 없습니다. 면적을 다시 확인해주세요.");
+    throw new CapacityInputError("이 조건으로는 패널을 한 장도 놓을 수 없습니다. 면적을 다시 확인해주세요.");
   }
 
   return {

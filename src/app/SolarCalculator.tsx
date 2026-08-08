@@ -50,7 +50,7 @@ export default function SolarCalculator() {
       setCapacity(estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit }));
     } catch (caught) {
       setCapacity(null);
-      setError(caught instanceof CapacityInputError ? caught.message : "설치 가능 용량을 계산하지 못했어요. 입력값을 확인해주세요.");
+      setError(caught instanceof CapacityInputError ? caught.message : "설치 가능 용량을 계산하지 못했습니다. 넣은 값을 확인해주세요.");
     }
   }
 
@@ -72,7 +72,7 @@ export default function SolarCalculator() {
       }));
     } catch (caught) {
       setEconomics(null);
-      setEconomicsError(caught instanceof EconomicsInputError ? caught.message : "발전량과 수익을 계산하지 못했어요. 입력한 값을 확인해주세요.");
+      setEconomicsError(caught instanceof EconomicsInputError ? caught.message : "발전량과 수익을 계산하지 못했습니다. 넣은 값을 확인해주세요.");
     }
   }
 
@@ -96,7 +96,7 @@ export default function SolarCalculator() {
               min="0"
               value={area}
               onChange={(event) => setArea(event.target.value)}
-              onBlur={() => { if (area && Number(area) <= 0) setError("0보다 큰 면적을 입력해주세요."); }}
+              onBlur={() => { if (area && Number(area) <= 0) setError("0보다 큰 면적을 넣어주세요."); }}
               aria-describedby="area-help"
             />
             <div className="unitToggle" role="group" aria-label="면적 단위">
@@ -107,7 +107,7 @@ export default function SolarCalculator() {
               ))}
             </div>
           </div>
-          <small id="area-help">정확하지 않아도 됩니다. 실제로 패널을 올릴 수 있는 대략의 면적을 넣어주세요.</small>
+          <small id="area-help">정확하지 않아도 됩니다. 실제로 패널을 올릴 수 있는 대략적인 면적을 넣어주세요.</small>
         </div>
 
         {error && <p className="fieldError" role="alert">{error}</p>}
@@ -118,14 +118,14 @@ export default function SolarCalculator() {
       {capacity && (
         <div className="toolResult" aria-live="polite">
           <dl className="resultRows">
-            <div><dt>패널을 올릴 수 있는 면적</dt><dd className="num">{num(capacity.usableAreaM2)} m²</dd></div>
-            <div><dt>예상 패널 수</dt><dd className="num">{num(capacity.panelCount)} 장</dd></div>
-            <div><dt>패널 한 장 출력</dt><dd className="num">{num(capacity.panelCapacityKw, 2)} kW</dd></div>
+            <div><dt>패널을 올릴 수 있는 면적</dt><dd className="num">{num(capacity.usableAreaM2)}m²</dd></div>
+            <div><dt>예상 패널 수</dt><dd className="num">{num(capacity.panelCount)}장</dd></div>
+            <div><dt>패널 한 장 출력</dt><dd className="num">{num(capacity.panelCapacityKw, 2)}kW</dd></div>
           </dl>
 
           <div className="resultFill">
             <span>설치 가능 용량</span>
-            <strong className="num">{num(capacity.installableCapacityKw, 1)} kW</strong>
+            <strong className="num">{num(capacity.installableCapacityKw, 1)}kW</strong>
           </div>
 
           <p className="resultSource">
@@ -134,8 +134,8 @@ export default function SolarCalculator() {
 
           <details className="toolDetails">
             <summary>이 용량이 나온 근거와 한계</summary>
-            <p>패널 한 장을 {capacity.panelCapacityKw}kW, 통로를 포함한 장당 차지 면적을 {capacity.panelFootprintM2}m²로 잡았습니다. 건물 유형마다 장애물과 점검 공간을 감안해 배치 가능 비율을 다르게 적용합니다. 이번 계산은 {Math.round(capacity.usableAreaRatio * 100)}%입니다.</p>
-            <p>지붕 형태, 음영, 구조 안전, 이격거리, 소방·전기 기준, 실제 모듈 규격에 따라 결과가 달라집니다. 설치 가능 여부를 보장하지 않습니다.</p>
+            <p>패널 한 장을 {capacity.panelCapacityKw}kW로 봅니다. 통로까지 포함하면 한 장이 {capacity.panelFootprintM2}m²를 차지합니다. 건물 유형마다 장애물과 점검 공간이 다르니 배치 가능 비율도 다르게 잡는데, 이번에는 {Math.round(capacity.usableAreaRatio * 100)}%를 썼습니다.</p>
+            <p>지붕 형태와 음영, 구조 안전, 이격거리, 소방·전기 기준, 실제 모듈 규격에 따라 결과가 달라집니다. 설치할 수 있다고 보장하지 않습니다.</p>
             <ul>{CAPACITY_METHOD.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.label}</a></li>)}</ul>
           </details>
 
@@ -170,20 +170,20 @@ export default function SolarCalculator() {
 
             {economics && <>
               <dl className="resultRows">
-                <div><dt>연간 예상 발전량</dt><dd className="num">{num(economics.annualGenerationKwh)} kWh</dd></div>
+                <div><dt>연간 예상 발전량</dt><dd className="num">{num(economics.annualGenerationKwh)}kWh</dd></div>
                 {goal === "save"
-                  ? <div><dt>연간 예상 절감액</dt><dd className="num">{num(economics.annualSavings)} 원</dd></div>
+                  ? <div><dt>연간 예상 절감액</dt><dd className="num">{num(economics.annualSavings)}원</dd></div>
                   : <>
-                    <div><dt>연간 SMP 수익</dt><dd className="num">{num(economics.annualSmpRevenue)} 원</dd></div>
-                    <div><dt>연간 REC 수익</dt><dd className="num">{num(economics.annualRecRevenue)} 원</dd></div>
+                    <div><dt>연간 SMP 수익</dt><dd className="num">{num(economics.annualSmpRevenue)}원</dd></div>
+                    <div><dt>연간 REC 수익</dt><dd className="num">{num(economics.annualRecRevenue)}원</dd></div>
                   </>}
-                <div><dt>입력한 설치비</dt><dd className="num">{num(economics.installationCost)} 원</dd></div>
-                <div><dt>단순 회수기간</dt><dd className="num">{economics.paybackYears === null ? "계산 불가" : `${num(economics.paybackYears, 1)} 년`}</dd></div>
+                <div><dt>넣어주신 설치비</dt><dd className="num">{num(economics.installationCost)}원</dd></div>
+                <div><dt>단순 회수기간</dt><dd className="num">{economics.paybackYears === null ? "계산 불가" : `${num(economics.paybackYears, 1)}년`}</dd></div>
               </dl>
               <p className="resultSource">
                 계산 방법 {economics.methodVersion} 기준 · 넣어주신 가정값을 그대로 사용했습니다.
               </p>
-              <p>단순 회수기간에는 금융비용, 유지보수비, 세금, 출력 제한, 가격 변동, 설비 성능 저하가 들어 있지 않습니다.</p>
+              <p>단순 회수기간은 금융비용과 유지보수비, 세금, 출력 제한, 가격 변동, 설비 성능 저하를 빼고 계산합니다. 실제로는 이보다 길어집니다.</p>
               <ul>{ECONOMICS_METHOD.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.label}</a></li>)}</ul>
               <SaveCalculationButton calculation={{
                 href: "/pro",

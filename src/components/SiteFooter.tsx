@@ -23,7 +23,7 @@ export default function SiteFooter() {
       <footer className="siteFooter">
         <p className="siteFooterOwner">개인이 운영하는 정보 사이트</p>
         <p className="siteFooterMeta">
-          <span>운영 SolPlanit</span>
+          <span>SolPlanit</span>
           {/* 공개 연락처는 운영자가 직접 정해야 한다. 임의로 개인 메일을 싣지 않는다. */}
           <Link href="/trust/contact">문의하기</Link>
           <span>데이터 최종 갱신 2026-08-08</span>

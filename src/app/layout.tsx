@@ -31,7 +31,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "태양광 설치 계산부터 견적까지 | SolPlanit",
+    default: "태양광 설치 가능 용량 계산 | SolPlanit",
     template: "%s | SolPlanit",
   },
   description: SITE_DESCRIPTION,
@@ -50,12 +50,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: SITE_NAME,
-    title: "태양광 설치, 처음부터 끝까지 한 번에 | SolPlanit",
+    title: "태양광 설치 가능 용량 계산 | SolPlanit",
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "태양광 설치, 처음부터 끝까지 한 번에 | SolPlanit",
+    title: "태양광 설치 가능 용량 계산 | SolPlanit",
     description: SITE_DESCRIPTION,
   },
   robots: {

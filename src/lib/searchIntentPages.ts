@@ -96,9 +96,9 @@ export const searchIntentPages: SearchIntentPage[] = [
     highlights: [
       { title: "대용량 사전 산정", body: "공장·창고 유형에 맞는 면적 활용률로 예상 설치 규모를 계산합니다." },
       { title: "절감·판매 비교", body: "자가소비와 발전 판매 중 건물 운영에 맞는 목적을 비교할 수 있습니다." },
-      { title: "전문가 검토 연결", body: "계산 결과를 그대로 전문가 분석과 견적 요청에 첨부할 수 있습니다." },
+      { title: "전문가 검토로 이어가기", body: "같은 조건을 전문가용 PVGIS 분석으로 옮겨 더 정밀하게 볼 수 있습니다." },
     ],
-    steps: ["지붕 사용 가능 면적 확인", "구조·음영 조건 점검", "자가소비 또는 판매 목적 선택", "전문 분석과 견적 요청"],
+    steps: ["지붕 사용 가능 면적 확인", "구조·음영 조건 점검", "자가소비 또는 판매 목적 선택", "전문가용 분석으로 재검토"],
     related: ["solar-installation-capacity", "solar-savings", "solar-smp-rec-revenue"],
   },
   {
