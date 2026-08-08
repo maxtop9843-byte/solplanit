@@ -30,7 +30,7 @@
 .coordinateBar p{margin:0;grid-column:1/-1;color:var(--ink-muted);font-size:var(--text-caption)}
 .controlPane{min-height:540px;overflow:auto}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:var(--border-hairline);padding:0 var(--space-4)}
-.tabs button{min-height:48px;border:0;border-bottom:1px solid transparent;background:transparent;color:var(--ink-muted);font:inherit;font-size:var(--text-caption);font-weight:var(--fw-caption);cursor:pointer}
+.tabs button{min-height:48px;border:0;border-bottom:0.5px solid transparent;background:transparent;color:var(--ink-muted);font:inherit;font-size:var(--text-caption);font-weight:var(--fw-caption);cursor:pointer}
 .tabs button[aria-selected=true]{border-bottom-color:var(--ink);color:var(--ink)}
 .formSection,.emptyPanel{padding:var(--space-6);display:grid;gap:var(--space-4)}
 .panelHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4)}

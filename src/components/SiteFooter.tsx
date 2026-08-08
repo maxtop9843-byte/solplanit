@@ -24,8 +24,10 @@ export default function SiteFooter() {
         <p className="siteFooterOwner">개인이 운영하는 정보 사이트</p>
         <p className="siteFooterMeta">
           <span>SolPlanit</span>
-          {/* 공개 연락처는 운영자가 직접 정해야 한다. 임의로 개인 메일을 싣지 않는다. */}
-          <Link href="/trust/contact">문의하기</Link>
+          {/* 개인 메일 대신 공개 저장소를 투명성 채널로 쓴다. 계산 코드가 열려 있다는 것 자체가 근거다. */}
+          <a href="https://github.com/maxtop9843-byte/solplanit" target="_blank" rel="noreferrer">
+            계산 코드 공개 저장소
+          </a>
           <span>데이터 최종 갱신 2026-08-08</span>
         </p>
         <nav className="siteFooterNav" aria-label="정책과 방법론">
