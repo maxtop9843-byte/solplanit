@@ -132,7 +132,7 @@ export default function SolarCalculator() {
                   id="area"
                   type="number"
                   inputMode="decimal"
-                  min="0"
+                  step="any"
                   value={area}
                   onChange={(event) => updateArea(event.target.value)}
                   onBlur={validateAreaOnBlur}
