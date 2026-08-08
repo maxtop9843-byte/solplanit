@@ -106,19 +106,26 @@ export default function SolarCalculator() {
 
       {capacity && (
         <div className="toolResult" aria-live="polite">
+          <p className="resultSource"><strong>간단 예상치</strong> · 입력한 면적과 배치 가정을 이용한 사전 검토 결과입니다.</p>
+
           <div className="resultFill">
             <span>예상 설치 가능 용량</span>
             <strong className="num">{num(capacity.installableCapacityKw, 1)}kW</strong>
           </div>
 
           <dl className="resultRows">
+            <div>
+              <dt>입력한 지붕 면적</dt>
+              <dd className="num">{num(capacity.inputArea, Number.isInteger(capacity.inputArea) ? 0 : 1)}{capacity.inputUnit === "m2" ? "m²" : "평"}</dd>
+            </div>
+            <div><dt>적용한 배치 가능 비율</dt><dd className="num">약 {Math.round(capacity.usableAreaRatio * 100)}%</dd></div>
             <div><dt>실제로 패널을 배치하는 면적</dt><dd className="num">약 {num(capacity.usableAreaM2)}m²</dd></div>
             <div><dt>예상 패널 수</dt><dd className="num">약 {num(capacity.panelCount)}장</dd></div>
             <div><dt>계산에 사용한 패널 용량</dt><dd className="num">{num(capacity.panelCapacityKw, 2)}kW/장</dd></div>
           </dl>
 
           <p className="resultSource">
-            계산 방법 {capacity.methodVersion} 기준 · <Link href="/trust/methodology">계산 기준 보기 →</Link>
+            계산 기준 {capacity.methodVersion} · <Link href="/trust/methodology">가정과 출처 보기 →</Link>
           </p>
 
           <div className="resultNextStep">
