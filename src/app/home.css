@@ -95,7 +95,7 @@
 
 .choiceRow { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .choiceRow label { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 48px; color: var(--ink); font-size: var(--text-body); font-weight: var(--fw-body); }
-.choiceRow input { width: 18px; height: 18px; accent-color: var(--ink); }
+.choiceRow input { width: 18px; height: 18px; color: var(--ink); accent-color: var(--ink); }
 
 /* 결과 */
 
@@ -164,7 +164,7 @@
 }
 
 .assumptionGrid label > span { grid-column: 1 / -1; color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); }
-.assumptionGrid input { min-width: 0; width: 100%; min-height: 40px; border: 0; outline: 0; background: transparent; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-body); }
+.assumptionGrid input { min-width: 0; width: 100%; min-height: 40px; border: 0; background: transparent; color: var(--ink); font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-body); }
 .assumptionGrid b { color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); white-space: nowrap; }
 
 /* 근거 */

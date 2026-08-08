@@ -64,6 +64,8 @@ html {
   word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
+  /* 본문에 섞인 숫자까지 자릿수가 흔들리지 않게 한다. */
+  font-variant-numeric: tabular-nums;
   background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-kr);
@@ -135,19 +137,14 @@ button, input, select, textarea { font: inherit; }
   font-weight: var(--fw-caption);
 }
 
-.desktopNav a, .proLink {
+.desktopNav a {
   transition: color var(--dur-fast) var(--ease);
 }
 
-.desktopNav a:hover, .proLink:hover {
+.desktopNav a:hover {
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-.proLink {
-  font-size: var(--text-caption);
-  font-weight: var(--fw-caption);
 }
 
 h1 {
@@ -248,7 +245,6 @@ h1 {
 /* 문장 속 인라인 링크가 아닌 독립 탐색 링크는 터치 타깃 48px 를 지킨다. */
 .brand,
 .desktopNav a,
-.proLink,
 .siteFooterNav a,
 .siteFooterMeta a {
   min-height: 48px;
