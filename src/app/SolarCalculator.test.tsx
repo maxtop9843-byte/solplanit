@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import SolarCalculator from "./SolarCalculator";
 
@@ -16,6 +16,17 @@ describe("SolarCalculator", () => {
     expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
     expect(screen.getByText("9.5kW")).toBeInTheDocument();
     expect(screen.getByText("약 21장")).toBeInTheDocument();
+  });
+
+  it("moves keyboard focus to the result after a successful calculation", async () => {
+    render(<SolarCalculator />);
+
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+
+    const result = screen.getByRole("region", { name: "계산 결과" });
+    await waitFor(() => expect(result).toHaveFocus());
+    expect(result).toHaveAttribute("tabindex", "-1");
   });
 
   it("shows the estimate status, user input, and key layout assumption next to the result", () => {
