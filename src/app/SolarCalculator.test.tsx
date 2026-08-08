@@ -18,6 +18,20 @@ describe("SolarCalculator", () => {
     expect(screen.getByText("약 21장")).toBeInTheDocument();
   });
 
+  it("submits the calculator as a form without requiring a mouse click", () => {
+    render(<SolarCalculator />);
+
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
+    const submitButton = screen.getByRole("button", { name: "설치 가능 용량 계산하기" });
+    const form = submitButton.closest("form");
+
+    expect(form).not.toBeNull();
+    fireEvent.submit(form!);
+
+    expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
+    expect(screen.getByText("9.5kW")).toBeInTheDocument();
+  });
+
   it("moves keyboard focus to the result after a successful calculation", async () => {
     render(<SolarCalculator />);
 
@@ -139,7 +153,7 @@ describe("SolarCalculator", () => {
   it("links a capacity result to the precise generation calculator", () => {
     render(<SolarCalculator />);
     fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
-    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    fireEvent.click(screen.getByRole("button", { name: /설치 가능 용량 계산하기/ }));
 
     const link = screen.getByRole("link", { name: /정밀 발전량 계산하기/ });
     expect(link).toHaveAttribute("href", expect.stringContaining("/pro?source=general&capacity=9.45"));
