@@ -79,7 +79,13 @@ export default function SolarCalculator() {
 
   return (
     <div className="tool">
-      <div className="toolCard">
+      <form
+        className="toolCard"
+        onSubmit={(event) => {
+          event.preventDefault();
+          calculate();
+        }}
+      >
         <div className="field">
           <label htmlFor="building">건물 종류</label>
           <select id="building" value={building} onChange={(event) => updateBuilding(event.target.value as BuildingType)}>
@@ -130,8 +136,8 @@ export default function SolarCalculator() {
           )}
         </div>
 
-        {!areaUnknown && <button className="primaryButton" type="button" onClick={calculate}>설치 가능 용량 계산하기</button>}
-      </div>
+        {!areaUnknown && <button className="primaryButton" type="submit">설치 가능 용량 계산하기</button>}
+      </form>
 
       {capacity && (
         <div ref={resultRef} className="toolResult" role="region" aria-label="계산 결과" aria-live="polite" tabIndex={-1}>
