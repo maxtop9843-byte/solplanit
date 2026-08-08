@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BUILDING_TYPES,
   CAPACITY_METHOD,
@@ -23,6 +23,11 @@ export default function SolarCalculator() {
   const [capacity, setCapacity] = useState<CapacityResult | null>(null);
   const [error, setError] = useState("");
   const areaInputRef = useRef<HTMLInputElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (capacity) resultRef.current?.focus();
+  }, [capacity]);
 
   function calculate() {
     setError("");
@@ -129,7 +134,7 @@ export default function SolarCalculator() {
       </div>
 
       {capacity && (
-        <div className="toolResult" aria-live="polite">
+        <div ref={resultRef} className="toolResult" role="region" aria-label="계산 결과" aria-live="polite" tabIndex={-1}>
           <p className="resultSource"><strong>간단 예상치</strong> · 입력한 면적과 배치 가정을 이용한 사전 검토 결과입니다.</p>
 
           <div className="resultFill">
