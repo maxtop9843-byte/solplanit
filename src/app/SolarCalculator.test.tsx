@@ -92,6 +92,30 @@ describe("SolarCalculator", () => {
     expect(areaInput).toHaveAttribute("aria-describedby", "area-help");
   });
 
+  it("clears a calculated result as soon as an input that affects it changes", () => {
+    render(<SolarCalculator />);
+
+    const areaInput = screen.getByLabelText("지붕 면적");
+    fireEvent.change(areaInput, { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
+
+    fireEvent.change(areaInput, { target: { value: "110" } });
+    expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "상가" } });
+    expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "평" }));
+    expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
+  });
+
   it("rejects an area below the documented minimum", () => {
     render(<SolarCalculator />);
 
