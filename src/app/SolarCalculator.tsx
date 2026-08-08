@@ -43,6 +43,15 @@ export default function SolarCalculator() {
     }
   }, [areaUnknown]);
 
+  function getCapacityInputError() {
+    try {
+      estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit });
+      return "";
+    } catch (caught) {
+      return caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해 주세요.";
+    }
+  }
+
   function calculate() {
     setError("");
     try {
@@ -52,6 +61,11 @@ export default function SolarCalculator() {
       setError(caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해 주세요.");
       areaInputRef.current?.focus();
     }
+  }
+
+  function validateAreaOnBlur() {
+    if (!area) return;
+    setError(getCapacityInputError());
   }
 
   function invalidateResult() {
@@ -121,7 +135,7 @@ export default function SolarCalculator() {
                   min="0"
                   value={area}
                   onChange={(event) => updateArea(event.target.value)}
-                  onBlur={() => { if (area && Number(area) <= 0) setError("0보다 큰 면적을 넣어 주세요."); }}
+                  onBlur={validateAreaOnBlur}
                   aria-describedby={areaDescribedBy}
                   aria-invalid={error ? true : undefined}
                 />
