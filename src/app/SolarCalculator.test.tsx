@@ -73,6 +73,25 @@ describe("SolarCalculator", () => {
     expect(container.querySelectorAll(".resultFill")).toHaveLength(1);
   });
 
+  it("connects a roof area error to the field and clears it when the user edits the value", () => {
+    render(<SolarCalculator />);
+
+    const areaInput = screen.getByLabelText("지붕 면적");
+    fireEvent.change(areaInput, { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+
+    const error = screen.getByRole("alert");
+    expect(error).toHaveAttribute("id", "area-error");
+    expect(areaInput).toHaveAttribute("aria-invalid", "true");
+    expect(areaInput).toHaveAttribute("aria-describedby", expect.stringContaining("area-error"));
+
+    fireEvent.change(areaInput, { target: { value: "10" } });
+
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(areaInput).not.toHaveAttribute("aria-invalid");
+    expect(areaInput).toHaveAttribute("aria-describedby", "area-help");
+  });
+
   it("rejects an area below the documented minimum", () => {
     render(<SolarCalculator />);
 

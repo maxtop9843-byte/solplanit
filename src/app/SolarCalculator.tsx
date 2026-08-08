@@ -33,6 +33,11 @@ export default function SolarCalculator() {
     }
   }
 
+  function updateArea(value: string) {
+    setArea(value);
+    if (error) setError("");
+  }
+
   function showUnknownAreaHelp() {
     setAreaUnknown(true);
     setArea("");
@@ -48,6 +53,7 @@ export default function SolarCalculator() {
   const preciseAnalysisHref = capacity
     ? `/pro?source=general&capacity=${capacity.installableCapacityKw}&panels=${capacity.panelCount}`
     : "/pro";
+  const areaDescribedBy = error ? "area-help area-error" : "area-help";
 
   return (
     <div className="tool">
@@ -70,9 +76,10 @@ export default function SolarCalculator() {
                   inputMode="decimal"
                   min="0"
                   value={area}
-                  onChange={(event) => setArea(event.target.value)}
+                  onChange={(event) => updateArea(event.target.value)}
                   onBlur={() => { if (area && Number(area) <= 0) setError("0보다 큰 면적을 넣어 주세요."); }}
-                  aria-describedby="area-help"
+                  aria-describedby={areaDescribedBy}
+                  aria-invalid={error ? true : undefined}
                 />
                 <div className="unitToggle" role="group" aria-label="면적 단위">
                   {(["m2", "pyeong"] as const).map((unit) => (
@@ -83,6 +90,7 @@ export default function SolarCalculator() {
                 </div>
               </div>
               <small id="area-help">전체 지붕 면적을 대략 넣어도 됩니다. 통로와 점검 공간은 계산할 때 따로 반영합니다.</small>
+              {error && <p className="fieldError" id="area-error" role="alert">{error}</p>}
               <button className="fieldTextButton" type="button" onClick={showUnknownAreaHelp} aria-controls="unknown-area-help">
                 지붕 면적을 잘 모르겠어요
               </button>
@@ -98,8 +106,6 @@ export default function SolarCalculator() {
             </div>
           )}
         </div>
-
-        {error && <p className="fieldError" role="alert">{error}</p>}
 
         {!areaUnknown && <button className="primaryButton" type="button" onClick={calculate}>설치 가능 용량 계산하기</button>}
       </div>
