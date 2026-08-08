@@ -3,27 +3,35 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import SolarCalculator from "./SolarCalculator";
 
 describe("SolarCalculator", () => {
-  it("returns the capacity result on the same screen from one card", () => {
+  it("calculates installable capacity from inputs a general user can understand", () => {
     render(<SolarCalculator />);
 
-    // 위저드 단계가 없다. 세 입력과 버튼 하나가 한 화면에 있다.
-    expect(screen.getByLabelText("건물 유형")).toBeInTheDocument();
-    expect(screen.getByLabelText("지붕 면적")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "계산하기" })).toBeInTheDocument();
+    expect(screen.getByLabelText("건물 종류")).toBeInTheDocument();
+    expect(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "설치 가능 용량 계산하기" })).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
-    fireEvent.click(screen.getByRole("button", { name: "계산하기" }));
+    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
-    // 주택 100m² → 55m² 배치 가능 → 2.6m²/장 → 21장 → 9.45kW
-    expect(screen.getByText("설치 가능 용량")).toBeInTheDocument();
+    expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
     expect(screen.getByText("9.5kW")).toBeInTheDocument();
-    expect(screen.getByText("21장")).toBeInTheDocument();
+    expect(screen.getByText("약 21장")).toBeInTheDocument();
   });
 
-  it("keeps exactly one result-fill surface", () => {
+  it("does not ask a home user for professional economics assumptions", () => {
+    render(<SolarCalculator />);
+
+    expect(screen.queryByText("평균 일 발전시간")).not.toBeInTheDocument();
+    expect(screen.queryByText("시스템 손실률")).not.toBeInTheDocument();
+    expect(screen.queryByText("자가소비율")).not.toBeInTheDocument();
+    expect(screen.queryByText("SMP 단가")).not.toBeInTheDocument();
+    expect(screen.queryByText("REC 단가")).not.toBeInTheDocument();
+  });
+
+  it("keeps exactly one primary result surface", () => {
     const { container } = render(<SolarCalculator />);
-    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
-    fireEvent.click(screen.getByRole("button", { name: "계산하기" }));
+    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     expect(container.querySelectorAll(".resultFill")).toHaveLength(1);
   });
@@ -31,37 +39,18 @@ describe("SolarCalculator", () => {
   it("rejects an area below the documented minimum", () => {
     render(<SolarCalculator />);
 
-    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "1" } });
-    fireEvent.click(screen.getByRole("button", { name: "계산하기" }));
+    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("5m² 이상 넣어주세요");
   });
 
-  it("calculates economics only from user-entered assumptions", () => {
+  it("links a capacity result to the precise generation calculator", () => {
     render(<SolarCalculator />);
-    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
-    fireEvent.click(screen.getByRole("button", { name: "계산하기" }));
+    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
-    fireEvent.click(screen.getByText("발전량과 수익까지 계산하기"));
-    fireEvent.change(screen.getByLabelText(/평균 일 발전시간/), { target: { value: "3.6" } });
-    fireEvent.change(screen.getByLabelText(/시스템 손실률/), { target: { value: "14" } });
-    fireEvent.change(screen.getByLabelText(/kW당 설치비/), { target: { value: "1500000" } });
-    fireEvent.change(screen.getByLabelText(/자가소비율/), { target: { value: "80" } });
-    fireEvent.change(screen.getByLabelText(/자가소비 전력 가치/), { target: { value: "180" } });
-    fireEvent.click(screen.getByRole("button", { name: "발전량과 수익 계산하기" }));
-
-    expect(screen.getByText("연간 예상 발전량")).toBeInTheDocument();
-    expect(screen.getByText("단순 회수기간")).toBeInTheDocument();
-  });
-
-  it("reports missing assumptions instead of guessing them", () => {
-    render(<SolarCalculator />);
-    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
-    fireEvent.click(screen.getByRole("button", { name: "계산하기" }));
-
-    fireEvent.click(screen.getByText("발전량과 수익까지 계산하기"));
-    fireEvent.click(screen.getByRole("button", { name: "발전량과 수익 계산하기" }));
-
-    expect(screen.getByRole("alert")).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: /정밀 발전량 계산하기/ });
+    expect(link).toHaveAttribute("href", expect.stringContaining("/pro?source=general&capacity=9.45"));
   });
 });
