@@ -163,6 +163,70 @@
   line-height: var(--lh-caption);
 }
 
+.fieldTextButton {
+  width: fit-content;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-caption);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fieldUnknown {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: var(--border-hairline);
+  border-radius: var(--radius-input);
+  background: var(--canvas);
+}
+
+.fieldUnknown strong {
+  font-size: var(--text-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+}
+
+.fieldUnknown p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: var(--text-caption);
+  line-height: var(--lh-caption);
+}
+
+.fieldUnknownActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.fieldUnknownActions a,
+.secondaryButton {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-caption);
+}
+
+.secondaryButton {
+  padding: 0 var(--space-4);
+  border: var(--border-hairline);
+  border-radius: var(--radius-input);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+}
+
+.fieldUnknownActions a { text-decoration: underline; text-underline-offset: 3px; }
+
 .fieldError { margin: 0; color: var(--ink); font-size: var(--text-caption); }
 
 .toolResult {
