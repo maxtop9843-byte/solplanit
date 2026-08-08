@@ -36,25 +36,23 @@ const evidence = [
   ["꼭 확인할 것", "지붕 구조와 그늘, 이격거리, 전기·소방 기준은 실제 설치 전에 현장에서 확인해야 합니다."],
 ];
 
-const nextTools = [
+const availableTools = [
   {
     href: "/pro",
-    index: "02",
-    title: "위치별 발전량 계산",
-    description: "지도에서 위치를 고르고 월별·연간 예상 발전량을 확인합니다.",
+    title: "우리 지역에서는 얼마나 발전할까요?",
+    description: "지도에서 위치를 고르면 PVGIS 데이터로 월별·연간 예상 발전량을 계산합니다.",
   },
   {
     href: "/guides",
-    index: "03",
-    title: "설치 전 확인사항",
-    description: "계산 결과와 함께 확인해야 할 지붕·음영·설치 조건을 정리했습니다.",
+    title: "설치 전에 무엇을 확인해야 할까요?",
+    description: "지붕 구조와 그늘, 설치 조건처럼 계산만으로 알 수 없는 내용을 확인합니다.",
   },
-  {
-    href: "/trust/methodology",
-    index: "04",
-    title: "계산 기준",
-    description: "공식과 가정값, 사용한 자료와 계산의 한계를 공개합니다.",
-  },
+];
+
+const pendingAnswers = [
+  ["설치하면 얼마가 들까요?", "2026년 공식 사업 기준과 지역별 지원 자료를 확인한 뒤 제공합니다."],
+  ["보조금을 받을 수 있을까요?", "정부·지자체 공고를 확인한 지역만 금액과 조건을 보여드립니다."],
+  ["전기요금은 얼마나 줄어들까요?", "한국전력 주택용 요금 계산 모델 검증이 끝난 뒤 제공합니다."],
 ];
 
 export default function HomePage() {
@@ -80,17 +78,17 @@ export default function HomePage() {
               건물 종류와 지붕 면적만 넣어보세요. 패널을 몇 장 놓을 수 있는지와 예상 설치 용량을 바로 계산합니다.
             </p>
 
-            <div className="homeFlow" aria-label="다음 계산과 정보">
+            <div className="homeFlow" aria-label="지금 사용할 수 있는 다음 계산과 정보">
               <div className="homeFlowCurrent">
-                <span className="num">01</span>
+                <span className="statusBadge statusReady">지금 가능</span>
                 <div>
-                  <strong>지붕 면적으로 설치 용량 계산</strong>
-                  <p>지금 바로 사용할 수 있는 간단한 계산입니다.</p>
+                  <strong>지붕에 얼마나 설치할 수 있을까요?</strong>
+                  <p>건물 종류와 지붕 면적으로 설치 가능 용량을 계산합니다.</p>
                 </div>
               </div>
-              {nextTools.map((tool) => (
+              {availableTools.map((tool) => (
                 <Link href={tool.href} key={tool.href}>
-                  <span className="num">{tool.index}</span>
+                  <span className="statusBadge statusReady">지금 가능</span>
                   <div>
                     <strong>{tool.title}</strong>
                     <p>{tool.description}</p>
@@ -98,6 +96,21 @@ export default function HomePage() {
                   <span aria-hidden="true">→</span>
                 </Link>
               ))}
+            </div>
+
+            <div className="pendingAnswers" aria-labelledby="pending-answers-title">
+              <div className="pendingAnswersHeader">
+                <strong id="pending-answers-title">금액 관련 계산은 공식 자료 확인 후 제공합니다.</strong>
+                <p>확인되지 않은 비용이나 지원금을 화면 완성용 숫자로 채우지 않습니다.</p>
+              </div>
+              <dl>
+                {pendingAnswers.map(([question, reason]) => (
+                  <div key={question}>
+                    <dt>{question}</dt>
+                    <dd>{reason}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             <p className="homePromise">전문 용어 입력 없음 · 회원가입 없음 · 계산 기준 공개</p>
