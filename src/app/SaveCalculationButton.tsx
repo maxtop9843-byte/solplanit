@@ -18,5 +18,5 @@ export default function SaveCalculationButton({ calculation }: { calculation: Om
     setSaved(true);
   }
 
-  return <button className="secondaryButton panelButton" type="button" onClick={save} aria-live="polite">{saved ? "내 작업에 저장됨" : "계산 결과 저장하기"}</button>;
+  return <button className="secondaryButton" type="button" onClick={save} aria-live="polite">{saved ? "내 작업에 저장됨" : "계산 결과 저장하기"}</button>;
 }

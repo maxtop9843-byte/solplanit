@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { getAdPolicyConfig } from "./adPolicy";
 import { GUIDE_ROUTES, guidePages } from "./guideContent";
 import { notFoundMetadata } from "./notFoundMetadata";
 import { privateActionMetadata } from "./privateRouteMetadata";
@@ -10,8 +9,6 @@ import { TRUST_ROUTES, trustPages } from "./trustContent";
 const requiredLaunchRoutes = [
   "/",
   "/pro",
-  "/cases",
-  "/community",
   "/guides",
   "/trust",
 ] as const;
@@ -53,14 +50,6 @@ describe("LAUNCH-001 readiness contract", () => {
       follow: false,
       googleBot: { index: false, follow: false },
     });
-  });
-
-  it("keeps advertising disabled until policy review and a client id are both configured", () => {
-    expect(getAdPolicyConfig({}).advertisingConfigured).toBe(false);
-    expect(
-      getAdPolicyConfig({ NEXT_PUBLIC_ADSENSE_CLIENT: "ca-pub-test" })
-        .advertisingConfigured,
-    ).toBe(false);
   });
 
   it("emits no search ownership metadata when verification tokens are absent", () => {

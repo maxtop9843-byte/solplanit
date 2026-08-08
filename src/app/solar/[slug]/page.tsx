@@ -55,8 +55,7 @@ export default async function SearchIntentPage({ params }: { params: Promise<{ s
       <header className="intentHeader" aria-label="주요 탐색">
         <Link className="intentBrand" href="/">SolPlanit</Link>
         <nav aria-label="관련 메뉴">
-          <Link href="/cases">설치 사례</Link>
-          <Link href="/community">질문·견적</Link>
+          <Link href="/trust/methodology">계산 방법</Link>
           <Link href="/pro">전문가용</Link>
         </nav>
       </header>
@@ -68,7 +67,7 @@ export default async function SearchIntentPage({ params }: { params: Promise<{ s
           <p className="intentDescription">{page.description}</p>
           <div className="intentActions">
             <Link className="intentPrimary" href="/#calculator">무료로 계산하기</Link>
-            <Link className="intentSecondary" href="/cases">비슷한 설치 사례 보기 →</Link>
+            <Link className="intentSecondary" href="/trust/assumptions">계산 가정과 한계 보기 →</Link>
           </div>
         </div>
         <aside className="intentAnswer" aria-labelledby="answer-title">

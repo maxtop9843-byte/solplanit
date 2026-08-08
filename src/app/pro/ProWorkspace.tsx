@@ -70,10 +70,9 @@ export default function ProWorkspace() {
       if (disposed || !mapContainer.current) return;
       map = new maplibregl.Map({ container: mapContainer.current, center: [Number(INITIAL_LONGITUDE), Number(INITIAL_LATITUDE)], zoom: 11, attributionControl: false, style: { version: 8, sources: { osm: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, attribution: "© OpenStreetMap contributors" } }, layers: [{ id: "osm", type: "raster", source: "osm" }] } });
       map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right"); map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
-      // maplibre takes a colour string, not a CSS variable, so resolve the
-      // accent token at runtime rather than hardcoding it here.
-      const accent = getComputedStyle(document.documentElement).getPropertyValue("--sky").trim();
-      const marker = new maplibregl.Marker({ color: accent }).setLngLat([Number(INITIAL_LONGITUDE), Number(INITIAL_LATITUDE)]).addTo(map);
+      // 마커 색은 JS API가 문자열을 요구하므로 DESIGN.md 토큰을 런타임에 읽어 온다.
+      const markerColor = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim();
+      const marker = new maplibregl.Marker({ color: markerColor }).setLngLat([Number(INITIAL_LONGITUDE), Number(INITIAL_LATITUDE)]).addTo(map);
       map.on("click", (event) => { setLatitude(event.lngLat.lat.toFixed(5)); setLongitude(event.lngLat.lng.toFixed(5)); marker.setLngLat(event.lngLat); });
     });
     return () => { disposed = true; map?.remove(); };

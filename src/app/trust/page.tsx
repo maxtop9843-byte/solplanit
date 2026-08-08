@@ -17,7 +17,7 @@ export default function TrustCenterPage() {
       <section className="trustGrid" aria-label="신뢰와 정책 문서">
         {trustPages.map((page) => <Link className="trustCard" href={`/trust/${page.slug}`} key={page.slug}><span>{page.eyebrow}</span><h2>{page.title}</h2><p>{page.summary}</p><strong>읽어보기 →</strong></Link>)}
       </section>
-      <aside className="trustCallout"><div><p className="trustEyebrow">계산 다음 단계</p><h2>결과가 맞는지 실제 조건으로 확인하세요</h2><p>일반 계산 결과를 전문가 분석으로 가져가거나, 계산 내용을 첨부해 설치 조건과 견적을 질문할 수 있습니다.</p></div><div className="trustActions"><Link className="trustPrimary" href="/pro">전문가 분석 열기</Link><Link href="/community">질문·견적 보기 →</Link></div></aside>
+      <aside className="trustCallout"><div><p className="trustEyebrow">계산 다음 단계</p><h2>결과가 맞는지 실제 조건으로 확인하세요</h2><p>일반 계산 결과를 전문가 분석으로 가져가 PVGIS 기반으로 다시 검토할 수 있습니다.</p></div><div className="trustActions"><Link className="trustPrimary" href="/pro">전문가 분석 열기</Link><Link href="/trust/assumptions">가정과 한계 보기 →</Link></div></aside>
     </main>
   );
 }

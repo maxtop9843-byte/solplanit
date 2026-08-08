@@ -58,7 +58,7 @@ const round = (value: number, digits = 2) => {
 
 const requireFiniteNonNegative = (value: number | undefined, label: string) => {
   if (value === undefined || !Number.isFinite(value) || value < 0) {
-    throw new EconomicsInputError(`${label}을(를) 0 이상의 숫자로 입력해주세요.`);
+    throw new EconomicsInputError(`${label}을(를) 0 이상의 숫자로 넣어주세요.`);
   }
   return value;
 };

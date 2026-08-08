@@ -9,14 +9,14 @@ Continue SolPlanit development safely and autonomously from the latest `main`, c
 Read and obey in this order:
 
 1. `AUTOMATION.md`
-2. `TASK_QUEUE.md`
-3. `DESIGN.md`
-4. `PRODUCT_SPEC.md`
-5. `CONTENT.md`
+2. `DESIGN.md` (repository root — the single source of design truth)
+3. `REDESIGN-PROMPT.md`
+4. `docs/CALCULATION_SPEC.md`
+5. `docs/OPEN_OPS_ITEMS.md`
 6. Existing shared code and tests
 7. Task-specific documentation
 
-Do not reinterpret the product into a generic solar calculator directory or a generic green SaaS landing page.
+Everything under `docs/archive/` is a deprecated earlier direction and must not be read or followed.
 
 ## Mandatory connector invocation gate
 
@@ -42,11 +42,14 @@ Before choosing work:
 
 ## Task selection
 
+The old feature queue is archived. Work is now selected from `REDESIGN-PROMPT.md`, and remaining
+deployment verification is tracked in `docs/OPEN_OPS_ITEMS.md`.
+
 - Finish or repair an existing open task/PR before selecting a new task.
-- Otherwise select the first eligible `OPEN` task whose dependencies are complete.
+- Otherwise select the first eligible phase whose dependencies are complete.
 - Perform exactly one task per run.
 - Never create duplicate branches or duplicate pull requests for the same task.
-- Do not silently skip ahead in the queue.
+- Do not silently skip ahead.
 
 ## Worktree and branch discipline
 
@@ -58,8 +61,7 @@ Before choosing work:
 ## Implementation principles
 
 - Follow `DESIGN.md` for every visual change.
-- Follow `CONTENT.md` for approved public copy.
-- Follow `PRODUCT_SPEC.md` for user journeys and calculations.
+- Follow `docs/CALCULATION_SPEC.md` for calculation formulas and required test coverage.
 - Use Korean-first plain language on general-user surfaces.
 - Keep general and professional experiences separated by URL.
 - Do not claim exact results where only estimates are possible.
@@ -135,12 +137,12 @@ Prefer squash merge for task branches.
 
 When a task is completed:
 
-- Change its status to `DONE`.
+- Mark its phase complete in `REDESIGN-PROGRESS.md`.
 - Record any newly discovered work as separate tasks.
 - Do not bundle newly discovered work into the current task unless required for correctness or safety.
 
 ## Product priority
 
-Core flow → accuracy → professional workspace → community/quotes → SEO → AdSense.
+Priority order is defined by `REDESIGN-PROMPT.md`.
 
-Security, data accuracy, critical failures, and unusable UX override this order.
+Security, data accuracy, critical failures, and unusable UX override that order.
