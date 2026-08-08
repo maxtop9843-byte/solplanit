@@ -7,15 +7,26 @@ describe("SolarCalculator", () => {
     render(<SolarCalculator />);
 
     expect(screen.getByLabelText("건물 종류")).toBeInTheDocument();
-    expect(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적")).toBeInTheDocument();
+    expect(screen.getByLabelText("지붕 면적")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "설치 가능 용량 계산하기" })).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "100" } });
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
     expect(screen.getByText("9.5kW")).toBeInTheDocument();
     expect(screen.getByText("약 21장")).toBeInTheDocument();
+  });
+
+  it("lets a user say they do not know the roof area without inventing a result", () => {
+    render(<SolarCalculator />);
+
+    fireEvent.click(screen.getByRole("button", { name: "지붕 면적을 잘 모르겠어요" }));
+
+    expect(screen.getByText("면적을 모르면 용량을 임의로 계산하지 않습니다.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "설치 가능 용량 계산하기" })).not.toBeInTheDocument();
+    expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "지붕 면적 입력하기" })).toBeInTheDocument();
   });
 
   it("does not ask a home user for professional economics assumptions", () => {
@@ -30,7 +41,7 @@ describe("SolarCalculator", () => {
 
   it("keeps exactly one primary result surface", () => {
     const { container } = render(<SolarCalculator />);
-    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "100" } });
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     expect(container.querySelectorAll(".resultFill")).toHaveLength(1);
@@ -39,7 +50,7 @@ describe("SolarCalculator", () => {
   it("rejects an area below the documented minimum", () => {
     render(<SolarCalculator />);
 
-    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "1" } });
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "1" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("5m² 이상 넣어주세요");
@@ -47,7 +58,7 @@ describe("SolarCalculator", () => {
 
   it("links a capacity result to the precise generation calculator", () => {
     render(<SolarCalculator />);
-    fireEvent.change(screen.getByLabelText("패널을 설치할 수 있는 지붕 면적"), { target: { value: "100" } });
+    fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     const link = screen.getByRole("link", { name: /정밀 발전량 계산하기/ });
