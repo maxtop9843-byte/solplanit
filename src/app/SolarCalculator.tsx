@@ -22,12 +22,20 @@ export default function SolarCalculator() {
   const [areaUnknown, setAreaUnknown] = useState(false);
   const [capacity, setCapacity] = useState<CapacityResult | null>(null);
   const [error, setError] = useState("");
+  const [focusAreaOnReturn, setFocusAreaOnReturn] = useState(false);
   const areaInputRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (capacity) resultRef.current?.focus();
   }, [capacity]);
+
+  useEffect(() => {
+    if (!areaUnknown && focusAreaOnReturn) {
+      areaInputRef.current?.focus();
+      setFocusAreaOnReturn(false);
+    }
+  }, [areaUnknown, focusAreaOnReturn]);
 
   function calculate() {
     setError("");
@@ -68,6 +76,7 @@ export default function SolarCalculator() {
   }
 
   function returnToAreaInput() {
+    setFocusAreaOnReturn(true);
     setAreaUnknown(false);
     setError("");
   }
