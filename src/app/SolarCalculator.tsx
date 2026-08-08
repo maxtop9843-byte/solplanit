@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   BUILDING_TYPES,
   CAPACITY_METHOD,
@@ -22,6 +22,7 @@ export default function SolarCalculator() {
   const [areaUnknown, setAreaUnknown] = useState(false);
   const [capacity, setCapacity] = useState<CapacityResult | null>(null);
   const [error, setError] = useState("");
+  const areaInputRef = useRef<HTMLInputElement>(null);
 
   function calculate() {
     setError("");
@@ -30,6 +31,7 @@ export default function SolarCalculator() {
     } catch (caught) {
       setCapacity(null);
       setError(caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해 주세요.");
+      areaInputRef.current?.focus();
     }
   }
 
@@ -86,6 +88,7 @@ export default function SolarCalculator() {
             <>
               <div className="fieldRow">
                 <input
+                  ref={areaInputRef}
                   id="area"
                   type="number"
                   inputMode="decimal"
