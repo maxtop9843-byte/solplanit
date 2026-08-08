@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import { getSearchVerificationConfig } from "@/lib/searchVerification";
@@ -8,6 +9,16 @@ import "./globals.css";
 import "./trust/trust.css";
 
 const searchVerification = getSearchVerificationConfig();
+
+// 본문 서체. 가변 폰트라 DESIGN.md 가 요구하는 300/350/450 웨이트를 실제로 지정할 수 있다.
+// CDN 을 쓰지 않는다. 첫 방문에 시스템 서체가 보였다 바뀌는 순간이 이 디자인에서 가장 나쁘다.
+const pretendard = localFont({
+  src: "../../public/fonts/PretendardVariable.woff2",
+  weight: "45 920",
+  style: "normal",
+  display: "swap",
+  variable: "--font-kr-loaded",
+});
 
 // 숫자 전용 서체. next/font 가 빌드 시점에 self-host 하므로 외부 요청이 없다.
 const geistMono = Geist_Mono({
@@ -84,7 +95,7 @@ const structuredData = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ko" className={geistMono.variable}>
+    <html lang="ko" className={`${pretendard.variable} ${geistMono.variable}`}>
       <body>
         {children}
         <SiteFooter />
