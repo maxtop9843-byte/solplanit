@@ -18,6 +18,20 @@ describe("SolarCalculator", () => {
     expect(screen.getByText("약 21장")).toBeInTheDocument();
   });
 
+  it("accepts decimal roof areas without native range constraints overriding the calculation contract", () => {
+    render(<SolarCalculator />);
+
+    const areaInput = screen.getByLabelText("지붕 면적");
+    expect(areaInput).toHaveAttribute("step", "any");
+    expect(areaInput).not.toHaveAttribute("min");
+
+    fireEvent.change(areaInput, { target: { value: "10.5" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+
+    expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
+    expect(screen.getByText("10.5m²")).toBeInTheDocument();
+  });
+
   it("submits the calculator as a form without requiring a mouse click", () => {
     render(<SolarCalculator />);
 
