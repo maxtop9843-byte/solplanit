@@ -1,119 +1,171 @@
-# TASK_QUEUE.md — SolPlanit
+# TASK_QUEUE.md — SolPlanit Search-first Rebuild
 
 ## Product mode
 
-SolPlanit is now a **low-maintenance solar calculator site**.
+SolPlanit은 **저관리형 태양광 전문 계산 도구 사이트**다.
 
-Primary growth loop:
+성장 루프:
 
-**Search → calculator → result → related calculator → repeat visit**
+**검색 → 계산 → 결과 → 관련 계산기 → 재방문**
 
-Do not reopen marketplace/community/SaaS scope unless real traffic data justifies it.
-
----
-
-## Priority rules
-
-1. Calculation accuracy and broken UX
-2. Search-intent calculators
-3. Internal linking and SEO
-4. Trust/data-source pages
-5. AdSense and monetization after traffic exists
-
-Do not prioritize account systems, community, expert matching, quote collection, CRM, project management, or lead sales.
+활성 개발은 검색 수요와 일반 사용자 질문을 기준으로 한다. 커뮤니티·견적 중개·전문가 매칭·SaaS는 비활성 범위다.
 
 ---
 
-## Current queue
+## 작업 선택 원칙
 
-### P0 — Product simplification
+우선순위는 다음과 같다.
 
-- [OPEN] **SIMPLE-001** Reframe home flow from “platform journey” to “calculator collection” without changing the approved Renewal V2 visual language.
-  - Keep the current hero and calculator-first layout.
-  - Replace product-flow language that implies a large platform.
-  - Make related calculators discoverable.
+1. 잘못된 계산·사용 불가능한 UX
+2. 일반 사용자가 실제로 찾는 검색 의도
+3. 공식 데이터 연결과 계산 정확성
+4. 계산기 간 내부 링크와 SEO
+5. Search Console 실제 데이터 기반 개선
+6. 트래픽 확보 이후 광고 최적화
 
-- [OPEN] **SIMPLE-002** Reframe `/pro` as a standalone **PVGIS precise generation calculator**.
-  - No expert workspace positioning.
-  - Inputs: location, capacity, slope, azimuth, losses.
-  - Outputs: monthly/annual generation, assumptions, source/version.
-  - Distinguish loading/error/no-data/zero.
-
-### P1 — Core calculator expansion
-
-- [OPEN] **CALC-001** Solar generation calculator
-  - Input system capacity and user-confirmed assumptions.
-  - Show daily/monthly/annual generation where methodologically valid.
-
-- [OPEN] **CALC-002** Electricity bill savings calculator
-  - Separate self-consumption assumptions from power-sale assumptions.
-  - Do not invent electricity tariff values.
-
-- [OPEN] **CALC-003** SMP + REC revenue calculator
-  - User inputs current SMP/REC values unless a reliable official feed is implemented.
-  - Show formula and weighting assumptions.
-
-- [OPEN] **CALC-004** Payback-period calculator
-  - Installation cost, annual benefit, maintenance/other user inputs.
-  - Avoid presenting payback as guaranteed investment return.
-
-- [OPEN] **CALC-005** Panel count and required-area calculator
-  - Panel wattage, dimensions/area assumptions, spacing factor.
-  - Link both directions with installation-capacity calculator.
-
-- [OPEN] **CALC-006** Slope/azimuth comparison calculator
-  - Prefer actual PVGIS-backed comparison when feasible.
-  - Do not fabricate loss percentages.
-
-- [OPEN] **CALC-007** Inverter capacity / DC-AC ratio calculator
-  - Explain that manufacturer and design constraints still require review.
-
-- [OPEN] **CALC-008** Monthly generation comparison calculator
-  - Prefer PVGIS monthly data.
-  - Clear source/version and location assumptions.
-
-### P2 — SEO and navigation
-
-- [OPEN] **SEO-001** Add calculator index and reusable related-calculator links.
-- [OPEN] **SEO-002** Give each calculator unique metadata, canonical, structured data, and sitemap entry.
-- [OPEN] **SEO-003** Build short supporting guides only where they answer a real calculator interpretation question.
-- [OPEN] **SEO-004** Review Search Console after enough impressions accumulate and reorder calculator backlog by actual queries.
-
-### P3 — Monetization
-
-- [BLOCKED] **ADS-001** Add non-intrusive ads only after meaningful organic traffic exists.
-  - Never place ads between inputs and primary result.
-  - Avoid layout shift around calculator controls/results.
+한 자동개발 실행에서는 **가장 앞선 OPEN 작업 하나만** 처리한다.
 
 ---
 
-## Deferred indefinitely
+# Phase 0 — 현재 UX 바로잡기
 
-These are intentionally **not in the active roadmap**:
+- [IN PROGRESS] **HOME-001** 메인 계산기에서 일반 사용자가 알기 어려운 경제성 입력 제거
+  - `평균 일 발전시간`, `시스템 손실률`, `kW당 설치비`, `자가소비율`, `자가소비 전력 가치`, `SMP`, `REC`를 메인 계산기에서 제거한다.
+  - 기존 지붕 면적 → 설치 가능 용량 계산은 유지한다.
+  - 결과 뒤에는 PVGIS 정밀 발전량 계산기로 자연스럽게 연결한다.
+  - 한국어 문구를 일반 사용자 관점으로 다시 쓴다.
 
-- community
-- installer/expert marketplace
-- quote request forms
-- lead generation/sales
-- user accounts
-- project management SaaS
+- [OPEN] **HOME-002** 홈을 검색형 계산기 허브로 개편
+  - 완성된 계산기만 노출한다.
+  - `설치비·보조금`, `전기요금 절감`, `발전량`, `회수기간`을 우선 배치한다.
+  - 준비 중인 페이지는 클릭 가능한 카드로 만들지 않는다.
+  - 현재 승인된 Renewal V2 시각 언어는 유지한다.
+
+---
+
+# Phase 1 — 데이터 기반 핵심 계산기
+
+- [OPEN] **DATA-001** 2026 주택용 태양광 지원 데이터 구조 만들기
+  - 한국에너지공단·지자체 공식 공고만 사용한다.
+  - `연도 / 지역 / 대상 / 용량 / 지원액 또는 지원율 / 확인일 / 출처 URL`을 저장한다.
+  - 확인되지 않은 지역은 추정하지 않는다.
+  - 데이터 갱신 절차를 문서화한다.
+
+- [OPEN] **CALC-3KW-001** `3kW 태양광 설치비용 계산기`
+  - 검색 의도: `태양광 3kw 설치비용`, `가정용 태양광 가격`.
+  - 사용자는 지역만 선택해도 공식 사업 기준 비용과 확인된 보조금을 볼 수 있어야 한다.
+  - 공식 기준단가와 실제 시장 견적을 구분한다.
+  - 결과: 기준 설치비, 확인된 지원액, 예상 자부담, 출처·기준일.
+
+- [OPEN] **CALC-SUBSIDY-001** `2026 태양광 보조금 조회`
+  - 지역을 선택해 확인된 정부·지자체 지원 내용을 보여준다.
+  - 지원 정보가 없으면 `지원 없음`이 아니라 `확인된 정보 없음`으로 표시한다.
+  - 신청 대상·용량·기간·출처를 함께 제공한다.
+
+- [OPEN] **DATA-002** 한국전력 주택용 전기요금 계산 모델 검증
+  - 공식 요금표와 계산 기준을 사용한다.
+  - 계절·누진·기본요금 등 필요한 요소를 테스트한다.
+  - 단순 `원/kWh` 고정값으로 대체하지 않는다.
+
+- [OPEN] **CALC-SAVINGS-001** `태양광 전기요금 절감 계산기`
+  - 일반 입력: 지역, 월 전기 사용량(kWh), 설치 용량 또는 간단한 설치 조건.
+  - 발전량은 실제 위치 데이터 또는 명시된 간단 추정치로 계산한다.
+  - 태양광 설치 전/후 예상 전기요금을 비교한다.
+  - 전문 변수는 기본 화면에 노출하지 않는다.
+
+---
+
+# Phase 2 — 발전량과 회수기간
+
+- [OPEN] **CALC-GEN-001** `태양광 발전량 계산기`
+  - 검색 의도: `태양광 발전량 계산`, `3kw 태양광 발전량`.
+  - 위치 + 설치 용량 중심.
+  - PVGIS 5.3 기반 월별·연간 발전량.
+  - 기본 입력은 최소화하고 경사·방위는 상세 조건으로 둔다.
+
+- [OPEN] **PRO-001** `/pro`를 일반 사용자도 이해할 수 있는 `정밀 발전량 계산기`로 개편
+  - `전문가용`, `프로젝트`, `시스템 손실` 등 불필요하게 어려운 표현을 정리한다.
+  - 지도 클릭 → 설치 용량 → 분석의 흐름을 우선한다.
+  - 상세 조건은 접어서 제공한다.
+  - PVGIS 출처·버전·조회 시점을 결과 가까이에 표시한다.
+
+- [OPEN] **CALC-PAYBACK-001** `태양광 회수기간 계산기`
+  - 설치 실부담액 + 연간 절감액을 중심으로 계산한다.
+  - 금융비용·유지관리·성능저하를 포함할 수 있는 상세 조건을 둔다.
+  - `수익 보장`처럼 보이는 표현을 사용하지 않는다.
+
+---
+
+# Phase 3 — 설치 조건 계산기
+
+- [OPEN] **CALC-CAPACITY-001** 현재 지붕 면적 계산기를 `/calculators/roof-capacity` 독립 페이지로 확장
+  - `지붕 면적을 모름` 흐름을 설계한다.
+  - 결과에 필요한 면적·패널 수·설치 가능 용량을 함께 보여준다.
+
+- [OPEN] **CALC-PANEL-001** 패널 수량·필요 면적 계산기
+- [OPEN] **CALC-ORIENTATION-001** 경사·방향별 발전량 비교 계산기
+- [OPEN] **CALC-MONTHLY-001** 월별 발전량 비교 계산기
+
+---
+
+# Phase 4 — 발전사업자 전용
+
+주택용 계산과 분리한다.
+
+- [OPEN] **BIZ-001** SMP + REC 발전수익 계산기
+- [OPEN] **BIZ-002** REC 가중치 계산 도우미
+- [OPEN] **BIZ-003** 공장 지붕 태양광 경제성 계산기
+
+SMP·REC·가중치는 일반 주택용 계산기 첫 화면에 노출하지 않는다.
+
+---
+
+# Phase 5 — SEO·내부 링크·측정
+
+- [OPEN] **SEO-001** 계산기 인덱스와 관련 계산기 공통 컴포넌트
+- [OPEN] **SEO-002** 계산기별 metadata, canonical, JSON-LD, sitemap 점검
+- [OPEN] **SEO-003** 각 계산기의 실제 검색 질문에 답하는 짧은 가이드 추가
+- [OPEN] **SEO-004** Search Console 검색어·노출·CTR 데이터로 큐 재정렬
+- [OPEN] **ANALYTICS-001** 개인정보를 최소화하면서 계산기 시작/완료/관련 도구 이동 이벤트 측정
+
+---
+
+# Phase 6 — 수익화
+
+- [BLOCKED] **ADS-001** 의미 있는 검색 트래픽 이후 광고 배치
+  - 입력과 핵심 결과 사이에 광고를 넣지 않는다.
+  - CLS를 만들지 않는다.
+  - 계산 완료율보다 광고 노출을 우선하지 않는다.
+
+---
+
+## 영구 보류
+
+- 커뮤니티
+- 시공사·전문가 매칭
+- 견적 요청 폼
+- 전화번호·이메일 리드 수집
+- 회원 전용 기능
 - CRM
-- installer dashboards
-- case-upload ecosystem
-- real-time consultation
+- 프로젝트 관리 SaaS
+- 시공 사례 플랫폼
+- 실시간 상담
 
-A deferred feature may return only when measurable traffic/user behavior creates a strong reason for it.
+실제 트래픽과 사용자 행동이 명확한 근거를 만들기 전에는 다시 열지 않는다.
 
 ---
 
-## Definition of done for each calculator
+## 계산기 Definition of Done
 
-- Search intent is clear from title/H1.
-- Inputs materially affect the calculation.
-- Important assumptions are explicit.
-- No invented market values.
-- Main result is immediately understandable.
-- Formula/source/limitations are accessible.
-- 2–4 relevant calculator links are present.
-- Mobile 375px has no horizontal overflow.
-- lint, typecheck, test, build pass.
+- 제목만 읽어도 계산 목적이 분명하다.
+- 기본 입력은 일반 사용자가 알 수 있는 값이다.
+- 전문 변수는 숨기거나 별도 계산기로 분리한다.
+- 모든 입력은 실제 계산에 영향을 준다.
+- 핵심 결과는 즉시 이해된다.
+- `0`과 `정보 없음`을 구분한다.
+- 시장값·보조금·발전량을 임의로 꾸며내지 않는다.
+- 공식·가정·출처·기준일을 확인할 수 있다.
+- 한국어 문장이 자연스럽다.
+- 관련 계산기 2~4개로 이어진다.
+- 375px에서 가로 스크롤이 없다.
+- lint, typecheck, test, build가 통과한다.
