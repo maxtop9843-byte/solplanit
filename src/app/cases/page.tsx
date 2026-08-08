@@ -27,7 +27,7 @@ export default function CasesPage() {
         {installationCases.map((item, index) => (
           <article className={`galleryCard galleryCard${index + 1}`} key={item.slug}>
             <Link href={`/cases/${item.slug}`} aria-label={`${item.location} ${item.capacityKw}킬로와트 사례 자세히 보기`}>
-              <div className="galleryImage" style={{ backgroundImage: `linear-gradient(180deg, transparent 38%, rgba(0,0,0,.72)), url(${item.imageUrl})` }} />
+              <div className="galleryImage" style={{ backgroundImage: `url(${item.imageUrl})` }} />
               <div className="galleryContent">
                 <div className="galleryMeta"><span>{item.category}</span><span>{item.location}</span></div>
                 <h2>{item.capacityKw}kW</h2>

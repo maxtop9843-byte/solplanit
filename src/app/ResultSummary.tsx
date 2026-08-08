@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
 import type { CapacityResult } from "../lib/calculations/capacity";
 import type { EconomicsResult } from "../lib/calculations/economics";
 import SaveCalculationButton from "./SaveCalculationButton";
@@ -9,53 +8,12 @@ import "./result-summary.css";
 
 type Goal = "save" | "sell";
 
-type AnimatedNumberProps = {
-  value: number;
-  maximumFractionDigits?: number;
-  prefix?: string;
-  suffix?: string;
-};
-
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  return reduced;
-}
-
-function AnimatedNumber({ value, maximumFractionDigits = 0, prefix = "", suffix = "" }: AnimatedNumberProps) {
-  const reducedMotion = useReducedMotion();
-  const [animatedValue, setAnimatedValue] = useState(0);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    let frame = 0;
-    const startedAt = performance.now();
-    const duration = 760;
-    const tick = (now: number) => {
-      const progress = Math.min((now - startedAt) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setAnimatedValue(value * eased);
-      if (progress < 1) frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [reducedMotion, value]);
-
-  const displayValue = reducedMotion ? value : animatedValue;
-  const formatted = useMemo(
-    () => displayValue.toLocaleString("ko-KR", { maximumFractionDigits, minimumFractionDigits: maximumFractionDigits }),
-    [displayValue, maximumFractionDigits],
-  );
-
-  return <>{prefix}{formatted}{suffix}</>;
+// 카운트업 애니메이션은 쓰지 않는다. 없는 정밀함을 연출하는 것이라 이 사이트의 취지에 반한다.
+function formatNumber(value: number, fractionDigits = 0) {
+  return value.toLocaleString("ko-KR", {
+    maximumFractionDigits: fractionDigits,
+    minimumFractionDigits: fractionDigits,
+  });
 }
 
 export default function ResultSummary({ capacity, economics, goal }: { capacity: CapacityResult; economics?: EconomicsResult | null; goal: Goal }) {
@@ -81,17 +39,16 @@ export default function ResultSummary({ capacity, economics, goal }: { capacity:
       </div>
 
       <div className="resultCardGrid">
-        <article className="resultCard resultCardPrimary" style={{ "--result-order": 0 } as React.CSSProperties}>
+        <article className="resultCard resultCardPrimary">
           <span>추천 설치 용량</span>
-          <strong><AnimatedNumber value={capacity.installableCapacityKw} maximumFractionDigits={1} suffix="kW" /></strong>
-          <small>입력한 면적과 건물 유형 기준</small>
+          <strong>{formatNumber(capacity.installableCapacityKw, 1)}kW</strong>
         </article>
         {economics && <>
-          <article className="resultCard" style={{ "--result-order": 1 } as React.CSSProperties}><span>연간 예상 발전량</span><strong><AnimatedNumber value={economics.annualGenerationKwh} suffix="kWh" /></strong><small>월평균 {economics.monthlyAverageGenerationKwh.toLocaleString("ko-KR")}kWh</small></article>
-          <article className="resultCard" style={{ "--result-order": 2 } as React.CSSProperties}><span>{benefitLabel}</span><strong><AnimatedNumber value={economics.annualBenefit} prefix="₩" /></strong><small>입력한 단가와 가정값 기준</small></article>
-          <article className="resultCard" style={{ "--result-order": 3 } as React.CSSProperties}><span>예상 단순 회수기간</span><strong>{economics.paybackYears === null ? "계산 불가" : <AnimatedNumber value={economics.paybackYears} maximumFractionDigits={1} suffix="년" />}</strong><small>금융비용·유지보수비 제외</small></article>
+          <article className="resultCard"><span>연간 예상 발전량</span><strong>{formatNumber(economics.annualGenerationKwh)}kWh</strong></article>
+          <article className="resultCard"><span>{benefitLabel}</span><strong>₩{formatNumber(economics.annualBenefit)}</strong></article>
+          <article className="resultCard"><span>예상 단순 회수기간</span><strong>{economics.paybackYears === null ? "계산 불가" : `${formatNumber(economics.paybackYears, 1)}년`}</strong></article>
         </>}
-        <article className="resultCard" style={{ "--result-order": economics ? 4 : 1 } as React.CSSProperties}><span>예상 패널 수</span><strong><AnimatedNumber value={capacity.panelCount} suffix="장" /></strong><small>패널 1장 {capacity.panelCapacityKw}kW 기준</small></article>
+        <article className="resultCard"><span>예상 패널 수</span><strong>{formatNumber(capacity.panelCount)}장</strong></article>
       </div>
 
       <div className="resultNextAction" role="region" aria-label="다음 행동 안내">

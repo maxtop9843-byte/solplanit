@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import { getSearchVerificationConfig } from "@/lib/searchVerification";
@@ -7,6 +8,14 @@ import "./globals.css";
 import "./trust/trust.css";
 
 const searchVerification = getSearchVerificationConfig();
+
+// 숫자 전용 서체. next/font 가 빌드 시점에 self-host 하므로 외부 요청이 없다.
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+  variable: "--font-num-loaded",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -75,7 +84,7 @@ const structuredData = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={geistMono.variable}>
       <body>
         {children}
         <SiteFooter />

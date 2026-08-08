@@ -1,76 +1,77 @@
-.sectionIntro { max-width: 760px; }
-.sectionKicker { margin: 0 0 16px; color: var(--functional-green); font-size: 14px; font-weight: 700; }
-.sectionIntro h2, .resultPreview h2, .bottomCta h2 { margin: 0; font-size: clamp(34px, 4.2vw, 52px); line-height: 1.12; letter-spacing: -0.045em; }
-.sectionIntro > p:last-child, .resultPreview > div > p:last-child, .bottomCta > p { color: var(--muted); font-size: 18px; line-height: 1.65; }
-.calculatorEntry, .resultPreview { width: min(1200px, calc(100% - 48px)); margin: 0 auto; padding: 120px 0; }
-.calculatorEntry { display: grid; grid-template-columns: .9fr 1.1fr; gap: 72px; align-items: center; }
-.calculatorPanel { min-height: 470px; padding: 36px; border: 1px solid var(--border); border-radius: 28px; background: var(--canvas); }
-.stepHeader { display: grid; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 650; }
-.progressTrack { height: 4px; overflow: hidden; border-radius: 999px; background: var(--border); }
-.progressTrack i { display: block; height: 100%; background: var(--functional-green); transition: width .25s ease; }
-.calculatorPanel fieldset { margin: 34px 0 0; padding: 0; border: 0; }
-.calculatorPanel legend { margin-bottom: 18px; font-size: 25px; font-weight: 700; letter-spacing: -0.035em; }
-.typeGrid, .goalGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-.typeOption { min-height: 64px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border: 1px solid var(--border); border-radius: 16px; cursor: pointer; }
-.typeOption:has(input:checked) { border-color: var(--functional-green); background: var(--soft-green); }
-.typeOption input { accent-color: var(--functional-green); }
-.goalGrid .typeOption { min-height: 92px; align-items: flex-start; padding-block: 18px; }
-.goalGrid span { display: grid; gap: 6px; }
-.goalGrid small, .inputField small, .calculatorSummary { color: var(--muted); line-height: 1.45; }
-.inputField { display: grid; gap: 10px; }
-.inputField > span { font-weight: 650; }
-.inputField > div { display: flex; align-items: center; gap: 10px; padding: 0 10px 0 18px; border: 1px solid var(--border); border-radius: 16px; }
-.inputField input { width: 100%; min-height: 64px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 22px; }
-.unitToggle { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface); }
-.unitToggle button { min-width: 44px; min-height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-weight: 700; }
-.unitToggle button[aria-pressed="true"] { background: var(--canvas); color: var(--ink); box-shadow: 0 1px 4px rgba(17, 20, 17, .1); }
-.calculatorActions { margin-top: 26px; display: flex; gap: 12px; }
+.sectionIntro { max-width: var(--width-tool); }
+.sectionKicker { margin: 0 0 var(--space-3); color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); letter-spacing: var(--ls-caption); }
+.sectionIntro h2, .resultPreview h2, .bottomCta h2 { margin: 0; font-size: var(--text-heading); line-height: var(--lh-heading); letter-spacing: var(--ls-heading); font-weight: var(--fw-heading); }
+.sectionIntro > p:last-child, .resultPreview > div > p:last-child, .bottomCta > p { color: var(--ink-muted); font-size: var(--text-body); line-height: var(--lh-body); }
+.calculatorEntry, .resultPreview { width: min(var(--width-tool), calc(100% - var(--space-8))); margin: 0 auto; padding: var(--section-gap) 0 0; }
+.calculatorEntry { display: grid; gap: var(--space-6); }
+.calculatorPanel { padding: var(--space-8); border: var(--border-hairline); border-radius: var(--radius-card); background: var(--surface); }
+.stepHeader { display: grid; gap: var(--space-2); color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); }
+.progressTrack { height: 2px; overflow: hidden; border-radius: var(--radius-pill); background: var(--hairline); }
+.progressTrack i { display: block; height: 100%; background: var(--ink); transition: width var(--dur-base) var(--ease); }
+.calculatorPanel fieldset { margin: var(--space-6) 0 0; padding: 0; border: 0; }
+.calculatorPanel legend { margin-bottom: var(--space-4); font-size: var(--text-subhead); font-weight: var(--fw-subhead); line-height: var(--lh-subhead); letter-spacing: var(--ls-subhead); }
+.typeGrid, .goalGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); }
+.typeOption { min-height: 48px; display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-4); border: var(--border-hairline); border-radius: var(--radius-input); background: var(--surface); cursor: pointer; }
+.typeOption:has(input:checked) { border-color: var(--ink); }
+.typeOption input { accent-color: var(--ink); }
+.goalGrid .typeOption { min-height: 72px; align-items: flex-start; padding-block: var(--space-4); }
+.goalGrid span { display: grid; gap: var(--space-1); }
+.goalGrid small, .inputField small, .calculatorSummary { color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
+.inputField { display: grid; gap: var(--space-2); }
+.inputField > span { font-size: var(--text-body); font-weight: var(--fw-body); }
+.inputField > div { display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-2) 0 var(--space-4); border: var(--border-hairline); border-radius: var(--radius-input); background: var(--surface); }
+.inputField input { width: 100%; min-height: 48px; border: 0; outline: 0; background: transparent; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-num-row); letter-spacing: var(--ls-num); }
+.unitToggle { display: flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-input); background: var(--canvas); }
+.unitToggle button { min-width: 44px; min-height: 40px; border: 0; border-radius: var(--radius-input); background: transparent; color: var(--ink-muted); cursor: pointer; font: inherit; font-size: var(--text-caption); font-weight: var(--fw-caption); }
+.unitToggle button[aria-pressed="true"] { background: var(--surface); color: var(--ink); border: var(--border-hairline); }
+.calculatorActions { margin-top: var(--space-6); display: flex; gap: var(--space-2); }
 .panelButton { flex: 1; border: 0; cursor: pointer; }
 .panelButton:disabled { cursor: not-allowed; opacity: .48; }
-.secondaryButton { min-height: 52px; padding: 0 20px; border: 1px solid var(--border); border-radius: 999px; background: transparent; cursor: pointer; font: inherit; font-weight: 650; }
-.formError { margin: 18px 0 0; color: #b42318; font-size: 14px; }
-.calculatorSummary { margin: 18px 0 0; font-size: 13px; }
-.calculatorReview { margin-top: 34px; }
-.calculatorReview h3, .capacityHeadline h3 { margin: 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.04em; }
-.calculatorReview > p:not(.sectionKicker), .capacityHeadline > p:last-child { color: var(--muted); line-height: 1.6; }
+.secondaryButton { min-height: 48px; padding: 0 var(--space-6); border: 0.5px solid var(--ink); border-radius: var(--radius-pill); background: transparent; color: var(--ink); cursor: pointer; font: inherit; font-size: var(--text-body); font-weight: var(--fw-body); display: inline-flex; align-items: center; justify-content: center; }
+.formError { margin: var(--space-4) 0 0; color: var(--ink); font-size: var(--text-caption); }
+.calculatorSummary { margin: var(--space-4) 0 0; }
+.calculatorReview { margin-top: var(--space-6); }
+.calculatorReview h3, .capacityHeadline h3 { margin: 0; font-size: var(--text-heading); line-height: var(--lh-heading); letter-spacing: var(--ls-heading); font-weight: var(--fw-heading); }
+.calculatorReview > p:not(.sectionKicker), .capacityHeadline > p:last-child { color: var(--ink-muted); font-size: var(--text-body); line-height: var(--lh-body); }
 .capacityResultPanel { min-height: 0; }
-.capacityHeadline { margin-top: 34px; }
-.capacityFacts { margin: 28px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.capacityFacts > div { padding: 16px; border-radius: 14px; background: var(--surface); }
-.capacityFacts dt { color: var(--muted); font-size: 13px; }
-.capacityFacts dd { margin: 7px 0 0; font-size: 18px; font-weight: 750; }
-.economicsFacts > div:first-child { background: var(--soft-green); }
-.revenueBreakdown { margin: 10px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.revenueBreakdown > div { padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; }
-.revenueBreakdown dt { color: var(--muted); font-size: 13px; }
-.revenueBreakdown dd { margin: 6px 0 0; font-weight: 700; }
-.economicsInputs { margin-top: 24px !important; padding: 22px !important; border: 1px solid var(--border) !important; border-radius: 18px; background: var(--surface); }
-.economicsInputs legend { margin: 0 !important; padding: 0 6px; font-size: 20px !important; }
-.economicsInputs > p { margin: 0 0 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
-.assumptionGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.assumptionGrid label { min-width: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 8px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--canvas); }
-.assumptionGrid label > span { grid-column: 1 / -1; color: var(--muted); font-size: 12px; font-weight: 650; }
-.assumptionGrid input { min-width: 0; width: 100%; min-height: 40px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; }
-.assumptionGrid b { color: var(--muted); font-size: 12px; white-space: nowrap; }
-.economicsInputs .panelButton { width: 100%; margin-top: 18px; }
-.assumptionDetails { margin-top: 18px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 16px; }
-.assumptionDetails summary { cursor: pointer; font-weight: 700; }
-.assumptionDetails p, .assumptionDetails li { color: var(--muted); font-size: 13px; line-height: 1.6; }
-.assumptionDetails ul { margin: 10px 0 0; padding-left: 18px; }
+.capacityHeadline { margin-top: var(--space-6); }
+.capacityFacts { margin: var(--space-6) 0 0; display: grid; gap: 0; }
+.capacityFacts > div { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: var(--border-hairline); }
+.capacityFacts dt { color: var(--ink-muted); font-size: var(--text-caption); }
+.capacityFacts dd { margin: 0; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-num-row); font-weight: var(--fw-body); letter-spacing: var(--ls-num); }
+.revenueBreakdown { margin: 0; display: grid; gap: 0; }
+.revenueBreakdown > div { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: var(--border-hairline); }
+.revenueBreakdown dt { color: var(--ink-muted); font-size: var(--text-caption); }
+.revenueBreakdown dd { margin: 0; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-num-row); font-weight: var(--fw-body); letter-spacing: var(--ls-num); }
+.economicsInputs { margin-top: var(--space-6) !important; padding: var(--space-6) !important; border: var(--border-hairline) !important; border-radius: var(--radius-card); background: var(--canvas); }
+.economicsInputs legend { margin: 0 !important; padding: 0 var(--space-1); font-size: var(--text-subhead) !important; }
+.economicsInputs > p { margin: 0 0 var(--space-4); color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
+.assumptionGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
+.assumptionGrid label { min-width: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--space-1) var(--space-2); padding: var(--space-3); border: var(--border-hairline); border-radius: var(--radius-input); background: var(--surface); }
+.assumptionGrid label > span { grid-column: 1 / -1; color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); }
+.assumptionGrid input { min-width: 0; width: 100%; min-height: 40px; border: 0; outline: 0; background: transparent; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-body); }
+.assumptionGrid b { color: var(--ink-muted); font-size: var(--text-caption); font-weight: var(--fw-caption); white-space: nowrap; }
+.economicsInputs .panelButton { width: 100%; margin-top: var(--space-4); }
+.assumptionDetails { margin-top: var(--space-4); padding: var(--space-4); border: var(--border-hairline); border-radius: var(--radius-card); }
+.assumptionDetails summary { cursor: pointer; font-size: var(--text-body); font-weight: var(--fw-body); }
+.assumptionDetails p, .assumptionDetails li { color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
+.assumptionDetails ul { margin: var(--space-2) 0 0; padding-left: var(--space-4); }
 .assumptionDetails a { color: inherit; text-underline-offset: 3px; }
-.resultPreview { padding: 120px 0; }
-.resultPreview > div:first-child { max-width: 760px; }
-.resultCards { margin-top: 48px; display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 16px; }
-.resultCard { padding: 28px; border: 1px solid var(--border); border-radius: 24px; background: var(--canvas); }
-.resultCard span { color: var(--muted); font-size: 14px; }
-.resultCard strong { margin-top: 24px; display: block; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.045em; }
-.resultCard small { font-size: 16px; font-weight: 650; }
-.resultCard p { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
-.primaryResult { background: var(--soft-green); border-color: #cfe7d4; }
-.disclaimer { margin: 18px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
-.bottomCta { margin-top: 36px; padding: 112px 24px; display: grid; justify-items: center; text-align: center; background: var(--surface); }
-.bottomCta h2 { max-width: 820px; }
-.bottomCta > p { margin: 22px 0 32px; }
+.resultPreview > div:first-child { max-width: var(--width-tool); }
+.resultCards { margin-top: var(--space-6); display: grid; gap: 0; }
+.resultCard { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: var(--border-hairline); }
+.resultCard span { color: var(--ink-muted); font-size: var(--text-caption); }
+.resultCard strong { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--text-num-row); font-weight: var(--fw-body); letter-spacing: var(--ls-num); }
+.resultCard small { font-size: var(--text-caption); font-weight: var(--fw-caption); }
+.resultCard p { display: none; }
+.disclaimer { margin: var(--space-4) 0 0; color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
+.bottomCta { width: min(var(--width-tool), calc(100% - var(--space-8))); margin: var(--section-gap) auto 0; padding: 0 0 var(--section-gap); display: grid; justify-items: start; }
+.bottomCta h2 { max-width: var(--width-tool); }
+.bottomCta > p { margin: var(--space-4) 0 var(--space-6); }
 @media (prefers-reduced-motion: reduce) { .progressTrack i { transition: none; } }
-@media (max-width: 900px) { .calculatorEntry { grid-template-columns: 1fr; gap: 44px; } .resultCards { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .calculatorEntry, .resultPreview { width: min(100% - 32px, 1200px); padding: 80px 0; } .calculatorPanel { min-height: 500px; padding: 24px 18px; border-radius: 22px; } .capacityResultPanel { min-height: 0; } .typeGrid, .goalGrid, .capacityFacts, .revenueBreakdown, .assumptionGrid { grid-template-columns: 1fr; } .sectionIntro h2, .resultPreview h2, .bottomCta h2 { font-size: 34px; } .bottomCta { padding: 80px 20px; } .calculatorActions { position: sticky; bottom: 12px; padding-top: 8px; background: var(--canvas); } }
+@media (max-width: 767px) {
+  .calculatorEntry, .resultPreview, .bottomCta { width: min(100% - var(--space-8), var(--width-tool)); }
+  .calculatorPanel { padding: var(--space-6); }
+  .typeGrid, .goalGrid, .assumptionGrid { grid-template-columns: 1fr; }
+  .calculatorActions { flex-direction: column; }
+}

@@ -1,131 +1,123 @@
 .resultSummary {
   display: grid;
-  gap: 28px;
+  gap: var(--space-6);
 }
 
 .resultIntro {
-  max-width: 720px;
+  max-width: var(--width-tool);
 }
 
 .resultIntro h3 {
-  margin: 8px 0 10px;
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  line-height: 1.15;
-  letter-spacing: -0.035em;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  font-weight: var(--fw-heading);
 }
 
 .resultIntro > p:last-child {
   margin: 0;
-  color: #6f746f;
+  color: var(--ink-muted);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
 }
 
+/* 중간값은 전부 무채색 행. 배경 없음, 행 사이 0.5px 헤어라인. */
 .resultCardGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 0;
 }
 
 .resultCard {
-  --result-order: 0;
   min-width: 0;
-  padding: 24px;
-  border: 1px solid #e4e7e3;
-  border-radius: 22px;
-  background: #fff;
-  animation: result-card-enter 360ms ease both;
-  animation-delay: calc(var(--result-order) * 60ms);
-}
-
-.resultCardPrimary {
-  grid-column: 1 / -1;
-  padding: clamp(26px, 5vw, 40px);
-  border-color: #cfe5d4;
-  background: #edf7ef;
-  animation-name: result-card-primary-enter;
-}
-
-.resultCard span,
-.resultCard small {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-hairline);
 }
 
 .resultCard span {
-  color: #4f5750;
-  font-size: 0.92rem;
-  font-weight: 650;
+  color: var(--ink-muted);
+  font-size: var(--text-caption);
+  line-height: var(--lh-caption);
 }
 
 .resultCard strong {
-  display: block;
-  margin: 10px 0 8px;
   overflow-wrap: anywhere;
-  color: #111411;
-  font-size: clamp(1.8rem, 5vw, 3.2rem);
-  line-height: 1;
-  letter-spacing: -0.045em;
-}
-
-.resultCardPrimary strong {
-  color: #16823b;
-  font-size: clamp(2.8rem, 9vw, 5.4rem);
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-num-row);
+  font-weight: var(--fw-body);
+  letter-spacing: var(--ls-num);
+  text-align: right;
 }
 
 .resultCard small {
-  color: #6f746f;
-  line-height: 1.5;
+  display: none;
+}
+
+/* 최종값 하나만 색이 있는 면 위에 놓인다. 페이지 전체에서 이 컴포넌트는 하나뿐이다. */
+.resultCardPrimary {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-8);
+  border-bottom: 0;
+  border-radius: var(--radius-card);
+  background: var(--result-fill);
+  animation: result-enter var(--dur-base) var(--ease) both;
+}
+
+.resultCardPrimary span {
+  color: var(--result-ink-muted);
+}
+
+.resultCardPrimary strong {
+  color: var(--result-ink);
+  font-size: var(--text-num-result);
+  text-align: left;
 }
 
 .resultNextAction {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 24px;
-  border: 1px solid #e4e7e3;
-  border-radius: 22px;
-  background: #f6f7f5;
-  animation: result-card-enter 360ms 300ms ease both;
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-6);
+}
+
+.resultNextAction > div {
+  display: grid;
+  gap: var(--space-2);
 }
 
 .resultNextAction h4 {
-  margin: 7px 0 8px;
-  font-size: clamp(1.25rem, 3vw, 1.65rem);
-  letter-spacing: -0.025em;
+  margin: 0;
+  font-size: var(--text-subhead);
+  line-height: var(--lh-subhead);
+  letter-spacing: var(--ls-subhead);
+  font-weight: var(--fw-subhead);
 }
 
 .resultNextAction p:last-child {
-  max-width: 680px;
+  max-width: var(--width-tool);
   margin: 0;
-  color: #6f746f;
-  line-height: 1.6;
+  color: var(--ink-muted);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
 }
 
-.resultQuoteButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-@keyframes result-card-enter {
+@keyframes result-enter {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes result-card-primary-enter {
-  from { opacity: 0; transform: translateY(8px) scale(1.01); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@media (max-width: 720px) {
-  .resultCardGrid { grid-template-columns: 1fr; }
-  .resultCardPrimary { grid-column: auto; }
-  .resultCard { padding: 20px; }
-  .resultNextAction { align-items: stretch; flex-direction: column; }
-  .resultQuoteButton { width: 100%; }
+@media (max-width: 767px) {
+  .resultCardPrimary { padding: var(--space-6); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .resultCard,
-  .resultNextAction {
-    animation: none;
-  }
+  .resultCardPrimary { animation: none; }
 }

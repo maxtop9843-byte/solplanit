@@ -50,7 +50,30 @@
   - `docs/OPEN_OPS_ITEMS.md` 의 LAUNCH-001 검증 계약 중 광고 관련 항목은 광고 제거로
     무효가 되었다. 재작성 필요
 
-## 4. 토큰 구현              [대기]
+## 4. 토큰 구현              [완료] 2026-08-08
+
+- `DESIGN.md` 10절 CSS 변수 블록을 `globals.css` 에 그대로 반영. 모바일 오버라이드 포함
+- 한글 전역 규칙 적용: `word-break: keep-all`, `overflow-wrap: break-word`,
+  `-webkit-font-smoothing: antialiased`, `.num` 유틸리티
+- 하드코딩 값 치환: CSS 11개 파일 전부. 남은 색상 리터럴은 `globals.css` 의 토큰 정의와
+  `ResultDownloads.tsx` 의 내보내기용 상수뿐이다(페이지 밖에서 열려 CSS 변수를 못 씀)
+- 초록·노랑 제거: `--functional-green`, `--soft-green`, `#fff8de`, maplibre 마커 `#16823B`,
+  차트 내보내기 색까지 전부. 마커는 런타임에 `--ink` 를 읽는다
+- `--result-fill` 은 `ResultSummary` 의 최종 결과 카드 한 곳에만 남겼다
+- 숫자 카운트업 애니메이션(`AnimatedNumber`) 삭제. `DESIGN.md` 금지 항목이다
+- Geist Mono 를 `next/font/google` 로 self-host, `display: swap`. 새 의존성 0개
+- 검증(실측): `box-shadow` 0건, `font-weight` 500 이상 0건, 초록·노랑 0건,
+  `<img>` 0건, 375/768/1024/1440 가로 스크롤 없음, 모바일에서 토큰이 56px·26px·36px 로 전환,
+  lint·typecheck·테스트 88/88·프로덕션 빌드 통과
+- 미해결:
+  - **Pretendard Variable 이 아직 로드되지 않는다.** Google Fonts 에 없어서 `next/font` 로
+    self-host 하려면 저장소에 폰트 파일이 있어야 한다. 지금은 폰트 스택에 이름만 있고
+    실제로는 시스템 서체로 대체된다. `DESIGN.md` 3절이 요구하는 웨이트 300/350/450 이
+    가변 폰트 없이는 정확히 나오지 않는다. 아래 확인 사항 1번
+  - Tailwind `@theme` 블록(`DESIGN.md` 11절)은 반영하지 않았다. 아래 확인 사항 2번
+  - 0.5px 헤어라인은 선언값 기준으로 전부 0.5px 이지만 비레티나(DPR 1)에서는 브라우저가
+    1px 로 스냅한다. 레티나 실측은 남아 있다
+
 ## 5. 홈 재구축              [대기]
 ## 6. 한국어 카피            [대기]
 ## 7. 검수                   [대기]
@@ -59,11 +82,20 @@
 
 ## 사용자 확인이 필요한 사항
 
-1. **`/cases` 라우트를 어떻게 할지.** 스톡 사진 3장을 "경기 화성 48.6kW" 같은 실제
+1. **Pretendard Variable 폰트 파일이 필요하다.** Google Fonts 에 없어서 `next/font` 로
+   self-host 하려면 `.woff2` 파일이 저장소에 있어야 한다. 공식 배포처(jsDelivr)에서
+   내려받아 `public/fonts/` 에 넣으면 되는데, 파일 다운로드는 확인 없이 하지 않는다.
+   내려받아도 되는지, 아니면 다른 방법을 쓸지 알려달라. 그 전까지는 시스템 서체로 대체되고
+   `DESIGN.md` 3절의 웨이트 300/350/450 이 정확히 재현되지 않는다.
+2. **Tailwind `@theme` 블록(`DESIGN.md` 11절)은 반영하지 않았다.** 이 저장소에는 Tailwind 가
+   설치돼 있지 않다(`package.json` 의존성은 maplibre-gl, next, react, react-dom 뿐).
+   추가하면 `REDESIGN-PROMPT.md` 9절의 "의존성 추가 금지"와 7절의 "새로 추가된 의존성 0개"를
+   어기게 되어, 10절 CSS 변수만 구현했다. Tailwind 를 실제로 도입할지 결정이 필요하다.
+3. **`/cases` 라우트를 어떻게 할지.** 스톡 사진 3장을 "경기 화성 48.6kW" 같은 실제
    시공 사례로 표기하고 있다. 지시서 3절은 "최우선 제거" 라고 했지만 대상으로 적은 것은
    홈 섹션과 내비게이션 링크였다. 라우트 자체를 지울지, 사진 없는 정직한 형태로
    다시 쓸지 결정이 필요하다. 지금은 링크만 내려간 상태로 살아 있다.
-2. **`/community` 라우트를 어떻게 할지.** 같은 상황이다. 내비게이션에서는 내렸지만
+4. **`/community` 라우트를 어떻게 할지.** 같은 상황이다. 내비게이션에서는 내렸지만
    라우트와 sitemap 항목은 남아 있다.
-3. **`.claude/launch.json` 을 새로 만들었다.** dev 서버를 띄워 렌더링을 검증하기 위한
+5. **`.claude/launch.json` 을 새로 만들었다.** dev 서버를 띄워 렌더링을 검증하기 위한
    설정 파일이다. 필요 없으면 지워도 된다.
