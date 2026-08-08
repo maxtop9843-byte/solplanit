@@ -106,7 +106,7 @@ describe("SolarCalculator", () => {
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
     expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "상가" } });
+    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "상가·건물" } });
     expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
