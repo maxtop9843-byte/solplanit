@@ -19,6 +19,7 @@ export default function SolarCalculator() {
   const [building, setBuilding] = useState<BuildingType>("주택");
   const [area, setArea] = useState("");
   const [areaUnit, setAreaUnit] = useState<AreaUnit>("m2");
+  const [areaUnknown, setAreaUnknown] = useState(false);
   const [capacity, setCapacity] = useState<CapacityResult | null>(null);
   const [error, setError] = useState("");
 
@@ -28,8 +29,20 @@ export default function SolarCalculator() {
       setCapacity(estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit }));
     } catch (caught) {
       setCapacity(null);
-      setError(caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해주세요.");
+      setError(caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해 주세요.");
     }
+  }
+
+  function showUnknownAreaHelp() {
+    setAreaUnknown(true);
+    setArea("");
+    setCapacity(null);
+    setError("");
+  }
+
+  function returnToAreaInput() {
+    setAreaUnknown(false);
+    setError("");
   }
 
   const preciseAnalysisHref = capacity
@@ -47,32 +60,48 @@ export default function SolarCalculator() {
         </div>
 
         <div className="field">
-          <label htmlFor="area">패널을 설치할 수 있는 지붕 면적</label>
-          <div className="fieldRow">
-            <input
-              id="area"
-              type="number"
-              inputMode="decimal"
-              min="0"
-              value={area}
-              onChange={(event) => setArea(event.target.value)}
-              onBlur={() => { if (area && Number(area) <= 0) setError("0보다 큰 면적을 넣어주세요."); }}
-              aria-describedby="area-help"
-            />
-            <div className="unitToggle" role="group" aria-label="면적 단위">
-              {(["m2", "pyeong"] as const).map((unit) => (
-                <button key={unit} type="button" aria-pressed={areaUnit === unit} onClick={() => setAreaUnit(unit)}>
-                  {unit === "m2" ? "m²" : "평"}
-                </button>
-              ))}
+          <label htmlFor="area">지붕 면적</label>
+          {!areaUnknown ? (
+            <>
+              <div className="fieldRow">
+                <input
+                  id="area"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  value={area}
+                  onChange={(event) => setArea(event.target.value)}
+                  onBlur={() => { if (area && Number(area) <= 0) setError("0보다 큰 면적을 넣어 주세요."); }}
+                  aria-describedby="area-help"
+                />
+                <div className="unitToggle" role="group" aria-label="면적 단위">
+                  {(["m2", "pyeong"] as const).map((unit) => (
+                    <button key={unit} type="button" aria-pressed={areaUnit === unit} onClick={() => setAreaUnit(unit)}>
+                      {unit === "m2" ? "m²" : "평"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <small id="area-help">전체 지붕 면적을 대략 넣어도 됩니다. 통로와 점검 공간은 계산할 때 따로 반영합니다.</small>
+              <button className="fieldTextButton" type="button" onClick={showUnknownAreaHelp} aria-controls="unknown-area-help">
+                지붕 면적을 잘 모르겠어요
+              </button>
+            </>
+          ) : (
+            <div className="fieldUnknown" id="unknown-area-help" role="status">
+              <strong>면적을 모르면 용량을 임의로 계산하지 않습니다.</strong>
+              <p>지붕 면적을 확인한 뒤 다시 계산해 주세요. 주소나 건물 정보만으로 면적을 추정하는 기능은 공식 근거를 확인한 뒤 추가할 예정입니다.</p>
+              <div className="fieldUnknownActions">
+                <button className="secondaryButton" type="button" onClick={returnToAreaInput}>지붕 면적 입력하기</button>
+                <Link href="/guides">설치 전 확인사항 보기 →</Link>
+              </div>
             </div>
-          </div>
-          <small id="area-help">정확하지 않아도 괜찮아요. 패널을 놓을 수 있을 것 같은 면적을 대략 넣어주세요.</small>
+          )}
         </div>
 
         {error && <p className="fieldError" role="alert">{error}</p>}
 
-        <button className="primaryButton" type="button" onClick={calculate}>설치 가능 용량 계산하기</button>
+        {!areaUnknown && <button className="primaryButton" type="button" onClick={calculate}>설치 가능 용량 계산하기</button>}
       </div>
 
       {capacity && (
@@ -94,7 +123,7 @@ export default function SolarCalculator() {
 
           <div className="resultNextStep">
             <div>
-              <strong>이 용량으로 얼마나 발전할지도 확인해보세요.</strong>
+              <strong>이 용량으로 얼마나 발전할지도 확인해 보세요.</strong>
               <p>지도에서 위치를 고르면 PVGIS 데이터를 이용해 월별·연간 예상 발전량을 계산합니다.</p>
             </div>
             <Link href={preciseAnalysisHref}>정밀 발전량 계산하기 →</Link>
