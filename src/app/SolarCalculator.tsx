@@ -33,9 +33,24 @@ export default function SolarCalculator() {
     }
   }
 
+  function invalidateResult() {
+    setCapacity(null);
+    if (error) setError("");
+  }
+
   function updateArea(value: string) {
     setArea(value);
-    if (error) setError("");
+    invalidateResult();
+  }
+
+  function updateBuilding(value: BuildingType) {
+    setBuilding(value);
+    invalidateResult();
+  }
+
+  function updateAreaUnit(value: AreaUnit) {
+    setAreaUnit(value);
+    invalidateResult();
   }
 
   function showUnknownAreaHelp() {
@@ -60,7 +75,7 @@ export default function SolarCalculator() {
       <div className="toolCard">
         <div className="field">
           <label htmlFor="building">건물 종류</label>
-          <select id="building" value={building} onChange={(event) => setBuilding(event.target.value as BuildingType)}>
+          <select id="building" value={building} onChange={(event) => updateBuilding(event.target.value as BuildingType)}>
             {BUILDING_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
         </div>
@@ -83,7 +98,7 @@ export default function SolarCalculator() {
                 />
                 <div className="unitToggle" role="group" aria-label="면적 단위">
                   {(["m2", "pyeong"] as const).map((unit) => (
-                    <button key={unit} type="button" aria-pressed={areaUnit === unit} onClick={() => setAreaUnit(unit)}>
+                    <button key={unit} type="button" aria-pressed={areaUnit === unit} onClick={() => updateAreaUnit(unit)}>
                       {unit === "m2" ? "m²" : "평"}
                     </button>
                   ))}
