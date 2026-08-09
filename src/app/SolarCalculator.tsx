@@ -142,7 +142,7 @@ export default function SolarCalculator() {
         }}
       >
         <div className="field">
-          <label htmlFor="building">설치할 곳</label>
+          <label htmlFor="building">건물 종류</label>
           <select id="building" value={building} onChange={(event) => updateBuilding(event.target.value as BuildingType)}>
             {ROOF_BUILDING_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
@@ -211,7 +211,7 @@ export default function SolarCalculator() {
 
           <dl className="resultRows">
             <div>
-              <dt>선택한 설치 장소</dt>
+              <dt>선택한 건물 종류</dt>
               <dd>{building}</dd>
             </div>
             <div>
