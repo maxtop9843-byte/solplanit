@@ -155,6 +155,25 @@ describe("SolarCalculator", () => {
     expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
   });
 
+  it("preserves the physical roof area when switching between square meters and pyeong", () => {
+    render(<SolarCalculator />);
+
+    const areaInput = screen.getByLabelText("지붕 면적");
+    fireEvent.change(areaInput, { target: { value: "100" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    expect(screen.getByText("9.5kW")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "평" }));
+    expect(areaInput).toHaveValue(30.25);
+    expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+    expect(screen.getByText("9.5kW")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "m²" }));
+    expect(areaInput).toHaveValue(100);
+  });
+
   it("uses the calculation contract for the same area error on blur and submit", () => {
     render(<SolarCalculator />);
 
