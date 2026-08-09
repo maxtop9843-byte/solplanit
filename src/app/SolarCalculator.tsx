@@ -46,6 +46,8 @@ export default function SolarCalculator() {
   }, [areaUnknown]);
 
   function getCapacityInputError() {
+    if (!area.trim()) return "지붕 면적을 입력해 주세요.";
+
     try {
       estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit });
       return "";
@@ -56,6 +58,15 @@ export default function SolarCalculator() {
 
   function calculate() {
     setError("");
+
+    const inputError = getCapacityInputError();
+    if (inputError) {
+      setCapacity(null);
+      setError(inputError);
+      areaInputRef.current?.focus();
+      return;
+    }
+
     try {
       setCapacity(estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit }));
     } catch (caught) {
