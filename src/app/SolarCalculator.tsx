@@ -188,7 +188,7 @@ export default function SolarCalculator() {
               tabIndex={-1}
             >
               <strong>면적을 모르면 용량을 임의로 계산하지 않습니다.</strong>
-              <p>지붕 면적을 확인한 뒤 다시 계산해 주세요. 주소나 건물 정보만으로 면적을 추정하는 기능은 공식 근거를 확인한 뒤 추가할 예정입니다.</p>
+              <p>건축 도면이나 실측으로 지붕 면적을 확인한 뒤 다시 계산해 주세요. 정확한 면적을 아직 모른다면 설치 전 확인사항을 먼저 살펴볼 수 있습니다.</p>
               <div className="fieldUnknownActions">
                 <button className="secondaryButton" type="button" onClick={returnToAreaInput}>지붕 면적 입력하기</button>
                 <Link href="/guides">설치 전 확인사항 보기 →</Link>
