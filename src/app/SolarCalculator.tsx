@@ -116,7 +116,6 @@ export default function SolarCalculator() {
 
   function showUnknownAreaHelp() {
     setAreaUnknown(true);
-    setArea("");
     setCapacity(null);
     setError("");
   }
