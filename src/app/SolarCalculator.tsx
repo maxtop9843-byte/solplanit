@@ -159,6 +159,7 @@ export default function SolarCalculator() {
                   type="number"
                   inputMode="decimal"
                   step="any"
+                  placeholder={areaUnit === "m2" ? "예: 100" : "예: 30"}
                   value={area}
                   onChange={(event) => updateArea(event.target.value)}
                   onBlur={validateAreaOnBlur}
@@ -173,7 +174,7 @@ export default function SolarCalculator() {
                   ))}
                 </div>
               </div>
-              <small id="area-help">전체 지붕 면적을 대략 넣어도 됩니다. 통로와 점검 공간은 계산할 때 따로 반영합니다.</small>
+              <small id="area-help">정확하지 않아도 괜찮아요. 전체 지붕 면적을 대략 넣으면 통로와 점검 공간은 계산할 때 따로 반영합니다.</small>
               {error && <p className="fieldError" id="area-error" role="alert">{error}</p>}
               <button className="fieldTextButton" type="button" onClick={showUnknownAreaHelp} aria-controls="unknown-area-help">
                 지붕 면적을 잘 모르겠어요

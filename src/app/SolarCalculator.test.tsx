@@ -18,6 +18,17 @@ describe("SolarCalculator", () => {
     expect(screen.getByText("약 21장")).toBeInTheDocument();
   });
 
+  it("gives a unit-aware example without using the placeholder as the field label", () => {
+    render(<SolarCalculator />);
+
+    const areaInput = screen.getByLabelText("지붕 면적");
+    expect(areaInput).toHaveAttribute("placeholder", "예: 100");
+    expect(screen.getByText(/정확하지 않아도 괜찮아요/)).toHaveAttribute("id", "area-help");
+
+    fireEvent.click(screen.getByRole("button", { name: "평" }));
+    expect(areaInput).toHaveAttribute("placeholder", "예: 30");
+  });
+
   it("accepts decimal roof areas without native range constraints overriding the calculation contract", () => {
     render(<SolarCalculator />);
 
