@@ -6,7 +6,7 @@ describe("HomePage primary task", () => {
   it("puts the usable roof-capacity calculator before secondary and pending answers", () => {
     const { container } = render(<HomePage />);
 
-    expect(screen.getByLabelText("건물 종류")).toBeInTheDocument();
+    expect(screen.getByLabelText("설치할 곳")).toBeInTheDocument();
     expect(screen.getByLabelText("지붕 면적")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "설치 가능 용량 계산하기" })).toBeInTheDocument();
 
