@@ -196,6 +196,10 @@ export default function SolarCalculator() {
 
           <dl className="resultRows">
             <div>
+              <dt>선택한 건물 종류</dt>
+              <dd>{building}</dd>
+            </div>
+            <div>
               <dt>입력한 지붕 면적</dt>
               <dd className="num">{num(capacity.inputArea, Number.isInteger(capacity.inputArea) ? 0 : 1)}{capacity.inputUnit === "m2" ? "m²" : "평"}</dd>
             </div>
