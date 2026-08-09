@@ -52,8 +52,19 @@ describe("estimateInstallableCapacity", () => {
 
   it("rejects missing, non-finite, and below-minimum areas", () => {
     expect(() => estimateInstallableCapacity({ buildingType: "주택", area: 0, areaUnit: "m2" })).toThrow(CapacityInputError);
-    expect(() => estimateInstallableCapacity({ buildingType: "주택", area: Number.NaN, areaUnit: "m2" })).toThrow("숫자로");
+    expect(() => estimateInstallableCapacity({ buildingType: "주택", area: Number.NaN, areaUnit: "m2" })).toThrow(
+      "면적을 숫자로 넣어 주세요. 예: 100",
+    );
     expect(() => estimateInstallableCapacity({ buildingType: "주택", area: 4.99, areaUnit: "m2" })).toThrow("5m² 이상");
+  });
+
+  it("uses the same user-facing terms and spacing as the calculator UI for invalid selections", () => {
+    expect(() => estimateInstallableCapacity({ buildingType: "건물" as never, area: 100, areaUnit: "m2" })).toThrow(
+      "건물 종류를 다시 선택해 주세요.",
+    );
+    expect(() => estimateInstallableCapacity({ buildingType: "주택", area: 100, areaUnit: "square-feet" as never })).toThrow(
+      "면적 단위를 다시 선택해 주세요.",
+    );
   });
 
   it("describes area boundaries in the unit the user selected", () => {
