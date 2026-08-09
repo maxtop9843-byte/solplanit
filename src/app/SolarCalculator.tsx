@@ -15,6 +15,9 @@ import {
 const num = (value: number, digits = 0) =>
   value.toLocaleString("ko-KR", { maximumFractionDigits: digits, minimumFractionDigits: digits });
 
+const formatAreaInput = (value: number) =>
+  value.toLocaleString("ko-KR", { maximumFractionDigits: 2 });
+
 const roundAreaInput = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 const ROOF_BUILDING_TYPES = BUILDING_TYPES.filter((type): type is Exclude<BuildingType, "토지"> => type !== "토지");
 
@@ -213,7 +216,7 @@ export default function SolarCalculator() {
             </div>
             <div>
               <dt>입력한 지붕 면적</dt>
-              <dd className="num">{num(capacity.inputArea, Number.isInteger(capacity.inputArea) ? 0 : 2)}{capacity.inputUnit === "m2" ? "m²" : "평"}</dd>
+              <dd className="num">{formatAreaInput(capacity.inputArea)}{capacity.inputUnit === "m2" ? "m²" : "평"}</dd>
             </div>
             <div><dt>적용한 배치 가능 비율</dt><dd className="num">약 {Math.round(capacity.usableAreaRatio * 100)}%</dd></div>
             <div><dt>실제로 패널을 배치하는 면적</dt><dd className="num">약 {num(capacity.usableAreaM2)}m²</dd></div>
