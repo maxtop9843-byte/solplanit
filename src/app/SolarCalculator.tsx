@@ -25,6 +25,7 @@ export default function SolarCalculator() {
   const [building, setBuilding] = useState<BuildingType>("주택");
   const [area, setArea] = useState("");
   const [areaUnit, setAreaUnit] = useState<AreaUnit>("m2");
+  const [areaUnitNotice, setAreaUnitNotice] = useState("");
   const [areaUnknown, setAreaUnknown] = useState(false);
   const [capacity, setCapacity] = useState<CapacityResult | null>(null);
   const [error, setError] = useState("");
@@ -92,6 +93,7 @@ export default function SolarCalculator() {
 
   function updateArea(value: string) {
     setArea(value);
+    setAreaUnitNotice("");
     invalidateResult();
   }
 
@@ -107,7 +109,12 @@ export default function SolarCalculator() {
     if (area.trim() && Number.isFinite(numericArea)) {
       const areaM2 = areaUnit === "pyeong" ? numericArea * CAPACITY_METHOD.squareMetersPerPyeong : numericArea;
       const convertedArea = value === "pyeong" ? areaM2 / CAPACITY_METHOD.squareMetersPerPyeong : areaM2;
-      setArea(String(roundAreaInput(convertedArea)));
+      const roundedArea = roundAreaInput(convertedArea);
+      const unitLabel = value === "m2" ? "m²" : "평";
+      setArea(String(roundedArea));
+      setAreaUnitNotice(`면적을 ${formatAreaInput(roundedArea)}${unitLabel}으로 바꿨어요.`);
+    } else {
+      setAreaUnitNotice("");
     }
 
     setAreaUnit(value);
@@ -116,6 +123,7 @@ export default function SolarCalculator() {
 
   function showUnknownAreaHelp() {
     setAreaUnknown(true);
+    setAreaUnitNotice("");
     setCapacity(null);
     setError("");
   }
@@ -129,7 +137,9 @@ export default function SolarCalculator() {
   const preciseAnalysisHref = capacity
     ? `/pro?source=general&capacity=${capacity.installableCapacityKw}&panels=${capacity.panelCount}`
     : "/pro";
-  const areaDescribedBy = error ? "area-help area-error" : "area-help";
+  const areaDescribedBy = ["area-help", areaUnitNotice ? "area-unit-notice" : "", error ? "area-error" : ""]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className="tool">
@@ -174,6 +184,7 @@ export default function SolarCalculator() {
                 </div>
               </div>
               <small id="area-help">정확하지 않아도 괜찮아요. 전체 지붕 면적을 대략 넣으면 통로와 점검 공간은 계산할 때 따로 반영합니다.</small>
+              {areaUnitNotice && <small id="area-unit-notice" role="status" aria-live="polite">{areaUnitNotice}</small>}
               {error && <p className="fieldError" id="area-error" role="alert">{error}</p>}
               <button className="fieldTextButton" type="button" onClick={showUnknownAreaHelp} aria-controls="unknown-area-help">
                 지붕 면적을 잘 모르겠어요
