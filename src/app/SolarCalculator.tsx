@@ -15,6 +15,8 @@ import {
 const num = (value: number, digits = 0) =>
   value.toLocaleString("ko-KR", { maximumFractionDigits: digits, minimumFractionDigits: digits });
 
+const roundAreaInput = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+
 export default function SolarCalculator() {
   const [building, setBuilding] = useState<BuildingType>("주택");
   const [area, setArea] = useState("");
@@ -84,6 +86,15 @@ export default function SolarCalculator() {
   }
 
   function updateAreaUnit(value: AreaUnit) {
+    if (value === areaUnit) return;
+
+    const numericArea = Number(area);
+    if (area.trim() && Number.isFinite(numericArea)) {
+      const areaM2 = areaUnit === "pyeong" ? numericArea * CAPACITY_METHOD.squareMetersPerPyeong : numericArea;
+      const convertedArea = value === "pyeong" ? areaM2 / CAPACITY_METHOD.squareMetersPerPyeong : areaM2;
+      setArea(String(roundAreaInput(convertedArea)));
+    }
+
     setAreaUnit(value);
     invalidateResult();
   }
