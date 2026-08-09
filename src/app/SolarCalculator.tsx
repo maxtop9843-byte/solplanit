@@ -22,14 +22,16 @@ const roundAreaInput = (value: number) => Math.round((value + Number.EPSILON) * 
 const ROOF_BUILDING_TYPES = BUILDING_TYPES.filter((type): type is Exclude<BuildingType, "토지"> => type !== "토지");
 
 export default function SolarCalculator() {
-  const [building, setBuilding] = useState<BuildingType>("주택");
+  const [building, setBuilding] = useState<BuildingType | "">("");
   const [area, setArea] = useState("");
   const [areaUnit, setAreaUnit] = useState<AreaUnit>("m2");
   const [areaUnitNotice, setAreaUnitNotice] = useState("");
   const [areaUnknown, setAreaUnknown] = useState(false);
   const [capacity, setCapacity] = useState<CapacityResult | null>(null);
-  const [error, setError] = useState("");
+  const [buildingError, setBuildingError] = useState("");
+  const [areaError, setAreaError] = useState("");
   const focusAreaOnReturnRef = useRef(false);
+  const buildingInputRef = useRef<HTMLSelectElement>(null);
   const areaInputRef = useRef<HTMLInputElement>(null);
   const unknownAreaHelpRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
@@ -50,8 +52,9 @@ export default function SolarCalculator() {
     }
   }, [areaUnknown]);
 
-  function getCapacityInputError() {
+  function getAreaInputError() {
     if (!area.trim()) return "지붕 면적을 입력해 주세요.";
+    if (!building) return "";
 
     try {
       estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit });
@@ -62,12 +65,20 @@ export default function SolarCalculator() {
   }
 
   function calculate() {
-    setError("");
+    setBuildingError("");
+    setAreaError("");
 
-    const inputError = getCapacityInputError();
+    if (!building) {
+      setCapacity(null);
+      setBuildingError("건물 종류를 선택해 주세요.");
+      buildingInputRef.current?.focus();
+      return;
+    }
+
+    const inputError = getAreaInputError();
     if (inputError) {
       setCapacity(null);
-      setError(inputError);
+      setAreaError(inputError);
       areaInputRef.current?.focus();
       return;
     }
@@ -76,29 +87,31 @@ export default function SolarCalculator() {
       setCapacity(estimateInstallableCapacity({ buildingType: building, area: Number(area), areaUnit }));
     } catch (caught) {
       setCapacity(null);
-      setError(caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해 주세요.");
+      setAreaError(caught instanceof CapacityInputError ? caught.message : "계산하지 못했습니다. 입력한 값을 다시 확인해 주세요.");
       areaInputRef.current?.focus();
     }
   }
 
   function validateAreaOnBlur() {
-    if (!area) return;
-    setError(getCapacityInputError());
+    if (!area || !building) return;
+    setAreaError(getAreaInputError());
   }
 
   function invalidateResult() {
     setCapacity(null);
-    if (error) setError("");
   }
 
   function updateArea(value: string) {
     setArea(value);
     setAreaUnitNotice("");
+    setAreaError("");
     invalidateResult();
   }
 
   function updateBuilding(value: BuildingType) {
     setBuilding(value);
+    setBuildingError("");
+    setAreaError("");
     invalidateResult();
   }
 
@@ -118,6 +131,7 @@ export default function SolarCalculator() {
     }
 
     setAreaUnit(value);
+    setAreaError("");
     invalidateResult();
   }
 
@@ -125,19 +139,20 @@ export default function SolarCalculator() {
     setAreaUnknown(true);
     setAreaUnitNotice("");
     setCapacity(null);
-    setError("");
+    setBuildingError("");
+    setAreaError("");
   }
 
   function returnToAreaInput() {
     focusAreaOnReturnRef.current = true;
     setAreaUnknown(false);
-    setError("");
+    setAreaError("");
   }
 
   const preciseAnalysisHref = capacity
     ? `/pro?source=general&capacity=${capacity.installableCapacityKw}&panels=${capacity.panelCount}`
     : "/pro";
-  const areaDescribedBy = ["area-help", areaUnitNotice ? "area-unit-notice" : "", error ? "area-error" : ""]
+  const areaDescribedBy = ["area-help", areaUnitNotice ? "area-unit-notice" : "", areaError ? "area-error" : ""]
     .filter(Boolean)
     .join(" ");
 
@@ -152,9 +167,18 @@ export default function SolarCalculator() {
       >
         <div className="field">
           <label htmlFor="building">건물 종류</label>
-          <select id="building" value={building} onChange={(event) => updateBuilding(event.target.value as BuildingType)}>
+          <select
+            ref={buildingInputRef}
+            id="building"
+            value={building}
+            onChange={(event) => updateBuilding(event.target.value as BuildingType)}
+            aria-describedby={buildingError ? "building-error" : undefined}
+            aria-invalid={buildingError ? true : undefined}
+          >
+            <option value="" disabled>선택해 주세요</option>
             {ROOF_BUILDING_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
+          {buildingError && <p className="fieldError" id="building-error" role="alert">{buildingError}</p>}
         </div>
 
         <div className="field">
@@ -173,7 +197,7 @@ export default function SolarCalculator() {
                   onChange={(event) => updateArea(event.target.value)}
                   onBlur={validateAreaOnBlur}
                   aria-describedby={areaDescribedBy}
-                  aria-invalid={error ? true : undefined}
+                  aria-invalid={areaError ? true : undefined}
                 />
                 <div className="unitToggle" role="group" aria-label="면적 단위">
                   {(["m2", "pyeong"] as const).map((unit) => (
@@ -185,7 +209,7 @@ export default function SolarCalculator() {
               </div>
               <small id="area-help">정확하지 않아도 괜찮아요. 전체 지붕 면적을 대략 넣으면 통로와 점검 공간은 계산할 때 따로 반영합니다.</small>
               {areaUnitNotice && <small id="area-unit-notice" role="status" aria-live="polite">{areaUnitNotice}</small>}
-              {error && <p className="fieldError" id="area-error" role="alert">{error}</p>}
+              {areaError && <p className="fieldError" id="area-error" role="alert">{areaError}</p>}
               <button className="fieldTextButton" type="button" onClick={showUnknownAreaHelp} aria-controls="unknown-area-help">
                 지붕 면적을 잘 모르겠어요
               </button>
@@ -211,7 +235,7 @@ export default function SolarCalculator() {
         {!areaUnknown && <button className="primaryButton" type="submit">설치 가능 용량 계산하기</button>}
       </form>
 
-      {capacity && (
+      {capacity && building && (
         <div ref={resultRef} className="toolResult" role="region" aria-label="계산 결과" aria-live="polite" tabIndex={-1}>
           <p className="resultSource"><strong>간단 예상치</strong> · 입력한 면적과 배치 가정을 이용한 사전 검토 결과입니다.</p>
 
