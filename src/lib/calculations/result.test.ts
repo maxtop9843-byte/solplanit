@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { errorResult, unavailableResult } from "./result";
+import { errorResult, estimatedResult, unavailableResult, verifiedResult } from "./result";
 
 const metadata = {
   sources: [] as const,
@@ -9,6 +9,14 @@ const metadata = {
 };
 
 describe("calculation result metadata", () => {
+  it("keeps verified and estimated values explicit without changing the value", () => {
+    const verified = verifiedResult(3, metadata);
+    const estimated = estimatedResult(3, metadata);
+
+    expect(verified).toMatchObject({ value: 3, metadata: { status: "verified" } });
+    expect(estimated).toMatchObject({ value: 3, metadata: { status: "estimated" } });
+  });
+
   it("keeps unavailable distinct from a numeric zero", () => {
     const result = unavailableResult<number>(metadata);
 
