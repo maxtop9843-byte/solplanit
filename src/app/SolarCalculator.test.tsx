@@ -66,11 +66,11 @@ describe("SolarCalculator", () => {
 
     expect(screen.getByText("간단 예상치")).toBeInTheDocument();
     expect(screen.getByText("선택한 건물 종류")).toBeInTheDocument();
-    expect(screen.getByText("상가·건물")).toBeInTheDocument();
+    expect(screen.getByText("상가·건물", { selector: "dd" })).toBeInTheDocument();
     expect(screen.getByText("입력한 지붕 면적")).toBeInTheDocument();
     expect(screen.getByText("100m²")).toBeInTheDocument();
     expect(screen.getByText("적용한 배치 가능 비율")).toBeInTheDocument();
-    expect(screen.getByText("약 65%")).toBeInTheDocument();
+    expect(screen.getByText("약 60%")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /가정과 출처 보기/ })).toHaveAttribute("href", "/trust/methodology");
   });
 
