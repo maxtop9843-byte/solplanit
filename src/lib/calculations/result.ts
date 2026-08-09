@@ -27,18 +27,35 @@ export type CalculationResult<T> = {
   metadata: CalculationResultMetadata;
 };
 
-export function unavailableResult<T>(
-  metadata: Omit<CalculationResultMetadata, "status">,
+type ResultMetadataWithoutStatus = Omit<CalculationResultMetadata, "status">;
+
+function resultWithValue<T>(
+  value: T,
+  status: Extract<CalculationResultStatus, "verified" | "estimated">,
+  metadata: ResultMetadataWithoutStatus,
 ): CalculationResult<T> {
+  return {
+    value,
+    metadata: { ...metadata, status },
+  };
+}
+
+export function verifiedResult<T>(value: T, metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
+  return resultWithValue(value, "verified", metadata);
+}
+
+export function estimatedResult<T>(value: T, metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
+  return resultWithValue(value, "estimated", metadata);
+}
+
+export function unavailableResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return {
     value: null,
     metadata: { ...metadata, status: "unavailable" },
   };
 }
 
-export function errorResult<T>(
-  metadata: Omit<CalculationResultMetadata, "status">,
-): CalculationResult<T> {
+export function errorResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return {
     value: null,
     metadata: { ...metadata, status: "error" },
