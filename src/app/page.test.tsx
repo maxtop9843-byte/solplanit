@@ -8,6 +8,7 @@ describe("HomePage", () => {
     expect(
       screen.getByRole("heading", { name: /우리 건물에 태양광,\s*얼마나 설치할 수 있을까요/ }),
     ).toBeInTheDocument();
+    expect(screen.getByText(/정확한 면적을 모르면 확인 방법부터 안내합니다/)).toBeInTheDocument();
     expect(screen.getByText(/전문 용어 입력 없음 · 회원가입 없음 · 계산 기준 공개/)).toBeInTheDocument();
   });
 
