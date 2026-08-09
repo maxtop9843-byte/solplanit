@@ -81,16 +81,16 @@ function formatAreaBoundary(areaM2: number, unit: AreaUnit, boundary: "minimum" 
 }
 
 export function convertAreaToSquareMeters(area: number, unit: AreaUnit): number {
-  if (!Number.isFinite(area)) throw new CapacityInputError("면적을 숫자로 넣어주세요. 예: 100");
+  if (!Number.isFinite(area)) throw new CapacityInputError("면적을 숫자로 넣어 주세요. 예: 100");
   return unit === "pyeong" ? area * CAPACITY_METHOD.squareMetersPerPyeong : area;
 }
 
 export function estimateInstallableCapacity(input: CapacityInput): CapacityResult {
   if (!BUILDING_TYPES.includes(input.buildingType)) {
-    throw new CapacityInputError("건물 유형을 다시 선택해주세요.");
+    throw new CapacityInputError("건물 종류를 다시 선택해 주세요.");
   }
   if (!AREA_UNITS.includes(input.areaUnit)) {
-    throw new CapacityInputError("면적 단위를 다시 선택해주세요.");
+    throw new CapacityInputError("면적 단위를 다시 선택해 주세요.");
   }
 
   const areaM2Raw = convertAreaToSquareMeters(input.area, input.areaUnit);
@@ -107,7 +107,7 @@ export function estimateInstallableCapacity(input: CapacityInput): CapacityResul
   const usableAreaM2Raw = areaM2Raw * assumption.usableAreaRatio;
   const panelCount = Math.floor(usableAreaM2Raw / assumption.panelFootprintM2);
   if (panelCount < 1) {
-    throw new CapacityInputError("이 조건으로는 패널을 한 장도 놓을 수 없습니다. 면적을 다시 확인해주세요.");
+    throw new CapacityInputError("이 조건으로는 패널을 한 장도 놓을 수 없습니다. 면적을 다시 확인해 주세요.");
   }
 
   return {
