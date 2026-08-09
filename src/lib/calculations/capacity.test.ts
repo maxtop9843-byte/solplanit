@@ -56,6 +56,15 @@ describe("estimateInstallableCapacity", () => {
     expect(() => estimateInstallableCapacity({ buildingType: "주택", area: 4.99, areaUnit: "m2" })).toThrow("5m² 이상");
   });
 
+  it("describes area boundaries in the unit the user selected", () => {
+    expect(() => estimateInstallableCapacity({ buildingType: "주택", area: 1.5, areaUnit: "pyeong" })).toThrow(
+      "1.52평 이상 넣어 주세요.",
+    );
+    expect(() => estimateInstallableCapacity({ buildingType: "토지", area: 302_500.02, areaUnit: "pyeong" })).toThrow(
+      "302,500.01평 이하로 넣어 주세요.",
+    );
+  });
+
   it("accepts the exact minimum boundary when one panel fits", () => {
     const result = estimateInstallableCapacity({ buildingType: "공장·창고", area: 5, areaUnit: "m2" });
     expect(result.panelCount).toBe(1);

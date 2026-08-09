@@ -16,6 +16,6 @@ describe("SolarCalculator missing roof area", () => {
     fireEvent.change(areaInput, { target: { value: "1" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
-    expect(screen.getByRole("alert")).toHaveTextContent("패널 한 장도 놓기 어려운 면적입니다. 5m² 이상 넣어주세요.");
+    expect(screen.getByRole("alert")).toHaveTextContent("패널 한 장도 놓기 어려운 면적입니다. 5m² 이상 넣어 주세요.");
   });
 });
