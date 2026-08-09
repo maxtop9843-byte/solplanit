@@ -6,6 +6,7 @@ describe("SolarCalculator missing roof area", () => {
   it("distinguishes a missing roof area from an area that is too small", () => {
     render(<SolarCalculator />);
 
+    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "주택" } });
     const areaInput = screen.getByLabelText("지붕 면적");
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
