@@ -172,6 +172,7 @@ describe("SolarCalculator", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
     expect(screen.getByText("9.5kW")).toBeInTheDocument();
+    expect(screen.getByText("30.25평")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "m²" }));
     expect(areaInput).toHaveValue(100);
