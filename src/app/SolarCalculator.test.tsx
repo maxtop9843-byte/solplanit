@@ -184,11 +184,23 @@ describe("SolarCalculator", () => {
     fireEvent.change(areaInput, { target: { value: "1" } });
     fireEvent.blur(areaInput);
 
-    const expectedMessage = "패널 한 장도 놓기 어려운 면적입니다. 5m² 이상 넣어주세요.";
+    const expectedMessage = "패널 한 장도 놓기 어려운 면적입니다. 5m² 이상 넣어 주세요.";
     expect(screen.getByRole("alert")).toHaveTextContent(expectedMessage);
 
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
     expect(screen.getByRole("alert")).toHaveTextContent(expectedMessage);
+  });
+
+  it("shows a pyeong boundary when pyeong is the selected input unit", () => {
+    render(<SolarCalculator />);
+
+    fireEvent.click(screen.getByRole("button", { name: "평" }));
+    const areaInput = screen.getByLabelText("지붕 면적");
+    fireEvent.change(areaInput, { target: { value: "1.5" } });
+    fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent("1.52평 이상 넣어 주세요.");
+    expect(screen.getByRole("alert")).not.toHaveTextContent("5m² 이상");
   });
 
   it("links a capacity result to the precise generation calculator", () => {
