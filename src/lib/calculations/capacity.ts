@@ -1,3 +1,5 @@
+import type { CalculationResult } from "./result";
+
 export const AREA_UNITS = ["m2", "pyeong"] as const;
 export type AreaUnit = (typeof AREA_UNITS)[number];
 
@@ -121,5 +123,46 @@ export function estimateInstallableCapacity(input: CapacityInput): CapacityResul
     panelCount,
     installableCapacityKw: round(panelCount * CAPACITY_METHOD.panelCapacityKw, 2),
     methodVersion: CAPACITY_METHOD.version,
+  };
+}
+
+export function estimateInstallableCapacityResult(
+  input: CapacityInput,
+  calculatedAt?: string,
+): CalculationResult<CapacityResult> {
+  const value = estimateInstallableCapacity(input);
+  const assumption = CAPACITY_METHOD.assumptions[input.buildingType];
+
+  return {
+    value,
+    metadata: {
+      status: "estimated",
+      sources: CAPACITY_METHOD.sources,
+      referenceDate: CAPACITY_METHOD.version,
+      ...(calculatedAt ? { calculatedAt } : {}),
+      assumptions: [
+        {
+          key: "usableAreaRatio",
+          value: assumption.usableAreaRatio * 100,
+          unit: "%",
+          description: "지붕 전체 면적 중 패널 배치에 사용할 수 있다고 가정한 비율",
+        },
+        {
+          key: "panelFootprintM2",
+          value: assumption.panelFootprintM2,
+          unit: "m²/장",
+          description: "통로와 패널 간격을 포함해 패널 한 장에 필요하다고 가정한 면적",
+        },
+        {
+          key: "panelCapacityKw",
+          value: CAPACITY_METHOD.panelCapacityKw,
+          unit: "kW/장",
+          description: "계산에 사용한 패널 한 장의 정격 용량",
+        },
+      ],
+      limitations: [
+        "구조 안전, 음영, 옥상 장애물, 실제 배치와 법규 조건은 반영하지 않은 사전 검토 값입니다.",
+      ],
+    },
   };
 }

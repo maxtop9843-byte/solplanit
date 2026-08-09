@@ -4,6 +4,7 @@ import {
   CapacityInputError,
   convertAreaToSquareMeters,
   estimateInstallableCapacity,
+  estimateInstallableCapacityResult,
 } from "./capacity";
 
 describe("convertAreaToSquareMeters", () => {
@@ -92,5 +93,32 @@ describe("estimateInstallableCapacity", () => {
     expect(result.usableAreaM2).toBe(56.36);
     expect(Number.isInteger(result.panelCount)).toBe(true);
     expect(result.installableCapacityKw.toString().split(".")[1]?.length ?? 0).toBeLessThanOrEqual(2);
+  });
+});
+
+describe("estimateInstallableCapacityResult", () => {
+  it("marks the capacity as estimated and keeps the existing calculation value unchanged", () => {
+    const input = { buildingType: "주택", area: 100, areaUnit: "m2" } as const;
+    const legacyValue = estimateInstallableCapacity(input);
+    const result = estimateInstallableCapacityResult(input, "2026-08-10T04:00:00+09:00");
+
+    expect(result.value).toEqual(legacyValue);
+    expect(result.metadata.status).toBe("estimated");
+    expect(result.metadata.referenceDate).toBe(CAPACITY_METHOD.version);
+    expect(result.metadata.calculatedAt).toBe("2026-08-10T04:00:00+09:00");
+    expect(result.metadata.sources).toEqual(CAPACITY_METHOD.sources);
+  });
+
+  it("exposes the layout assumptions and field limitations used by the estimate", () => {
+    const result = estimateInstallableCapacityResult({ buildingType: "공장·창고", area: 100, areaUnit: "m2" });
+
+    expect(result.metadata.assumptions).toEqual([
+      expect.objectContaining({ key: "usableAreaRatio", value: 70, unit: "%" }),
+      expect.objectContaining({ key: "panelFootprintM2", value: 2.4, unit: "m²/장" }),
+      expect.objectContaining({ key: "panelCapacityKw", value: 0.45, unit: "kW/장" }),
+    ]);
+    expect(result.metadata.limitations).toContain(
+      "구조 안전, 음영, 옥상 장애물, 실제 배치와 법규 조건은 반영하지 않은 사전 검토 값입니다.",
+    );
   });
 });
