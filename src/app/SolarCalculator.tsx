@@ -213,7 +213,7 @@ export default function SolarCalculator() {
             </div>
             <div>
               <dt>입력한 지붕 면적</dt>
-              <dd className="num">{num(capacity.inputArea, Number.isInteger(capacity.inputArea) ? 0 : 1)}{capacity.inputUnit === "m2" ? "m²" : "평"}</dd>
+              <dd className="num">{num(capacity.inputArea, Number.isInteger(capacity.inputArea) ? 0 : 2)}{capacity.inputUnit === "m2" ? "m²" : "평"}</dd>
             </div>
             <div><dt>적용한 배치 가능 비율</dt><dd className="num">약 {Math.round(capacity.usableAreaRatio * 100)}%</dd></div>
             <div><dt>실제로 패널을 배치하는 면적</dt><dd className="num">약 {num(capacity.usableAreaM2)}m²</dd></div>
