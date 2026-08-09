@@ -6,7 +6,7 @@ describe("SolarCalculator", () => {
   it("calculates installable capacity from inputs a general user can understand", () => {
     render(<SolarCalculator />);
 
-    expect(screen.getByLabelText("설치할 곳")).toBeInTheDocument();
+    expect(screen.getByLabelText("건물 종류")).toBeInTheDocument();
     expect(screen.getByLabelText("지붕 면적")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "설치 가능 용량 계산하기" })).toBeInTheDocument();
 
@@ -60,12 +60,12 @@ describe("SolarCalculator", () => {
   it("shows the estimate status and all user inputs that affect the result", () => {
     render(<SolarCalculator />);
 
-    fireEvent.change(screen.getByLabelText("설치할 곳"), { target: { value: "상가·건물" } });
+    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "상가·건물" } });
     fireEvent.change(screen.getByLabelText("지붕 면적"), { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
 
     expect(screen.getByText("간단 예상치")).toBeInTheDocument();
-    expect(screen.getByText("선택한 설치 장소")).toBeInTheDocument();
+    expect(screen.getByText("선택한 건물 종류")).toBeInTheDocument();
     expect(screen.getByText("상가·건물", { selector: "dd" })).toBeInTheDocument();
     expect(screen.getByText("입력한 지붕 면적")).toBeInTheDocument();
     expect(screen.getByText("100m²")).toBeInTheDocument();
@@ -148,7 +148,7 @@ describe("SolarCalculator", () => {
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
     expect(screen.getByText("예상 설치 가능 용량")).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("설치할 곳"), { target: { value: "상가·건물" } });
+    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "상가·건물" } });
     expect(screen.queryByText("예상 설치 가능 용량")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));

@@ -2,16 +2,16 @@ import { render, screen } from "@testing-library/react";
 
 import SolarCalculator from "./SolarCalculator";
 
-describe("SolarCalculator installation place copy", () => {
-  it("keeps the roof-capacity flow limited to installation places with a roof", () => {
+describe("SolarCalculator building type copy", () => {
+  it("uses a building-type label now that the roof-capacity flow excludes land", () => {
     render(<SolarCalculator />);
 
-    const installationPlace = screen.getByLabelText("설치할 곳");
+    const buildingType = screen.getByLabelText("건물 종류");
 
-    expect(screen.queryByLabelText("건물 종류")).not.toBeInTheDocument();
-    expect(installationPlace).toHaveTextContent("주택");
-    expect(installationPlace).toHaveTextContent("상가·건물");
-    expect(installationPlace).toHaveTextContent("공장·창고");
-    expect(installationPlace).not.toHaveTextContent("토지");
+    expect(screen.queryByLabelText("설치할 곳")).not.toBeInTheDocument();
+    expect(buildingType).toHaveTextContent("주택");
+    expect(buildingType).toHaveTextContent("상가·건물");
+    expect(buildingType).toHaveTextContent("공장·창고");
+    expect(buildingType).not.toHaveTextContent("토지");
   });
 });
