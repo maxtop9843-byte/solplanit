@@ -19,6 +19,7 @@ describe("SolarCalculator roof-area help", () => {
   it("clears an existing result while help is open without discarding the roof-area input", () => {
     render(<SolarCalculator />);
 
+    fireEvent.change(screen.getByLabelText("건물 종류"), { target: { value: "주택" } });
     const areaInput = screen.getByLabelText("지붕 면적");
     fireEvent.change(areaInput, { target: { value: "100" } });
     fireEvent.click(screen.getByRole("button", { name: "설치 가능 용량 계산하기" }));
