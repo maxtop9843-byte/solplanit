@@ -16,6 +16,7 @@ const num = (value: number, digits = 0) =>
   value.toLocaleString("ko-KR", { maximumFractionDigits: digits, minimumFractionDigits: digits });
 
 const roundAreaInput = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+const ROOF_BUILDING_TYPES = BUILDING_TYPES.filter((type): type is Exclude<BuildingType, "토지"> => type !== "토지");
 
 export default function SolarCalculator() {
   const [building, setBuilding] = useState<BuildingType>("주택");
@@ -140,7 +141,7 @@ export default function SolarCalculator() {
         <div className="field">
           <label htmlFor="building">설치할 곳</label>
           <select id="building" value={building} onChange={(event) => updateBuilding(event.target.value as BuildingType)}>
-            {BUILDING_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+            {ROOF_BUILDING_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
         </div>
 
