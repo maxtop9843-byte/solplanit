@@ -58,7 +58,7 @@ export default function HomePage() {
             <p className="blockLead">
               건물 종류를 고르고 지붕 면적을 대략 넣어보세요. 정확한 면적을 모르면 확인 방법부터 안내합니다.
             </p>
-            <p className="homePromise">전문 용어 입력 없음 · 회원가입 없음 · 계산 기준 공개</p>
+            <p className="homePromise">결과: 설치 가능 용량 · 예상 패널 수 · 배치 가능 면적</p>
           </div>
 
           <div className="calculatorStage" aria-label="태양광 설치 가능 용량 계산기">
