@@ -5,7 +5,7 @@ import { buildCalculatorNode, buildWebPageNode } from "../lib/structuredData";
 import SolarCalculator from "./SolarCalculator";
 import "./home.css";
 
-const homeDescription = "건물 종류와 지붕 면적을 넣으면 설치 가능한 태양광 용량과 예상 패널 수를 계산합니다. 회원가입 없이 계산 기준과 출처까지 확인할 수 있습니다.";
+const homeDescription = "건물 종류와 지붕 면적을 넣으면 설치 가능한 태양광 용량과 예상 패널 수를 계산합니다. 지붕 면적을 모르면 확인 방법부터 안내합니다.";
 
 export const metadata: Metadata = {
   title: "태양광 설치 가능 용량 계산기",
@@ -56,7 +56,7 @@ export default function HomePage() {
             <p className="homeEyebrow">SOLAR CALCULATOR / KOREA</p>
             <h1 id="tool-title">우리 건물에 태양광,<br />얼마나 설치할 수 있을까요?</h1>
             <p className="blockLead">
-              건물 종류와 지붕 면적만 넣어보세요. 패널을 몇 장 놓을 수 있는지와 예상 설치 용량을 바로 계산합니다.
+              건물 종류를 고르고 지붕 면적을 대략 넣어보세요. 정확한 면적을 모르면 확인 방법부터 안내합니다.
             </p>
             <p className="homePromise">전문 용어 입력 없음 · 회원가입 없음 · 계산 기준 공개</p>
           </div>
