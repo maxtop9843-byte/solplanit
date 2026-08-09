@@ -1,3 +1,5 @@
+import { calculateBusinessRevenue } from "./business-revenue";
+
 export type CalculationGoal = "save" | "sell";
 
 export type EconomicsInput = {
@@ -97,8 +99,14 @@ export function calculateSolarEconomics(input: EconomicsInput): EconomicsResult 
     const smpPricePerKwh = requireFiniteNonNegative(input.smpPricePerKwh, "SMP 단가");
     const recPricePerRec = requireFiniteNonNegative(input.recPricePerRec, "REC 단가");
     const recWeight = requireFiniteNonNegative(input.recWeight, "REC 가중치");
-    annualSmpRevenue = round(annualGenerationRaw * smpPricePerKwh, 0);
-    annualRecRevenue = round((annualGenerationRaw / 1000) * recWeight * recPricePerRec, 0);
+    const revenue = calculateBusinessRevenue({
+      annualGenerationKwh: annualGenerationRaw,
+      smpPricePerKwh,
+      recPricePerRec,
+      recWeight,
+    });
+    annualSmpRevenue = revenue.annualSmpRevenue;
+    annualRecRevenue = revenue.annualRecRevenue;
   } else {
     throw new EconomicsInputError("계산 목적을 선택해주세요.");
   }
