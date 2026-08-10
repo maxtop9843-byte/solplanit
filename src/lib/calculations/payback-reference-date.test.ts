@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { unavailableResult, verifiedResult } from "./result";
+import { errorResult, unavailableResult, verifiedResult } from "./result";
 import { calculateVerifiedPayback, type WonAmount } from "./payback";
 
 const source = {
@@ -33,6 +33,38 @@ describe("calculateVerifiedPayback reference date propagation", () => {
 
     expect(result.metadata.status).toBe("unavailable");
     expect(result.metadata.referenceDate).toBe("2026-08-10");
+  });
+
+  it("keeps upstream out-of-pocket errors as errors", () => {
+    const result = calculateVerifiedPayback({
+      outOfPocket: errorResult<WonAmount>({
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [],
+        limitations: ["실부담액 계산에 오류가 있습니다."],
+      }),
+      annualSavings: verifiedWon(1_000_000),
+    });
+
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.referenceDate).toBe("2026-08-10");
+    expect(result.metadata.limitations).toContain("실부담액 계산에 오류가 있습니다.");
+  });
+
+  it("keeps upstream annual-savings errors as errors", () => {
+    const result = calculateVerifiedPayback({
+      outOfPocket: verifiedWon(5_000_000),
+      annualSavings: errorResult<WonAmount>({
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [],
+        limitations: ["연간 절감액 계산에 오류가 있습니다."],
+      }),
+    });
+
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.referenceDate).toBe("2026-08-10");
+    expect(result.metadata.limitations).toContain("연간 절감액 계산에 오류가 있습니다.");
   });
 
   it("keeps a shared reference date when verified monetary input is invalid", () => {
