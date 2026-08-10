@@ -52,6 +52,10 @@ function generationMetadata(
   result: PvgisProxyResult,
 ): Omit<CalculationResultMetadata, "status"> {
   const request = result.request;
+  const usesOptimalAngles =
+    request.tiltDegrees === undefined && request.azimuthDegrees === undefined;
+  const usesOptimalInclination =
+    request.tiltDegrees === undefined && request.azimuthDegrees !== undefined;
 
   return {
     inputs: [
@@ -89,6 +93,16 @@ function generationMetadata(
         unit: "%",
         description: "PVGIS 계산에 적용한 시스템 손실률",
       },
+      {
+        key: "useHorizon",
+        value: request.useHorizon === false ? "사용 안 함" : "사용",
+        description: "PVGIS 지평선 음영 반영 여부",
+      },
+      {
+        key: "radiationDatabase",
+        value: request.radiationDatabase ?? "PVGIS-SARAH3",
+        description: "PVGIS 계산에 사용한 복사 데이터베이스",
+      },
       ...(request.tiltDegrees === undefined
         ? []
         : [
@@ -107,6 +121,42 @@ function generationMetadata(
               value: request.azimuthDegrees,
               unit: "°",
               description: "PVGIS 계산에 사용한 방위각",
+            },
+          ]),
+      ...(usesOptimalAngles
+        ? [
+            {
+              key: "angleMode",
+              value: "PVGIS 최적 경사·방위 자동 계산",
+              description: "경사와 방위를 입력하지 않아 PVGIS 최적 각도 계산을 사용함",
+            },
+          ]
+        : []),
+      ...(usesOptimalInclination
+        ? [
+            {
+              key: "tiltMode",
+              value: "PVGIS 최적 경사 자동 계산",
+              description: "경사를 입력하지 않아 PVGIS 최적 경사 계산을 사용함",
+            },
+          ]
+        : []),
+      ...(request.mountingPosition === undefined
+        ? []
+        : [
+            {
+              key: "mountingPosition",
+              value: request.mountingPosition,
+              description: "PVGIS 계산에 사용한 설치 방식",
+            },
+          ]),
+      ...(request.moduleTechnology === undefined
+        ? []
+        : [
+            {
+              key: "moduleTechnology",
+              value: request.moduleTechnology,
+              description: "PVGIS 계산에 사용한 모듈 기술",
             },
           ]),
     ],
