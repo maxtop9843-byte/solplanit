@@ -150,6 +150,21 @@ describe("calculateVerifiedBillSavings", () => {
     expect(unavailable.metadata.status).toBe("unavailable");
   });
 
+  it("keeps a shared reference date when a bill result is unavailable", () => {
+    const result = calculateVerifiedBillSavings({
+      beforeMonthlyBill: verifiedWon(100_000, "2026-08-01"),
+      afterMonthlyBill: unavailableResult<WonAmount>({
+        sources: [source],
+        referenceDate: "2026-08-01",
+        assumptions: [],
+        limitations: ["검증된 요금 모델이 아직 없습니다."],
+      }),
+    });
+
+    expect(result.metadata.status).toBe("unavailable");
+    expect(result.metadata.referenceDate).toBe("2026-08-01");
+  });
+
   it.each([Number.NaN, Number.POSITIVE_INFINITY, -1])(
     "returns an error for an invalid verified bill: %s",
     (amountWon) => {
@@ -160,6 +175,7 @@ describe("calculateVerifiedBillSavings", () => {
 
       expect(result.value).toBeNull();
       expect(result.metadata.status).toBe("error");
+      expect(result.metadata.referenceDate).toBe("2026-08-10");
     },
   );
 
@@ -171,6 +187,7 @@ describe("calculateVerifiedBillSavings", () => {
 
     expect(result.value).toBeNull();
     expect(result.metadata.status).toBe("error");
+    expect(result.metadata.referenceDate).toBe("2026-08-10");
   });
 
   it("does not claim a shared reference date when the bill results use different dates", () => {
@@ -180,6 +197,21 @@ describe("calculateVerifiedBillSavings", () => {
     });
 
     expect(result.metadata.status).toBe("verified");
+    expect(result.metadata.referenceDate).toBeUndefined();
+  });
+
+  it("does not claim a shared reference date on unavailable results when dates differ", () => {
+    const result = calculateVerifiedBillSavings({
+      beforeMonthlyBill: verifiedWon(100_000, "2026-08-01"),
+      afterMonthlyBill: unavailableResult<WonAmount>({
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [],
+        limitations: ["검증된 요금 모델이 아직 없습니다."],
+      }),
+    });
+
+    expect(result.metadata.status).toBe("unavailable");
     expect(result.metadata.referenceDate).toBeUndefined();
   });
 });
