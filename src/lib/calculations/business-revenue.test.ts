@@ -33,6 +33,15 @@ describe("calculateBusinessRevenue", () => {
       annualRevenue: 0,
     });
   });
+
+  it.each([
+    ["negative generation", { annualGenerationKwh: -1, smpPricePerKwh: 100, recPricePerRec: 70_000, recWeight: 1.2 }],
+    ["NaN SMP", { annualGenerationKwh: 13_140, smpPricePerKwh: Number.NaN, recPricePerRec: 70_000, recWeight: 1.2 }],
+    ["infinite REC price", { annualGenerationKwh: 13_140, smpPricePerKwh: 100, recPricePerRec: Number.POSITIVE_INFINITY, recWeight: 1.2 }],
+    ["negative REC weight", { annualGenerationKwh: 13_140, smpPricePerKwh: 100, recPricePerRec: 70_000, recWeight: -0.1 }],
+  ])("rejects invalid raw business inputs before producing numeric revenue: %s", (_label, input) => {
+    expect(() => calculateBusinessRevenue(input)).toThrow(RangeError);
+  });
 });
 
 describe("createBusinessRevenueResult", () => {
