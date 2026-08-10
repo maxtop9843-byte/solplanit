@@ -70,15 +70,32 @@ describe("createPvgisGenerationResult", () => {
     expect(result.metadata.status).toBe("verified");
   });
 
-  it.each([undefined, null, "3742.6", Number.NaN, -1])(
+  it.each([undefined, null])(
+    "returns unavailable when the PVGIS annual output is missing: %s",
+    (annualGenerationKwh) => {
+      const result = createPvgisGenerationResult(proxyResult(annualGenerationKwh));
+
+      expect(result.value).toBeNull();
+      expect(result.metadata.status).toBe("unavailable");
+      expect(result.metadata.referenceDate).toBe("2026-07-30");
+      expect(result.metadata.calculatedAt).toBe("2026-08-10T00:00:00.000Z");
+      expect(result.metadata.limitations).toContain(
+        "PVGIS 응답에 연간 발전량 데이터가 없습니다.",
+      );
+    },
+  );
+
+  it.each(["3742.6", Number.NaN, Number.POSITIVE_INFINITY, -1])(
     "returns an error result for an invalid PVGIS annual output: %s",
     (annualGenerationKwh) => {
       const result = createPvgisGenerationResult(proxyResult(annualGenerationKwh));
 
       expect(result.value).toBeNull();
       expect(result.metadata.status).toBe("error");
+      expect(result.metadata.referenceDate).toBe("2026-07-30");
+      expect(result.metadata.calculatedAt).toBe("2026-08-10T00:00:00.000Z");
       expect(result.metadata.limitations).toContain(
-        "PVGIS 응답에서 연간 발전량을 확인하지 못했습니다.",
+        "PVGIS 응답의 연간 발전량 값이 올바르지 않습니다.",
       );
     },
   );
