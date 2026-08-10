@@ -54,12 +54,65 @@ describe("createPvgisGenerationResult", () => {
     expect(result.metadata.assumptions).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ key: "systemLossPercent", value: 14, unit: "%" }),
+        expect.objectContaining({ key: "useHorizon", value: "사용" }),
+        expect.objectContaining({ key: "radiationDatabase", value: "PVGIS-SARAH3" }),
         expect.objectContaining({ key: "tiltDegrees", value: 30, unit: "°" }),
         expect.objectContaining({ key: "azimuthDegrees", value: 0, unit: "°" }),
       ]),
     );
     expect(result.metadata.assumptions).not.toEqual(
       expect.arrayContaining([expect.objectContaining({ key: "peakPowerKw" })]),
+    );
+  });
+
+  it("preserves PVGIS options and automatic angle choices in assumption metadata", () => {
+    const base = proxyResult(3_742.6);
+    const result = createPvgisGenerationResult({
+      ...base,
+      request: {
+        ...base.request,
+        tiltDegrees: undefined,
+        azimuthDegrees: undefined,
+        mountingPosition: "building",
+        moduleTechnology: "crystSi",
+        useHorizon: false,
+        radiationDatabase: "PVGIS-ERA5",
+      },
+    });
+
+    expect(result.metadata.assumptions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: "angleMode", value: "PVGIS 최적 경사·방위 자동 계산" }),
+        expect.objectContaining({ key: "mountingPosition", value: "building" }),
+        expect.objectContaining({ key: "moduleTechnology", value: "crystSi" }),
+        expect.objectContaining({ key: "useHorizon", value: "사용 안 함" }),
+        expect.objectContaining({ key: "radiationDatabase", value: "PVGIS-ERA5" }),
+      ]),
+    );
+    expect(result.metadata.assumptions).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: "tiltDegrees" }),
+        expect.objectContaining({ key: "azimuthDegrees" }),
+      ]),
+    );
+  });
+
+  it("records PVGIS automatic inclination when only azimuth is supplied", () => {
+    const base = proxyResult(3_742.6);
+    const result = createPvgisGenerationResult({
+      ...base,
+      request: {
+        ...base.request,
+        tiltDegrees: undefined,
+        azimuthDegrees: 15,
+      },
+    });
+
+    expect(result.metadata.assumptions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: "tiltMode", value: "PVGIS 최적 경사 자동 계산" }),
+        expect.objectContaining({ key: "azimuthDegrees", value: 15, unit: "°" }),
+      ]),
     );
   });
 
