@@ -44,13 +44,22 @@ describe("createPvgisGenerationResult", () => {
         ],
       },
     });
+    expect(result.metadata.inputs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: "latitude", value: 37.5665, unit: "°" }),
+        expect.objectContaining({ key: "longitude", value: 126.978, unit: "°" }),
+        expect.objectContaining({ key: "peakPowerKw", value: 3, unit: "kW" }),
+      ]),
+    );
     expect(result.metadata.assumptions).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ key: "peakPowerKw", value: 3, unit: "kW" }),
         expect.objectContaining({ key: "systemLossPercent", value: 14, unit: "%" }),
         expect.objectContaining({ key: "tiltDegrees", value: 30, unit: "°" }),
         expect.objectContaining({ key: "azimuthDegrees", value: 0, unit: "°" }),
       ]),
+    );
+    expect(result.metadata.assumptions).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ key: "peakPowerKw" })]),
     );
   });
 
