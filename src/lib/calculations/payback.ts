@@ -96,6 +96,19 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
   };
 
   if (
+    input.outOfPocket.metadata.status === "error" ||
+    input.annualSavings.metadata.status === "error"
+  ) {
+    return errorResult({
+      ...baseMetadata,
+      limitations: [
+        ...baseMetadata.limitations,
+        "실부담액 또는 연간 절감액에 오류가 있어 회수기간을 계산하지 않았습니다.",
+      ],
+    });
+  }
+
+  if (
     input.outOfPocket.metadata.status !== "verified" ||
     input.annualSavings.metadata.status !== "verified" ||
     input.outOfPocket.value === null ||
