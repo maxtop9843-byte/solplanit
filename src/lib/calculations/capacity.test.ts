@@ -152,4 +152,38 @@ describe("estimateInstallableCapacityResult", () => {
       "구조 안전, 음영, 옥상 장애물, 실제 배치와 법규 조건은 반영하지 않은 사전 검토 값입니다.",
     );
   });
+
+  it("returns an error result instead of throwing for invalid capacity input", () => {
+    const result = estimateInstallableCapacityResult(
+      { buildingType: "주택", area: Number.NaN, areaUnit: "m2" },
+      "2026-08-11T04:00:00+09:00",
+    );
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.referenceDate).toBe(CAPACITY_METHOD.version);
+    expect(result.metadata.calculatedAt).toBe("2026-08-11T04:00:00+09:00");
+    expect(result.metadata.inputs).toContainEqual(
+      expect.objectContaining({ key: "roofArea", value: Number.NaN, unit: "m²" }),
+    );
+    expect(result.metadata.assumptions).toEqual([]);
+    expect(result.metadata.limitations).toContain("면적을 숫자로 넣어 주세요. 예: 100");
+  });
+
+  it("does not invent a unit in error metadata for an invalid unit selection", () => {
+    const result = estimateInstallableCapacityResult({
+      buildingType: "주택",
+      area: 100,
+      areaUnit: "square-feet" as never,
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.inputs).toContainEqual({
+      key: "roofArea",
+      value: 100,
+      description: "사용자가 입력한 지붕 면적",
+    });
+    expect(result.metadata.limitations).toContain("면적 단위를 다시 선택해 주세요.");
+  });
 });
