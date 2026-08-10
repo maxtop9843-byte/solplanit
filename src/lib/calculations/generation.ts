@@ -4,6 +4,7 @@ import {
 } from "../pvgis";
 import {
   errorResult,
+  unavailableResult,
   verifiedResult,
   type CalculationResult,
   type CalculationResultMetadata,
@@ -15,27 +16,36 @@ export type GenerationResult = {
 
 type JsonObject = Record<string, unknown>;
 
+type AnnualGenerationReading =
+  | { kind: "value"; value: number }
+  | { kind: "missing" }
+  | { kind: "invalid" };
+
 function asObject(value: unknown): JsonObject | null {
   return value !== null && typeof value === "object" && !Array.isArray(value)
     ? (value as JsonObject)
     : null;
 }
 
-function readAnnualGenerationKwh(data: unknown): number | null {
+function readAnnualGenerationKwh(data: unknown): AnnualGenerationReading {
   const outputs = asObject(asObject(data)?.outputs);
   const totals = asObject(outputs?.totals);
   const fixed = asObject(totals?.fixed);
   const annualGenerationKwh = fixed?.E_y;
+
+  if (annualGenerationKwh === undefined || annualGenerationKwh === null) {
+    return { kind: "missing" };
+  }
 
   if (
     typeof annualGenerationKwh !== "number" ||
     !Number.isFinite(annualGenerationKwh) ||
     annualGenerationKwh < 0
   ) {
-    return null;
+    return { kind: "invalid" };
   }
 
-  return annualGenerationKwh;
+  return { kind: "value", value: annualGenerationKwh };
 }
 
 function generationMetadata(
@@ -114,20 +124,30 @@ export function createPvgisGenerationResult(
   result: PvgisProxyResult,
 ): CalculationResult<GenerationResult> {
   const metadata = generationMetadata(result);
-  const annualGenerationKwh = readAnnualGenerationKwh(result.data);
+  const annualGeneration = readAnnualGenerationKwh(result.data);
 
-  if (annualGenerationKwh === null) {
+  if (annualGeneration.kind === "missing") {
+    return unavailableResult({
+      ...metadata,
+      limitations: [
+        ...metadata.limitations,
+        "PVGIS 응답에 연간 발전량 데이터가 없습니다.",
+      ],
+    });
+  }
+
+  if (annualGeneration.kind === "invalid") {
     return errorResult({
       ...metadata,
       limitations: [
         ...metadata.limitations,
-        "PVGIS 응답에서 연간 발전량을 확인하지 못했습니다.",
+        "PVGIS 응답의 연간 발전량 값이 올바르지 않습니다.",
       ],
     });
   }
 
   return verifiedResult(
-    { annualGenerationKwh },
+    { annualGenerationKwh: annualGeneration.value },
     metadata,
   );
 }
