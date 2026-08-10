@@ -43,6 +43,16 @@ function uniqueInputs(inputs: readonly CalculationInput[]): CalculationInput[] {
   });
 }
 
+function sharedReferenceDate(
+  outOfPocket: CalculationResult<WonAmount>,
+  annualSavings: CalculationResult<WonAmount>,
+): string | undefined {
+  const costDate = outOfPocket.metadata.referenceDate;
+  const savingsDate = annualSavings.metadata.referenceDate;
+
+  return costDate !== undefined && costDate === savingsDate ? costDate : undefined;
+}
+
 const roundYears = (value: number) => Math.round((value + Number.EPSILON) * 10) / 10;
 
 /**
@@ -52,7 +62,7 @@ const roundYears = (value: number) => Math.round((value + Number.EPSILON) * 10) 
  * 모두 있을 때만 회수기간을 계산한다. estimated 값이나 정보 없음 상태를
  * 확정적인 회수기간으로 바꾸지 않는다.
  *
- * 이전 계산 단계의 입력·출처·가정·한계 메타데이터를 그대로 이어 받아
+ * 이전 계산 단계의 입력·출처·가정·한계·기준일 메타데이터를 그대로 이어 받아
  * 회수기간 결과에서 계산 근거가 끊기지 않도록 한다.
  */
 export function calculateVerifiedPayback(input: PaybackInput): CalculationResult<PaybackValue> {
@@ -69,8 +79,10 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
     (input.outOfPocket.metadata.calculatedAt === input.annualSavings.metadata.calculatedAt
       ? input.outOfPocket.metadata.calculatedAt
       : undefined);
+  const referenceDate = sharedReferenceDate(input.outOfPocket, input.annualSavings);
   const baseMetadata = {
     sources,
+    referenceDate,
     calculatedAt,
     inputs,
     assumptions: [
@@ -127,16 +139,11 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
   }
 
   const years = roundYears(outOfPocketWon / annualSavingsWon);
-  const referenceDate =
-    input.outOfPocket.metadata.referenceDate === input.annualSavings.metadata.referenceDate
-      ? input.outOfPocket.metadata.referenceDate
-      : undefined;
 
   return verifiedResult(
     { years },
     {
       ...baseMetadata,
-      referenceDate,
       limitations: [
         ...baseMetadata.limitations,
         "금융비용, 유지관리비, 성능 저하는 반영하지 않은 단순 회수기간입니다.",
