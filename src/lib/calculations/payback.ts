@@ -39,6 +39,9 @@ const roundYears = (value: number) => Math.round((value + Number.EPSILON) * 10) 
  * CALCULATION_SPEC 계약에 따라 확인된 실부담액과 검증된 연간 절감액이
  * 모두 있을 때만 회수기간을 계산한다. estimated 값이나 정보 없음 상태를
  * 확정적인 회수기간으로 바꾸지 않는다.
+ *
+ * 이전 계산 단계의 출처·가정·한계 메타데이터를 그대로 이어 받아
+ * 회수기간 결과에서 계산 근거가 끊기지 않도록 한다.
  */
 export function calculateVerifiedPayback(input: PaybackInput): CalculationResult<PaybackValue> {
   const sources = uniqueSources([
@@ -48,8 +51,14 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
   const baseMetadata = {
     sources,
     calculatedAt: input.calculatedAt,
-    assumptions: [],
-    limitations: [] as string[],
+    assumptions: [
+      ...input.outOfPocket.metadata.assumptions,
+      ...input.annualSavings.metadata.assumptions,
+    ],
+    limitations: [
+      ...input.outOfPocket.metadata.limitations,
+      ...input.annualSavings.metadata.limitations,
+    ],
   };
 
   if (
@@ -61,6 +70,7 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
     return unavailableResult({
       ...baseMetadata,
       limitations: [
+        ...baseMetadata.limitations,
         "확인된 실부담액과 검증된 연간 절감액이 모두 있어야 회수기간을 계산할 수 있습니다.",
       ],
     });
@@ -77,14 +87,20 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
   ) {
     return errorResult({
       ...baseMetadata,
-      limitations: ["실부담액 또는 연간 절감액이 올바르지 않아 회수기간을 계산하지 않았습니다."],
+      limitations: [
+        ...baseMetadata.limitations,
+        "실부담액 또는 연간 절감액이 올바르지 않아 회수기간을 계산하지 않았습니다.",
+      ],
     });
   }
 
   if (annualSavingsWon === 0) {
     return unavailableResult({
       ...baseMetadata,
-      limitations: ["연간 절감액이 0원이어서 유한한 회수기간을 계산할 수 없습니다."],
+      limitations: [
+        ...baseMetadata.limitations,
+        "연간 절감액이 0원이어서 유한한 회수기간을 계산할 수 없습니다.",
+      ],
     });
   }
 
@@ -100,6 +116,7 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
       ...baseMetadata,
       referenceDate,
       limitations: [
+        ...baseMetadata.limitations,
         "금융비용, 유지관리비, 성능 저하는 반영하지 않은 단순 회수기간입니다.",
       ],
     },

@@ -40,6 +40,51 @@ describe("calculateVerifiedPayback", () => {
     );
   });
 
+  it("preserves upstream assumptions and limitations when composing payback metadata", () => {
+    const outOfPocket = verifiedResult<WonAmount>(
+      { amountWon: 5_000_000 },
+      {
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [
+          {
+            key: "subsidyEligibility",
+            value: "confirmed",
+            description: "확인된 지원 조건을 반영했습니다.",
+          },
+        ],
+        limitations: ["실제 시공 견적과 차이가 날 수 있습니다."],
+      },
+    );
+    const annualSavings = verifiedResult<WonAmount>(
+      { amountWon: 1_000_000 },
+      {
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [
+          {
+            key: "monthsPerYear",
+            value: 12,
+            unit: "개월/년",
+          },
+        ],
+        limitations: ["사용 패턴이 달라지면 절감액도 달라질 수 있습니다."],
+      },
+    );
+
+    const result = calculateVerifiedPayback({ outOfPocket, annualSavings });
+
+    expect(result.metadata.assumptions).toEqual([
+      outOfPocket.metadata.assumptions[0],
+      annualSavings.metadata.assumptions[0],
+    ]);
+    expect(result.metadata.limitations).toEqual([
+      "실제 시공 견적과 차이가 날 수 있습니다.",
+      "사용 패턴이 달라지면 절감액도 달라질 수 있습니다.",
+      "금융비용, 유지관리비, 성능 저하는 반영하지 않은 단순 회수기간입니다.",
+    ]);
+  });
+
   it("does not turn an estimated annual saving into a confirmed payback period", () => {
     const result = calculateVerifiedPayback({
       outOfPocket: verifiedWon(5_000_000),
@@ -73,6 +118,7 @@ describe("calculateVerifiedPayback", () => {
 
     expect(missing.value).toBeNull();
     expect(missing.metadata.status).toBe("unavailable");
+    expect(missing.metadata.limitations).toContain("전기요금 모델이 아직 검증되지 않았습니다.");
     expect(zero.value).toBeNull();
     expect(zero.metadata.status).toBe("unavailable");
     expect(zero.metadata.limitations).toContain(
