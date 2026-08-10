@@ -1,4 +1,4 @@
-import { estimatedResult, type CalculationResult } from "./result";
+import { errorResult, estimatedResult, type CalculationResult } from "./result";
 
 export const AREA_UNITS = ["m2", "pyeong"] as const;
 export type AreaUnit = (typeof AREA_UNITS)[number];
@@ -130,26 +130,48 @@ export function estimateInstallableCapacityResult(
   input: CapacityInput,
   calculatedAt?: string,
 ): CalculationResult<CapacityResult> {
-  const value = estimateInstallableCapacity(input);
+  const inputMetadata = [
+    {
+      key: "buildingType",
+      value: input.buildingType,
+      description: "사용자가 선택한 건물 종류",
+    },
+    {
+      key: "roofArea",
+      value: input.area,
+      ...(input.areaUnit === "m2"
+        ? { unit: "m²" }
+        : input.areaUnit === "pyeong"
+          ? { unit: "평" }
+          : {}),
+      description: "사용자가 입력한 지붕 면적",
+    },
+  ];
+
+  let value: CapacityResult;
+  try {
+    value = estimateInstallableCapacity(input);
+  } catch (error) {
+    if (error instanceof CapacityInputError) {
+      return errorResult({
+        sources: CAPACITY_METHOD.sources,
+        referenceDate: CAPACITY_METHOD.version,
+        ...(calculatedAt ? { calculatedAt } : {}),
+        inputs: inputMetadata,
+        assumptions: [],
+        limitations: [error.message],
+      });
+    }
+    throw error;
+  }
+
   const assumption = CAPACITY_METHOD.assumptions[input.buildingType];
 
   return estimatedResult(value, {
     sources: CAPACITY_METHOD.sources,
     referenceDate: CAPACITY_METHOD.version,
     ...(calculatedAt ? { calculatedAt } : {}),
-    inputs: [
-      {
-        key: "buildingType",
-        value: input.buildingType,
-        description: "사용자가 선택한 건물 종류",
-      },
-      {
-        key: "roofArea",
-        value: input.area,
-        unit: input.areaUnit === "m2" ? "m²" : "평",
-        description: "사용자가 입력한 지붕 면적",
-      },
-    ],
+    inputs: inputMetadata,
     assumptions: [
       {
         key: "usableAreaRatio",
