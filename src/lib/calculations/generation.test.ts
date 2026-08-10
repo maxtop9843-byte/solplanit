@@ -58,6 +58,8 @@ describe("createPvgisGenerationResult", () => {
         expect.objectContaining({ key: "radiationDatabase", value: "PVGIS-SARAH3" }),
         expect.objectContaining({ key: "tiltDegrees", value: 30, unit: "°" }),
         expect.objectContaining({ key: "azimuthDegrees", value: 0, unit: "°" }),
+        expect.objectContaining({ key: "mountingPosition", value: "free" }),
+        expect.objectContaining({ key: "moduleTechnology", value: "crystSi" }),
       ]),
     );
     expect(result.metadata.assumptions).not.toEqual(
@@ -112,6 +114,32 @@ describe("createPvgisGenerationResult", () => {
       expect.arrayContaining([
         expect.objectContaining({ key: "tiltMode", value: "PVGIS 최적 경사 자동 계산" }),
         expect.objectContaining({ key: "azimuthDegrees", value: 15, unit: "°" }),
+      ]),
+    );
+  });
+
+  it("records PVGIS defaults that are applied when optional parameters are omitted", () => {
+    const base = proxyResult(3_742.6);
+    const result = createPvgisGenerationResult({
+      ...base,
+      request: {
+        ...base.request,
+        azimuthDegrees: undefined,
+        mountingPosition: undefined,
+        moduleTechnology: undefined,
+      },
+    });
+
+    expect(result.metadata.assumptions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: "azimuthDegrees",
+          value: 0,
+          unit: "°",
+          description: "방위를 입력하지 않아 적용된 PVGIS 기본 방위각(남향)",
+        }),
+        expect.objectContaining({ key: "mountingPosition", value: "free" }),
+        expect.objectContaining({ key: "moduleTechnology", value: "crystSi" }),
       ]),
     );
   });
