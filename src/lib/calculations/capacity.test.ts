@@ -109,6 +109,37 @@ describe("estimateInstallableCapacityResult", () => {
     expect(result.metadata.sources).toEqual(CAPACITY_METHOD.sources);
   });
 
+  it("keeps user inputs separate from automatic layout assumptions", () => {
+    const result = estimateInstallableCapacityResult({ buildingType: "공장·창고", area: 30, areaUnit: "pyeong" });
+
+    expect(result.metadata.inputs).toEqual([
+      {
+        key: "buildingType",
+        value: "공장·창고",
+        description: "사용자가 선택한 건물 종류",
+      },
+      {
+        key: "roofArea",
+        value: 30,
+        unit: "평",
+        description: "사용자가 입력한 지붕 면적",
+      },
+    ]);
+    expect(result.metadata.assumptions.map(({ key }) => key)).toEqual([
+      "usableAreaRatio",
+      "panelFootprintM2",
+      "panelCapacityKw",
+    ]);
+  });
+
+  it("preserves the square-metre unit in input metadata", () => {
+    const result = estimateInstallableCapacityResult({ buildingType: "주택", area: 100, areaUnit: "m2" });
+
+    expect(result.metadata.inputs).toContainEqual(
+      expect.objectContaining({ key: "roofArea", value: 100, unit: "m²" }),
+    );
+  });
+
   it("exposes the layout assumptions and field limitations used by the estimate", () => {
     const result = estimateInstallableCapacityResult({ buildingType: "공장·창고", area: 100, areaUnit: "m2" });
 
