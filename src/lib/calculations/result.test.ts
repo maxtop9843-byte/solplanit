@@ -35,8 +35,9 @@ describe("calculation result metadata", () => {
     expect(result.metadata.status).toBe("error");
   });
 
-  it("preserves source, date, assumptions, and limitations metadata", () => {
+  it("preserves inputs, source, date, assumptions, and limitations metadata", () => {
     const result = unavailableResult<number>({
+      inputs: [{ key: "region", value: "서울" }],
       sources: [{ label: "공식 자료", url: "https://example.com/source" }],
       referenceDate: "2026-08-10",
       calculatedAt: "2026-08-10T01:00:00+09:00",
@@ -46,6 +47,7 @@ describe("calculation result metadata", () => {
 
     expect(result.metadata).toMatchObject({
       status: "unavailable",
+      inputs: [{ key: "region", value: "서울" }],
       referenceDate: "2026-08-10",
       calculatedAt: "2026-08-10T01:00:00+09:00",
       sources: [{ label: "공식 자료", url: "https://example.com/source" }],
