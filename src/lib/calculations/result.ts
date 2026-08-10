@@ -6,6 +6,13 @@ export type CalculationSource = {
   url: string;
 };
 
+export type CalculationInput = {
+  key: string;
+  value: string | number;
+  unit?: string;
+  description?: string;
+};
+
 export type CalculationAssumption = {
   key: string;
   value: string | number;
@@ -18,6 +25,7 @@ export type CalculationResultMetadata = {
   sources: readonly CalculationSource[];
   referenceDate?: string;
   calculatedAt?: string;
+  inputs?: readonly CalculationInput[];
   assumptions: readonly CalculationAssumption[];
   limitations: readonly string[];
 };
