@@ -29,6 +29,30 @@ describe("createHousingCostResults", () => {
     });
   });
 
+  it("preserves housing cost user inputs and removes only exact duplicates", () => {
+    const sharedRegion = {
+      key: "region",
+      value: "서울특별시 관악구",
+      description: "사용자가 선택한 설치 지역",
+    };
+    const installationCost = official(5_000_000, "공식 설치비");
+    installationCost.inputs = [
+      sharedRegion,
+      { key: "systemSize", value: 3, unit: "kW", description: "설치 용량" },
+    ];
+    const subsidy = official(2_000_000, "공식 지원 공고");
+    subsidy.inputs = [sharedRegion];
+
+    const result = createHousingCostResults({ installationCost, subsidy });
+
+    expect(result.installationCost.metadata.inputs).toEqual(installationCost.inputs);
+    expect(result.subsidy.metadata.inputs).toEqual(subsidy.inputs);
+    expect(result.outOfPocket.metadata.inputs).toEqual([
+      sharedRegion,
+      { key: "systemSize", value: 3, unit: "kW", description: "설치 용량" },
+    ]);
+  });
+
   it("does not turn an unverified subsidy into zero won", () => {
     const result = createHousingCostResults({
       installationCost: official(5_000_000, "공식 설치비"),
