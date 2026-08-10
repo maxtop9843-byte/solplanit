@@ -1,0 +1,76 @@
+import { describe, expect, it } from "vitest";
+
+import { createHousingCostResults, type OfficialWonValue } from "./housing-cost";
+
+const official = (amountWon: number, label: string): OfficialWonValue => ({
+  amountWon,
+  source: {
+    label,
+    url: `https://example.com/${label}`,
+  },
+  referenceDate: "2026-08-01",
+});
+
+describe("createHousingCostResults", () => {
+  it("keeps an officially confirmed zero subsidy distinct from missing information", () => {
+    const result = createHousingCostResults({
+      installationCost: official(5_000_000, "공식 설치비"),
+      subsidy: official(0, "공식 지원 공고"),
+      calculatedAt: "2026-08-10T00:00:00.000Z",
+    });
+
+    expect(result.subsidy).toMatchObject({
+      value: { amountWon: 0 },
+      metadata: { status: "verified" },
+    });
+    expect(result.outOfPocket).toMatchObject({
+      value: { amountWon: 5_000_000 },
+      metadata: { status: "verified" },
+    });
+  });
+
+  it("does not turn an unverified subsidy into zero won", () => {
+    const result = createHousingCostResults({
+      installationCost: official(5_000_000, "공식 설치비"),
+    });
+
+    expect(result.subsidy.value).toBeNull();
+    expect(result.subsidy.metadata.status).toBe("unavailable");
+    expect(result.outOfPocket.value).toBeNull();
+    expect(result.outOfPocket.metadata.status).toBe("unavailable");
+  });
+
+  it("keeps installation cost unavailable when no official cost is supplied", () => {
+    const result = createHousingCostResults({
+      subsidy: official(2_000_000, "공식 지원 공고"),
+    });
+
+    expect(result.installationCost.value).toBeNull();
+    expect(result.installationCost.metadata.status).toBe("unavailable");
+    expect(result.outOfPocket.metadata.status).toBe("unavailable");
+  });
+
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, -1])(
+    "returns an error for an invalid official amount: %s",
+    (amountWon) => {
+      const result = createHousingCostResults({
+        installationCost: official(amountWon, "공식 설치비"),
+        subsidy: official(0, "공식 지원 공고"),
+      });
+
+      expect(result.installationCost.value).toBeNull();
+      expect(result.installationCost.metadata.status).toBe("error");
+      expect(result.outOfPocket.metadata.status).toBe("unavailable");
+    },
+  );
+
+  it("does not expose a negative out-of-pocket amount when subsidy exceeds installation cost", () => {
+    const result = createHousingCostResults({
+      installationCost: official(1_000_000, "공식 설치비"),
+      subsidy: official(1_500_000, "공식 지원 공고"),
+    });
+
+    expect(result.outOfPocket.value).toBeNull();
+    expect(result.outOfPocket.metadata.status).toBe("error");
+  });
+});
