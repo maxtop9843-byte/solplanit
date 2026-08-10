@@ -53,7 +53,7 @@ describe("createHousingCostResults", () => {
     ]);
   });
 
-  it("does not turn an unverified subsidy into zero won", () => {
+  it("does not turn an unverified subsidy into zero won and keeps the missing-data reason", () => {
     const result = createHousingCostResults({
       installationCost: official(5_000_000, "공식 설치비"),
     });
@@ -62,6 +62,12 @@ describe("createHousingCostResults", () => {
     expect(result.subsidy.metadata.status).toBe("unavailable");
     expect(result.outOfPocket.value).toBeNull();
     expect(result.outOfPocket.metadata.status).toBe("unavailable");
+    expect(result.outOfPocket.metadata.limitations).toContain(
+      "지원액의 공식 확인 자료가 아직 없습니다.",
+    );
+    expect(result.outOfPocket.metadata.limitations).toContain(
+      "설치비와 지원액이 모두 확인되어야 내가 부담할 금액을 계산할 수 있습니다.",
+    );
   });
 
   it("keeps installation cost unavailable when no official cost is supplied", () => {
@@ -72,6 +78,9 @@ describe("createHousingCostResults", () => {
     expect(result.installationCost.value).toBeNull();
     expect(result.installationCost.metadata.status).toBe("unavailable");
     expect(result.outOfPocket.metadata.status).toBe("unavailable");
+    expect(result.outOfPocket.metadata.limitations).toContain(
+      "설치비의 공식 확인 자료가 아직 없습니다.",
+    );
   });
 
   it.each([Number.NaN, Number.POSITIVE_INFINITY, -1])(
@@ -85,6 +94,9 @@ describe("createHousingCostResults", () => {
       expect(result.installationCost.value).toBeNull();
       expect(result.installationCost.metadata.status).toBe("error");
       expect(result.outOfPocket.metadata.status).toBe("unavailable");
+      expect(result.outOfPocket.metadata.limitations).toContain(
+        "설치비 금액이 올바르지 않습니다.",
+      );
     },
   );
 

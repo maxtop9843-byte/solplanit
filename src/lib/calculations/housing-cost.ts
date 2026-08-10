@@ -80,8 +80,8 @@ function officialWonResult(
  * 확인되지 않은 지원액을 0원으로 대체하지 않으며, 두 값이 모두 확인된 경우에만
  * 내가 부담할 금액을 계산한다.
  *
- * 공식 값에 연결된 지역·설치 용량 같은 사용자 입력 메타데이터를 보존해
- * 이후 회수기간 계산까지 계산 근거가 끊기지 않도록 한다.
+ * 공식 값에 연결된 지역·설치 용량 같은 사용자 입력 메타데이터와 상위 결과의 한계를
+ * 보존해 이후 회수기간 계산까지 계산 근거가 끊기지 않도록 한다.
  */
 export function createHousingCostResults(input: HousingCostInput): HousingCostResults {
   const installationCost = officialWonResult(
@@ -94,6 +94,10 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
     ...(installationCost.metadata.inputs ?? []),
     ...(subsidy.metadata.inputs ?? []),
   ]);
+  const limitations = [
+    ...installationCost.metadata.limitations,
+    ...subsidy.metadata.limitations,
+  ];
 
   if (installationCost.value === null || subsidy.value === null) {
     return {
@@ -108,6 +112,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
         inputs,
         assumptions: [],
         limitations: [
+          ...limitations,
           "설치비와 지원액이 모두 확인되어야 내가 부담할 금액을 계산할 수 있습니다.",
         ],
       }),
@@ -130,6 +135,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
         inputs,
         assumptions: [],
         limitations: [
+          ...limitations,
           "확인된 지원액이 설치비보다 커서 내가 부담할 금액을 계산하지 않았습니다.",
         ],
       }),
@@ -153,7 +159,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
         calculatedAt: input.calculatedAt,
         inputs,
         assumptions: [],
-        limitations: [],
+        limitations,
       },
     ),
   };
