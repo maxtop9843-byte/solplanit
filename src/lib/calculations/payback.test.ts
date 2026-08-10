@@ -40,6 +40,32 @@ describe("calculateVerifiedPayback", () => {
     );
   });
 
+  it("preserves a shared upstream calculation timestamp when no override is provided", () => {
+    const calculatedAt = "2026-08-10T01:00:00.000Z";
+    const outOfPocket = verifiedResult<WonAmount>(
+      { amountWon: 5_000_000 },
+      {
+        sources: [source],
+        calculatedAt,
+        assumptions: [],
+        limitations: [],
+      },
+    );
+    const annualSavings = verifiedResult<WonAmount>(
+      { amountWon: 1_000_000 },
+      {
+        sources: [source],
+        calculatedAt,
+        assumptions: [],
+        limitations: [],
+      },
+    );
+
+    const result = calculateVerifiedPayback({ outOfPocket, annualSavings });
+
+    expect(result.metadata.calculatedAt).toBe(calculatedAt);
+  });
+
   it("preserves upstream assumptions and limitations when composing payback metadata", () => {
     const outOfPocket = verifiedResult<WonAmount>(
       { amountWon: 5_000_000 },
