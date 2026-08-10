@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { estimatedResult, unavailableResult, verifiedResult } from "./result";
+import { errorResult, estimatedResult, unavailableResult, verifiedResult } from "./result";
 import { calculateVerifiedBillSavings, type WonAmount } from "./bill-savings";
 
 const source = {
@@ -148,6 +148,40 @@ describe("calculateVerifiedBillSavings", () => {
     expect(estimated.metadata.status).toBe("unavailable");
     expect(unavailable.value).toBeNull();
     expect(unavailable.metadata.status).toBe("unavailable");
+  });
+
+  it("keeps upstream before-bill errors as errors", () => {
+    const result = calculateVerifiedBillSavings({
+      beforeMonthlyBill: errorResult<WonAmount>({
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [],
+        limitations: ["설치 전 전기요금 계산에 오류가 있습니다."],
+      }),
+      afterMonthlyBill: verifiedWon(50_000),
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.referenceDate).toBe("2026-08-10");
+    expect(result.metadata.limitations).toContain("설치 전 전기요금 계산에 오류가 있습니다.");
+  });
+
+  it("keeps upstream after-bill errors as errors", () => {
+    const result = calculateVerifiedBillSavings({
+      beforeMonthlyBill: verifiedWon(100_000),
+      afterMonthlyBill: errorResult<WonAmount>({
+        sources: [source],
+        referenceDate: "2026-08-10",
+        assumptions: [],
+        limitations: ["설치 후 전기요금 계산에 오류가 있습니다."],
+      }),
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.referenceDate).toBe("2026-08-10");
+    expect(result.metadata.limitations).toContain("설치 후 전기요금 계산에 오류가 있습니다.");
   });
 
   it("keeps a shared reference date when a bill result is unavailable", () => {

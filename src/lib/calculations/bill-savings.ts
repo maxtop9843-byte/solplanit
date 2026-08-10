@@ -104,6 +104,19 @@ export function calculateVerifiedBillSavings(
   };
 
   if (
+    input.beforeMonthlyBill.metadata.status === "error" ||
+    input.afterMonthlyBill.metadata.status === "error"
+  ) {
+    return errorResult({
+      ...baseMetadata,
+      limitations: [
+        ...baseMetadata.limitations,
+        "설치 전 또는 설치 후 전기요금에 오류가 있어 절감액을 계산하지 않았습니다.",
+      ],
+    });
+  }
+
+  if (
     input.beforeMonthlyBill.metadata.status !== "verified" ||
     input.afterMonthlyBill.metadata.status !== "verified" ||
     input.beforeMonthlyBill.value === null ||
