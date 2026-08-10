@@ -44,6 +44,16 @@ function uniqueInputs(inputs: readonly CalculationInput[]): CalculationInput[] {
   });
 }
 
+function sharedReferenceDate(
+  beforeMonthlyBill: CalculationResult<WonAmount>,
+  afterMonthlyBill: CalculationResult<WonAmount>,
+): string | undefined {
+  const beforeDate = beforeMonthlyBill.metadata.referenceDate;
+  const afterDate = afterMonthlyBill.metadata.referenceDate;
+
+  return beforeDate !== undefined && beforeDate === afterDate ? beforeDate : undefined;
+}
+
 const roundWon = (value: number) => Math.round(value + Number.EPSILON);
 
 /**
@@ -68,8 +78,13 @@ export function calculateVerifiedBillSavings(
     (input.beforeMonthlyBill.metadata.calculatedAt === input.afterMonthlyBill.metadata.calculatedAt
       ? input.beforeMonthlyBill.metadata.calculatedAt
       : undefined);
+  const referenceDate = sharedReferenceDate(
+    input.beforeMonthlyBill,
+    input.afterMonthlyBill,
+  );
   const baseMetadata = {
     sources,
+    referenceDate,
     calculatedAt,
     inputs,
     assumptions: [
@@ -133,16 +148,11 @@ export function calculateVerifiedBillSavings(
 
   const monthlySavingsWon = roundWon(beforeWon - afterWon);
   const annualSavingsWon = monthlySavingsWon * 12;
-  const referenceDate =
-    input.beforeMonthlyBill.metadata.referenceDate === input.afterMonthlyBill.metadata.referenceDate
-      ? input.beforeMonthlyBill.metadata.referenceDate
-      : undefined;
 
   return verifiedResult(
     { monthlySavingsWon, annualSavingsWon },
     {
       ...baseMetadata,
-      referenceDate,
       limitations: [
         ...baseMetadata.limitations,
         "같은 요금제와 비교 조건에서 계산한 설치 전·후 월 전기요금의 차이입니다.",
