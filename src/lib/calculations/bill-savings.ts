@@ -63,9 +63,14 @@ export function calculateVerifiedBillSavings(
     ...(input.beforeMonthlyBill.metadata.inputs ?? []),
     ...(input.afterMonthlyBill.metadata.inputs ?? []),
   ]);
+  const calculatedAt =
+    input.calculatedAt ??
+    (input.beforeMonthlyBill.metadata.calculatedAt === input.afterMonthlyBill.metadata.calculatedAt
+      ? input.beforeMonthlyBill.metadata.calculatedAt
+      : undefined);
   const baseMetadata = {
     sources,
-    calculatedAt: input.calculatedAt,
+    calculatedAt,
     inputs,
     assumptions: [
       ...input.beforeMonthlyBill.metadata.assumptions,

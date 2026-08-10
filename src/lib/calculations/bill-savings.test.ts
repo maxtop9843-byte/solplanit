@@ -40,6 +40,34 @@ describe("calculateVerifiedBillSavings", () => {
     });
   });
 
+  it("preserves a shared upstream calculation timestamp when no override is provided", () => {
+    const calculatedAt = "2026-08-10T10:30:00.000Z";
+    const beforeMonthlyBill = verifiedResult<WonAmount>(
+      { amountWon: 120_000 },
+      {
+        sources: [source],
+        referenceDate: "2026-08-10",
+        calculatedAt,
+        assumptions: [],
+        limitations: [],
+      },
+    );
+    const afterMonthlyBill = verifiedResult<WonAmount>(
+      { amountWon: 70_000 },
+      {
+        sources: [source],
+        referenceDate: "2026-08-10",
+        calculatedAt,
+        assumptions: [],
+        limitations: [],
+      },
+    );
+
+    const result = calculateVerifiedBillSavings({ beforeMonthlyBill, afterMonthlyBill });
+
+    expect(result.metadata.calculatedAt).toBe(calculatedAt);
+  });
+
   it("preserves upstream user inputs without duplicating identical metadata", () => {
     const monthlyUsage = {
       key: "monthlyUsage",
