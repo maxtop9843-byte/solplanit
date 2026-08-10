@@ -41,6 +41,18 @@ function uniqueInputs(inputs: readonly CalculationInput[]): CalculationInput[] {
   });
 }
 
+function sharedReferenceDate(
+  installationCost: CalculationResult<WonAmount>,
+  subsidy: CalculationResult<WonAmount>,
+): string | undefined {
+  const installationDate = installationCost.metadata.referenceDate;
+  const subsidyDate = subsidy.metadata.referenceDate;
+
+  return installationDate !== undefined && installationDate === subsidyDate
+    ? installationDate
+    : undefined;
+}
+
 function officialWonResult(
   value: OfficialWonValue | undefined,
   label: string,
@@ -98,6 +110,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
     ...installationCost.metadata.limitations,
     ...subsidy.metadata.limitations,
   ];
+  const referenceDate = sharedReferenceDate(installationCost, subsidy);
 
   if (installationCost.value === null || subsidy.value === null) {
     return {
@@ -108,6 +121,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
           ...installationCost.metadata.sources,
           ...subsidy.metadata.sources,
         ],
+        referenceDate,
         calculatedAt: input.calculatedAt,
         inputs,
         assumptions: [],
@@ -131,6 +145,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
           ...installationCost.metadata.sources,
           ...subsidy.metadata.sources,
         ],
+        referenceDate,
         calculatedAt: input.calculatedAt,
         inputs,
         assumptions: [],
@@ -152,10 +167,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
           ...installationCost.metadata.sources,
           ...subsidy.metadata.sources,
         ],
-        referenceDate:
-          installationCost.metadata.referenceDate === subsidy.metadata.referenceDate
-            ? installationCost.metadata.referenceDate
-            : undefined,
+        referenceDate,
         calculatedAt: input.calculatedAt,
         inputs,
         assumptions: [],

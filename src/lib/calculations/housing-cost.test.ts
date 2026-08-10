@@ -53,6 +53,47 @@ describe("createHousingCostResults", () => {
     ]);
   });
 
+  it("keeps a shared official reference date on the combined result", () => {
+    const result = createHousingCostResults({
+      installationCost: official(5_000_000, "공식 설치비"),
+      subsidy: official(2_000_000, "공식 지원 공고"),
+    });
+
+    expect(result.outOfPocket.metadata.referenceDate).toBe("2026-08-01");
+  });
+
+  it("does not invent a shared reference date when official dates differ", () => {
+    const subsidy = official(2_000_000, "공식 지원 공고");
+    subsidy.referenceDate = "2026-08-02";
+
+    const result = createHousingCostResults({
+      installationCost: official(5_000_000, "공식 설치비"),
+      subsidy,
+    });
+
+    expect(result.outOfPocket.metadata.referenceDate).toBeUndefined();
+  });
+
+  it("preserves a shared reference date when an official amount is invalid", () => {
+    const result = createHousingCostResults({
+      installationCost: official(Number.NaN, "공식 설치비"),
+      subsidy: official(0, "공식 지원 공고"),
+    });
+
+    expect(result.outOfPocket.metadata.status).toBe("unavailable");
+    expect(result.outOfPocket.metadata.referenceDate).toBe("2026-08-01");
+  });
+
+  it("preserves a shared reference date when the combined amount is invalid", () => {
+    const result = createHousingCostResults({
+      installationCost: official(1_000_000, "공식 설치비"),
+      subsidy: official(1_500_000, "공식 지원 공고"),
+    });
+
+    expect(result.outOfPocket.metadata.status).toBe("error");
+    expect(result.outOfPocket.metadata.referenceDate).toBe("2026-08-01");
+  });
+
   it("does not turn an unverified subsidy into zero won and keeps the missing-data reason", () => {
     const result = createHousingCostResults({
       installationCost: official(5_000_000, "공식 설치비"),
