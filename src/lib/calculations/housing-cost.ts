@@ -111,20 +111,41 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
     ...subsidy.metadata.limitations,
   ];
   const referenceDate = sharedReferenceDate(installationCost, subsidy);
+  const combinedMetadata = {
+    sources: [
+      ...installationCost.metadata.sources,
+      ...subsidy.metadata.sources,
+    ],
+    referenceDate,
+    calculatedAt: input.calculatedAt,
+    inputs,
+    assumptions: [],
+    limitations,
+  };
+
+  if (
+    installationCost.metadata.status === "error" ||
+    subsidy.metadata.status === "error"
+  ) {
+    return {
+      installationCost,
+      subsidy,
+      outOfPocket: errorResult({
+        ...combinedMetadata,
+        limitations: [
+          ...limitations,
+          "설치비 또는 지원액에 오류가 있어 내가 부담할 금액을 계산하지 않았습니다.",
+        ],
+      }),
+    };
+  }
 
   if (installationCost.value === null || subsidy.value === null) {
     return {
       installationCost,
       subsidy,
       outOfPocket: unavailableResult({
-        sources: [
-          ...installationCost.metadata.sources,
-          ...subsidy.metadata.sources,
-        ],
-        referenceDate,
-        calculatedAt: input.calculatedAt,
-        inputs,
-        assumptions: [],
+        ...combinedMetadata,
         limitations: [
           ...limitations,
           "설치비와 지원액이 모두 확인되어야 내가 부담할 금액을 계산할 수 있습니다.",
@@ -141,14 +162,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
       installationCost,
       subsidy,
       outOfPocket: errorResult({
-        sources: [
-          ...installationCost.metadata.sources,
-          ...subsidy.metadata.sources,
-        ],
-        referenceDate,
-        calculatedAt: input.calculatedAt,
-        inputs,
-        assumptions: [],
+        ...combinedMetadata,
         limitations: [
           ...limitations,
           "확인된 지원액이 설치비보다 커서 내가 부담할 금액을 계산하지 않았습니다.",
@@ -162,17 +176,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
     subsidy,
     outOfPocket: verifiedResult(
       { amountWon: outOfPocketWon },
-      {
-        sources: [
-          ...installationCost.metadata.sources,
-          ...subsidy.metadata.sources,
-        ],
-        referenceDate,
-        calculatedAt: input.calculatedAt,
-        inputs,
-        assumptions: [],
-        limitations,
-      },
+      combinedMetadata,
     ),
   };
 }

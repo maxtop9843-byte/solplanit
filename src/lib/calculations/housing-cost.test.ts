@@ -74,14 +74,30 @@ describe("createHousingCostResults", () => {
     expect(result.outOfPocket.metadata.referenceDate).toBeUndefined();
   });
 
-  it("preserves a shared reference date when an official amount is invalid", () => {
+  it("preserves a shared reference date and error status when an official amount is invalid", () => {
     const result = createHousingCostResults({
       installationCost: official(Number.NaN, "공식 설치비"),
       subsidy: official(0, "공식 지원 공고"),
     });
 
-    expect(result.outOfPocket.metadata.status).toBe("unavailable");
+    expect(result.outOfPocket.metadata.status).toBe("error");
     expect(result.outOfPocket.metadata.referenceDate).toBe("2026-08-01");
+    expect(result.outOfPocket.metadata.limitations).toContain(
+      "설치비 금액이 올바르지 않습니다.",
+    );
+  });
+
+  it("preserves subsidy error status on the combined result", () => {
+    const result = createHousingCostResults({
+      installationCost: official(5_000_000, "공식 설치비"),
+      subsidy: official(Number.POSITIVE_INFINITY, "공식 지원 공고"),
+    });
+
+    expect(result.subsidy.metadata.status).toBe("error");
+    expect(result.outOfPocket.metadata.status).toBe("error");
+    expect(result.outOfPocket.metadata.limitations).toContain(
+      "지원액 금액이 올바르지 않습니다.",
+    );
   });
 
   it("preserves a shared reference date when the combined amount is invalid", () => {
@@ -134,7 +150,7 @@ describe("createHousingCostResults", () => {
 
       expect(result.installationCost.value).toBeNull();
       expect(result.installationCost.metadata.status).toBe("error");
-      expect(result.outOfPocket.metadata.status).toBe("unavailable");
+      expect(result.outOfPocket.metadata.status).toBe("error");
       expect(result.outOfPocket.metadata.limitations).toContain(
         "설치비 금액이 올바르지 않습니다.",
       );
