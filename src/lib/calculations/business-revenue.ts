@@ -66,6 +66,10 @@ function hasInvalidBusinessRevenueInput(input: BusinessRevenueInput): boolean {
  * 결정하는 책임은 데이터 계층에 둔다. 이 함수는 검증된 입력값의 산술만 담당한다.
  */
 export function calculateBusinessRevenue(input: BusinessRevenueInput): BusinessRevenueResult {
+  if (hasInvalidBusinessRevenueInput(input)) {
+    throw new RangeError("발전량, SMP·REC 단가와 REC 가중치는 0 이상의 유한한 숫자여야 합니다.");
+  }
+
   const annualSmpRevenue = roundWon(input.annualGenerationKwh * input.smpPricePerKwh);
   const annualRecRevenue = roundWon(
     (input.annualGenerationKwh / 1000) * input.recWeight * input.recPricePerRec,
