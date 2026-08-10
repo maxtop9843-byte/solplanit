@@ -137,6 +137,19 @@ export function estimateInstallableCapacityResult(
     sources: CAPACITY_METHOD.sources,
     referenceDate: CAPACITY_METHOD.version,
     ...(calculatedAt ? { calculatedAt } : {}),
+    inputs: [
+      {
+        key: "buildingType",
+        value: input.buildingType,
+        description: "사용자가 선택한 건물 종류",
+      },
+      {
+        key: "roofArea",
+        value: input.area,
+        unit: input.areaUnit === "m2" ? "m²" : "평",
+        description: "사용자가 입력한 지붕 면적",
+      },
+    ],
     assumptions: [
       {
         key: "usableAreaRatio",
