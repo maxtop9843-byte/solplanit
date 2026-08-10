@@ -2,6 +2,7 @@ import {
   errorResult,
   unavailableResult,
   verifiedResult,
+  type CalculationInput,
   type CalculationResult,
   type CalculationSource,
 } from "./result";
@@ -14,6 +15,7 @@ export type OfficialWonValue = {
   amountWon: number;
   source: CalculationSource;
   referenceDate: string;
+  inputs?: readonly CalculationInput[];
 };
 
 export type HousingCostInput = {
@@ -28,6 +30,17 @@ export type HousingCostResults = {
   outOfPocket: CalculationResult<WonAmount>;
 };
 
+function uniqueInputs(inputs: readonly CalculationInput[]): CalculationInput[] {
+  const seen = new Set<string>();
+
+  return inputs.filter((input) => {
+    const key = JSON.stringify([input.key, input.value, input.unit, input.description]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function officialWonResult(
   value: OfficialWonValue | undefined,
   label: string,
@@ -37,6 +50,7 @@ function officialWonResult(
     return unavailableResult({
       sources: [],
       calculatedAt,
+      inputs: [],
       assumptions: [],
       limitations: [`${label}의 공식 확인 자료가 아직 없습니다.`],
     });
@@ -46,6 +60,7 @@ function officialWonResult(
     sources: [value.source],
     referenceDate: value.referenceDate,
     calculatedAt,
+    inputs: value.inputs ?? [],
     assumptions: [],
     limitations: [] as string[],
   };
@@ -64,6 +79,9 @@ function officialWonResult(
  * 공식 설치비와 지원액을 서로 독립된 결과 상태로 만든다.
  * 확인되지 않은 지원액을 0원으로 대체하지 않으며, 두 값이 모두 확인된 경우에만
  * 내가 부담할 금액을 계산한다.
+ *
+ * 공식 값에 연결된 지역·설치 용량 같은 사용자 입력 메타데이터를 보존해
+ * 이후 회수기간 계산까지 계산 근거가 끊기지 않도록 한다.
  */
 export function createHousingCostResults(input: HousingCostInput): HousingCostResults {
   const installationCost = officialWonResult(
@@ -72,6 +90,10 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
     input.calculatedAt,
   );
   const subsidy = officialWonResult(input.subsidy, "지원액", input.calculatedAt);
+  const inputs = uniqueInputs([
+    ...(installationCost.metadata.inputs ?? []),
+    ...(subsidy.metadata.inputs ?? []),
+  ]);
 
   if (installationCost.value === null || subsidy.value === null) {
     return {
@@ -83,6 +105,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
           ...subsidy.metadata.sources,
         ],
         calculatedAt: input.calculatedAt,
+        inputs,
         assumptions: [],
         limitations: [
           "설치비와 지원액이 모두 확인되어야 내가 부담할 금액을 계산할 수 있습니다.",
@@ -104,6 +127,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
           ...subsidy.metadata.sources,
         ],
         calculatedAt: input.calculatedAt,
+        inputs,
         assumptions: [],
         limitations: [
           "확인된 지원액이 설치비보다 커서 내가 부담할 금액을 계산하지 않았습니다.",
@@ -127,6 +151,7 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
             ? installationCost.metadata.referenceDate
             : undefined,
         calculatedAt: input.calculatedAt,
+        inputs,
         assumptions: [],
         limitations: [],
       },
