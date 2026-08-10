@@ -2,6 +2,7 @@ import {
   errorResult,
   unavailableResult,
   verifiedResult,
+  type CalculationInput,
   type CalculationResult,
   type CalculationSource,
 } from "./result";
@@ -31,6 +32,17 @@ function uniqueSources(sources: readonly CalculationSource[]): CalculationSource
   });
 }
 
+function uniqueInputs(inputs: readonly CalculationInput[]): CalculationInput[] {
+  const seen = new Set<string>();
+
+  return inputs.filter((input) => {
+    const key = JSON.stringify([input.key, input.value, input.unit, input.description]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 const roundYears = (value: number) => Math.round((value + Number.EPSILON) * 10) / 10;
 
 /**
@@ -40,7 +52,7 @@ const roundYears = (value: number) => Math.round((value + Number.EPSILON) * 10) 
  * 모두 있을 때만 회수기간을 계산한다. estimated 값이나 정보 없음 상태를
  * 확정적인 회수기간으로 바꾸지 않는다.
  *
- * 이전 계산 단계의 출처·가정·한계 메타데이터를 그대로 이어 받아
+ * 이전 계산 단계의 입력·출처·가정·한계 메타데이터를 그대로 이어 받아
  * 회수기간 결과에서 계산 근거가 끊기지 않도록 한다.
  */
 export function calculateVerifiedPayback(input: PaybackInput): CalculationResult<PaybackValue> {
@@ -48,9 +60,14 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
     ...input.outOfPocket.metadata.sources,
     ...input.annualSavings.metadata.sources,
   ]);
+  const inputs = uniqueInputs([
+    ...(input.outOfPocket.metadata.inputs ?? []),
+    ...(input.annualSavings.metadata.inputs ?? []),
+  ]);
   const baseMetadata = {
     sources,
     calculatedAt: input.calculatedAt,
+    inputs,
     assumptions: [
       ...input.outOfPocket.metadata.assumptions,
       ...input.annualSavings.metadata.assumptions,

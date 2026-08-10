@@ -85,6 +85,46 @@ describe("calculateVerifiedPayback", () => {
     ]);
   });
 
+  it("preserves upstream user inputs and removes only exact duplicates", () => {
+    const sharedInput = {
+      key: "region",
+      value: "서울특별시",
+      description: "사용자가 선택한 설치 지역",
+    };
+    const outOfPocket = verifiedResult<WonAmount>(
+      { amountWon: 5_000_000 },
+      {
+        sources: [source],
+        inputs: [
+          sharedInput,
+          { key: "systemSize", value: 3, unit: "kW", description: "설치 용량" },
+        ],
+        assumptions: [],
+        limitations: [],
+      },
+    );
+    const annualSavings = verifiedResult<WonAmount>(
+      { amountWon: 1_000_000 },
+      {
+        sources: [source],
+        inputs: [
+          sharedInput,
+          { key: "monthlyUsage", value: 420, unit: "kWh", description: "월 전기 사용량" },
+        ],
+        assumptions: [],
+        limitations: [],
+      },
+    );
+
+    const result = calculateVerifiedPayback({ outOfPocket, annualSavings });
+
+    expect(result.metadata.inputs).toEqual([
+      sharedInput,
+      { key: "systemSize", value: 3, unit: "kW", description: "설치 용량" },
+      { key: "monthlyUsage", value: 420, unit: "kWh", description: "월 전기 사용량" },
+    ]);
+  });
+
   it("does not turn an estimated annual saving into a confirmed payback period", () => {
     const result = calculateVerifiedPayback({
       outOfPocket: verifiedWon(5_000_000),
