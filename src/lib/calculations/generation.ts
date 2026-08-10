@@ -44,6 +44,26 @@ function generationMetadata(
   const request = result.request;
 
   return {
+    inputs: [
+      {
+        key: "latitude",
+        value: request.latitude,
+        unit: "°",
+        description: "PVGIS 계산에 사용한 위도",
+      },
+      {
+        key: "longitude",
+        value: request.longitude,
+        unit: "°",
+        description: "PVGIS 계산에 사용한 경도",
+      },
+      {
+        key: "peakPowerKw",
+        value: request.peakPowerKw,
+        unit: "kW",
+        description: "PVGIS 계산에 사용한 설치 용량",
+      },
+    ],
     sources: [
       {
         label: `JRC PVGIS ${result.version}`,
@@ -53,12 +73,6 @@ function generationMetadata(
     referenceDate: result.verifiedAt,
     calculatedAt: result.retrievedAt,
     assumptions: [
-      {
-        key: "peakPowerKw",
-        value: request.peakPowerKw,
-        unit: "kW",
-        description: "PVGIS 계산에 사용한 설치 용량",
-      },
       {
         key: "systemLossPercent",
         value: request.systemLossPercent,
