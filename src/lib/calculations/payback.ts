@@ -64,9 +64,14 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
     ...(input.outOfPocket.metadata.inputs ?? []),
     ...(input.annualSavings.metadata.inputs ?? []),
   ]);
+  const calculatedAt =
+    input.calculatedAt ??
+    (input.outOfPocket.metadata.calculatedAt === input.annualSavings.metadata.calculatedAt
+      ? input.outOfPocket.metadata.calculatedAt
+      : undefined);
   const baseMetadata = {
     sources,
-    calculatedAt: input.calculatedAt,
+    calculatedAt,
     inputs,
     assumptions: [
       ...input.outOfPocket.metadata.assumptions,
