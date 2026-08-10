@@ -56,6 +56,8 @@ function generationMetadata(
     request.tiltDegrees === undefined && request.azimuthDegrees === undefined;
   const usesOptimalInclination =
     request.tiltDegrees === undefined && request.azimuthDegrees !== undefined;
+  const usesDefaultAzimuth =
+    request.tiltDegrees !== undefined && request.azimuthDegrees === undefined;
 
   return {
     inputs: [
@@ -123,6 +125,16 @@ function generationMetadata(
               description: "PVGIS 계산에 사용한 방위각",
             },
           ]),
+      ...(usesDefaultAzimuth
+        ? [
+            {
+              key: "azimuthDegrees",
+              value: 0,
+              unit: "°",
+              description: "방위를 입력하지 않아 적용된 PVGIS 기본 방위각(남향)",
+            },
+          ]
+        : []),
       ...(usesOptimalAngles
         ? [
             {
@@ -141,24 +153,20 @@ function generationMetadata(
             },
           ]
         : []),
-      ...(request.mountingPosition === undefined
-        ? []
-        : [
-            {
-              key: "mountingPosition",
-              value: request.mountingPosition,
-              description: "PVGIS 계산에 사용한 설치 방식",
-            },
-          ]),
-      ...(request.moduleTechnology === undefined
-        ? []
-        : [
-            {
-              key: "moduleTechnology",
-              value: request.moduleTechnology,
-              description: "PVGIS 계산에 사용한 모듈 기술",
-            },
-          ]),
+      {
+        key: "mountingPosition",
+        value: request.mountingPosition ?? "free",
+        description: request.mountingPosition === undefined
+          ? "설치 방식을 입력하지 않아 적용된 PVGIS 기본 설치 방식"
+          : "PVGIS 계산에 사용한 설치 방식",
+      },
+      {
+        key: "moduleTechnology",
+        value: request.moduleTechnology ?? "crystSi",
+        description: request.moduleTechnology === undefined
+          ? "모듈 기술을 입력하지 않아 적용된 PVGIS 기본 모듈 기술"
+          : "PVGIS 계산에 사용한 모듈 기술",
+      },
     ],
     limitations: [
       "PVGIS의 위치·기상 데이터 기반 발전량이며 실제 음영, 오염, 설비 상태와 현장 조건에 따라 달라질 수 있습니다.",
