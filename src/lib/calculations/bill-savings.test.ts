@@ -40,6 +40,48 @@ describe("calculateVerifiedBillSavings", () => {
     });
   });
 
+  it("preserves upstream user inputs without duplicating identical metadata", () => {
+    const monthlyUsage = {
+      key: "monthlyUsage",
+      value: 420,
+      unit: "kWh/월",
+      description: "월 전기 사용량",
+    };
+    const installedCapacity = {
+      key: "installedCapacity",
+      value: 3,
+      unit: "kW",
+      description: "태양광 설치 용량",
+    };
+    const beforeMonthlyBill = verifiedResult<WonAmount>(
+      { amountWon: 120_000 },
+      {
+        sources: [source],
+        referenceDate: "2026-08-10",
+        inputs: [monthlyUsage],
+        assumptions: [],
+        limitations: [],
+      },
+    );
+    const afterMonthlyBill = verifiedResult<WonAmount>(
+      { amountWon: 70_000 },
+      {
+        sources: [source],
+        referenceDate: "2026-08-10",
+        inputs: [monthlyUsage, installedCapacity],
+        assumptions: [],
+        limitations: [],
+      },
+    );
+
+    const result = calculateVerifiedBillSavings({
+      beforeMonthlyBill,
+      afterMonthlyBill,
+    });
+
+    expect(result.metadata.inputs).toEqual([monthlyUsage, installedCapacity]);
+  });
+
   it("preserves a real zero saving instead of treating it as missing information", () => {
     const result = calculateVerifiedBillSavings({
       beforeMonthlyBill: verifiedWon(80_000),

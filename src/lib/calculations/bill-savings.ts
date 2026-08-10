@@ -2,6 +2,7 @@ import {
   errorResult,
   unavailableResult,
   verifiedResult,
+  type CalculationInput,
   type CalculationResult,
   type CalculationSource,
 } from "./result";
@@ -32,6 +33,17 @@ function uniqueSources(sources: readonly CalculationSource[]): CalculationSource
   });
 }
 
+function uniqueInputs(inputs: readonly CalculationInput[]): CalculationInput[] {
+  const seen = new Set<string>();
+
+  return inputs.filter((input) => {
+    const key = JSON.stringify([input.key, input.value, input.unit, input.description]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 const roundWon = (value: number) => Math.round(value + Number.EPSILON);
 
 /**
@@ -47,9 +59,14 @@ export function calculateVerifiedBillSavings(
     ...input.beforeMonthlyBill.metadata.sources,
     ...input.afterMonthlyBill.metadata.sources,
   ]);
+  const inputs = uniqueInputs([
+    ...(input.beforeMonthlyBill.metadata.inputs ?? []),
+    ...(input.afterMonthlyBill.metadata.inputs ?? []),
+  ]);
   const baseMetadata = {
     sources,
     calculatedAt: input.calculatedAt,
+    inputs,
     assumptions: [
       ...input.beforeMonthlyBill.metadata.assumptions,
       ...input.afterMonthlyBill.metadata.assumptions,
