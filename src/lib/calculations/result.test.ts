@@ -31,6 +31,30 @@ describe("calculation result metadata", () => {
   });
 
   it.each([
+    ["undefined", undefined],
+    ["bigint", BigInt(3)],
+    ["nested undefined", { annualGenerationKwh: 1_200, monthlyGenerationKwh: [100, undefined] }],
+    ["date object", { generatedAt: new Date("2026-08-10T00:00:00.000Z") }],
+  ])("does not expose a result with a non-serializable value shape: %s", (_label, value) => {
+    const result = estimatedResult(value, metadata);
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain("결과 값의 형식이 올바르지 않습니다.");
+  });
+
+  it("does not recurse forever when a result contains a circular reference", () => {
+    const value: { annualGenerationKwh: number; self?: unknown } = { annualGenerationKwh: 1_200 };
+    value.self = value;
+
+    const result = estimatedResult(value, metadata);
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain("결과 값의 형식이 올바르지 않습니다.");
+  });
+
+  it.each([
     ["empty source label", { sources: [{ label: "", url: "https://example.com/source" }] }],
     ["relative source URL", { sources: [{ label: "공식 자료", url: "/source" }] }],
     ["invalid reference date", { referenceDate: "2026-02-30" }],
