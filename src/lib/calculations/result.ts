@@ -36,9 +36,7 @@ export type CalculationResult<T> = {
 };
 
 type ResultMetadataWithoutStatus = Omit<CalculationResultMetadata, "status">;
-
 type CalculationMetadataEntry = CalculationInput | CalculationAssumption;
-
 type SanitizedMetadata = {
   metadata: ResultMetadataWithoutStatus;
   removedInvalidShape: boolean;
@@ -64,6 +62,24 @@ const SANITIZED_METADATA_LIMITATION = "결과 메타데이터 일부의 형식�
 function hasOnlyAllowedOwnProperties(value: object, allowedKeys: readonly string[]): boolean {
   if (Object.getOwnPropertySymbols(value).length > 0) return false;
   return Object.getOwnPropertyNames(value).every((key) => allowedKeys.includes(key));
+}
+
+function hasJsonPreservedOwnProperties(value: object): boolean {
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+
+  if (Object.getOwnPropertySymbols(descriptors).length > 0) return false;
+
+  if (Array.isArray(value)) {
+    return Object.entries(descriptors).every(([key, descriptor]) => {
+      if (key === "length") return true;
+      if (!/^\d+$/.test(key)) return false;
+      return descriptor.enumerable === true && "value" in descriptor;
+    });
+  }
+
+  return Object.values(descriptors).every(
+    (descriptor) => descriptor.enumerable === true && "value" in descriptor,
+  );
 }
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
@@ -153,7 +169,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
   if (typeof value === "number") return !Number.isFinite(value);
   if (typeof value !== "object") return true;
   if (stack.has(value)) return true;
-  if (Object.getOwnPropertySymbols(value).length > 0) return true;
+  if (!hasJsonPreservedOwnProperties(value)) return true;
 
   if (Array.isArray(value)) {
     for (let index = 0; index < value.length; index += 1) {
