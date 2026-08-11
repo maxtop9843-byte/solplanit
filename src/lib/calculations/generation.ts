@@ -48,6 +48,15 @@ function readAnnualGenerationKwh(data: unknown): AnnualGenerationReading {
   return { kind: "value", value: annualGenerationKwh };
 }
 
+function hasInvalidPvgisProvenance(result: PvgisProxyResult): boolean {
+  return (
+    result.source !== "PVGIS" ||
+    result.version.trim().length === 0 ||
+    result.verifiedAt.trim().length === 0 ||
+    result.retrievedAt.trim().length === 0
+  );
+}
+
 function generationMetadata(
   result: PvgisProxyResult,
 ): Omit<CalculationResultMetadata, "status"> {
@@ -182,6 +191,17 @@ export function createPvgisGenerationResult(
   result: PvgisProxyResult,
 ): CalculationResult<GenerationResult> {
   const metadata = generationMetadata(result);
+
+  if (hasInvalidPvgisProvenance(result)) {
+    return errorResult({
+      ...metadata,
+      limitations: [
+        ...metadata.limitations,
+        "PVGIS 결과의 출처·버전·기준일 또는 조회 시각이 올바르지 않습니다.",
+      ],
+    });
+  }
+
   const annualGeneration = readAnnualGenerationKwh(result.data);
 
   if (annualGeneration.kind === "missing") {
