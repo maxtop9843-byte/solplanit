@@ -131,6 +131,16 @@ export function calculateVerifiedBillSavings(
     });
   }
 
+  if (referenceDate === undefined) {
+    return unavailableResult({
+      ...baseMetadata,
+      limitations: [
+        ...baseMetadata.limitations,
+        "설치 전·후 전기요금의 기준일이 같아야 절감액을 계산할 수 있습니다.",
+      ],
+    });
+  }
+
   const beforeWon = input.beforeMonthlyBill.value.amountWon;
   const afterWon = input.afterMonthlyBill.value.amountWon;
 

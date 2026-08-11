@@ -224,13 +224,37 @@ describe("calculateVerifiedBillSavings", () => {
     expect(result.metadata.referenceDate).toBe("2026-08-10");
   });
 
-  it("does not claim a shared reference date when the bill results use different dates", () => {
+  it("does not calculate savings when verified bill results use different reference dates", () => {
     const result = calculateVerifiedBillSavings({
       beforeMonthlyBill: verifiedWon(120_000, "2026-08-01"),
       afterMonthlyBill: verifiedWon(70_000, "2026-08-10"),
     });
 
-    expect(result.metadata.status).toBe("verified");
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("unavailable");
+    expect(result.metadata.referenceDate).toBeUndefined();
+    expect(result.metadata.limitations).toContain(
+      "설치 전·후 전기요금의 기준일이 같아야 절감액을 계산할 수 있습니다.",
+    );
+  });
+
+  it("does not calculate savings when a verified bill is missing its reference date", () => {
+    const beforeMonthlyBill = verifiedResult<WonAmount>(
+      { amountWon: 120_000 },
+      {
+        sources: [source],
+        assumptions: [],
+        limitations: [],
+      },
+    );
+
+    const result = calculateVerifiedBillSavings({
+      beforeMonthlyBill,
+      afterMonthlyBill: verifiedWon(70_000),
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("unavailable");
     expect(result.metadata.referenceDate).toBeUndefined();
   });
 
