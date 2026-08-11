@@ -14,6 +14,8 @@ const baseMetadata = {
   limitations: [],
 } satisfies Omit<CalculationResultMetadata, "status">;
 
+const hiddenRuntimeValue = () => "not-part-of-the-contract";
+
 describe("calculation result unknown metadata fields", () => {
   it.each([
     ["verified", verifiedResult],
@@ -43,7 +45,7 @@ describe("calculation result unknown metadata fields", () => {
   ] as const)("sanitizes unknown top-level metadata for %s results", (_label, createResult) => {
     const metadata = {
       ...baseMetadata,
-      diagnostic: 1n,
+      diagnostic: hiddenRuntimeValue,
     } as unknown as Omit<CalculationResultMetadata, "status">;
 
     const result = createResult<number>(metadata);
@@ -62,10 +64,10 @@ describe("calculation result unknown metadata fields", () => {
         {
           label: "JRC PVGIS",
           url: "https://re.jrc.ec.europa.eu/pvg_tools/en/",
-          raw: 1n,
+          raw: hiddenRuntimeValue,
         },
       ],
-      inputs: [{ key: "capacity", value: 3, unit: "kW", raw: 1n }],
+      inputs: [{ key: "capacity", value: 3, unit: "kW", raw: hiddenRuntimeValue }],
       assumptions: [],
       limitations: [],
     } as unknown as Omit<CalculationResultMetadata, "status">;
