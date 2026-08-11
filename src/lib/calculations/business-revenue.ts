@@ -59,6 +59,37 @@ function hasInvalidBusinessRevenueInput(input: BusinessRevenueInput): boolean {
   return Object.values(input).some((value) => !Number.isFinite(value) || value < 0);
 }
 
+function isValidSource(source: CalculationSource): boolean {
+  if (source.label.trim().length === 0) return false;
+
+  try {
+    const url = new URL(source.url);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+function isIsoDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function isIsoTimestamp(value: string): boolean {
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) && new Date(parsed).toISOString() === value;
+}
+
+function hasInvalidBusinessRevenueMetadata(metadata: BusinessRevenueResultMetadata): boolean {
+  return (
+    (metadata.sources !== undefined && metadata.sources.some((source) => !isValidSource(source))) ||
+    (metadata.referenceDate !== undefined && !isIsoDate(metadata.referenceDate)) ||
+    (metadata.calculatedAt !== undefined && !isIsoTimestamp(metadata.calculatedAt))
+  );
+}
+
 /**
  * 발전사업자용 SMP·REC 수익 계산 경계.
  *
@@ -106,6 +137,13 @@ export function createBusinessRevenueResult(
     return errorResult({
       ...commonMetadata,
       limitations: ["발전량, SMP·REC 단가와 REC 가중치는 0 이상의 숫자여야 합니다."],
+    });
+  }
+
+  if (hasInvalidBusinessRevenueMetadata(metadata)) {
+    return errorResult({
+      ...commonMetadata,
+      limitations: ["발전사업자 수익 결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다."],
     });
   }
 
