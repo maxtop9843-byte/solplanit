@@ -5,14 +5,16 @@ import {
   createBusinessRevenueResult,
 } from "./business-revenue";
 
+const input = {
+  annualGenerationKwh: 13_140,
+  smpPricePerKwh: 100,
+  recPricePerRec: 70_000,
+  recWeight: 1.2,
+};
+
 describe("calculateBusinessRevenue", () => {
   it("keeps SMP and REC revenue inside the business calculation boundary", () => {
-    const result = calculateBusinessRevenue({
-      annualGenerationKwh: 13_140,
-      smpPricePerKwh: 100,
-      recPricePerRec: 70_000,
-      recWeight: 1.2,
-    });
+    const result = calculateBusinessRevenue(input);
 
     expect(result).toEqual({
       annualSmpRevenue: 1_314_000,
@@ -39,20 +41,15 @@ describe("calculateBusinessRevenue", () => {
     ["NaN SMP", { annualGenerationKwh: 13_140, smpPricePerKwh: Number.NaN, recPricePerRec: 70_000, recWeight: 1.2 }],
     ["infinite REC price", { annualGenerationKwh: 13_140, smpPricePerKwh: 100, recPricePerRec: Number.POSITIVE_INFINITY, recWeight: 1.2 }],
     ["negative REC weight", { annualGenerationKwh: 13_140, smpPricePerKwh: 100, recPricePerRec: 70_000, recWeight: -0.1 }],
-  ])("rejects invalid raw business inputs before producing numeric revenue: %s", (_label, input) => {
-    expect(() => calculateBusinessRevenue(input)).toThrow(RangeError);
+  ])("rejects invalid raw business inputs before producing numeric revenue: %s", (_label, invalidInput) => {
+    expect(() => calculateBusinessRevenue(invalidInput)).toThrow(RangeError);
   });
 });
 
 describe("createBusinessRevenueResult", () => {
   it("keeps business inputs, source and reference date in the common result contract", () => {
     const result = createBusinessRevenueResult(
-      {
-        annualGenerationKwh: 13_140,
-        smpPricePerKwh: 100,
-        recPricePerRec: 70_000,
-        recWeight: 1.2,
-      },
+      input,
       {
         sources: [
           {
@@ -61,7 +58,7 @@ describe("createBusinessRevenueResult", () => {
           },
         ],
         referenceDate: "2026-08-10",
-        calculatedAt: "2026-08-10T09:00:00Z",
+        calculatedAt: "2026-08-10T09:00:00.000Z",
       },
     );
 
@@ -129,5 +126,32 @@ describe("createBusinessRevenueResult", () => {
     expect(result.metadata.inputs).toEqual(expect.arrayContaining([
       expect.objectContaining({ key: "smpPricePerKwh", value: Number.NaN }),
     ]));
+  });
+
+  it.each([
+    ["empty source label", { sources: [{ label: "", url: "https://example.com/market" }] }],
+    ["relative source URL", { sources: [{ label: "시장 자료", url: "/market" }] }],
+    ["invalid reference date", { referenceDate: "2026-02-30" }],
+    ["timestamp reference date", { referenceDate: "2026-08-10T00:00:00.000Z" }],
+    ["invalid calculatedAt", { calculatedAt: "2026-08-10" }],
+  ])("does not expose estimated revenue with invalid provenance metadata: %s", (_label, metadata) => {
+    const result = createBusinessRevenueResult(input, metadata);
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain(
+      "발전사업자 수익 결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.",
+    );
+  });
+
+  it("accepts canonical provenance metadata", () => {
+    const result = createBusinessRevenueResult(input, {
+      sources: [{ label: "시장 자료", url: "http://example.com/market" }],
+      referenceDate: "2026-08-10",
+      calculatedAt: "2026-08-10T09:00:00.000Z",
+    });
+
+    expect(result.metadata.status).toBe("estimated");
+    expect(result.value).not.toBeNull();
   });
 });
