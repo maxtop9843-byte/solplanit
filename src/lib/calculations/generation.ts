@@ -1,5 +1,7 @@
 import {
   PVGIS_SOURCE_URL,
+  PVGIS_VERIFIED_AT,
+  PVGIS_VERSION,
   type PvgisProxyResult,
 } from "../pvgis";
 import {
@@ -48,12 +50,17 @@ function readAnnualGenerationKwh(data: unknown): AnnualGenerationReading {
   return { kind: "value", value: annualGenerationKwh };
 }
 
+function isIsoTimestamp(value: string): boolean {
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) && new Date(parsed).toISOString() === value;
+}
+
 function hasInvalidPvgisProvenance(result: PvgisProxyResult): boolean {
   return (
     result.source !== "PVGIS" ||
-    result.version.trim().length === 0 ||
-    result.verifiedAt.trim().length === 0 ||
-    result.retrievedAt.trim().length === 0
+    result.version !== PVGIS_VERSION ||
+    result.verifiedAt !== PVGIS_VERIFIED_AT ||
+    !isIsoTimestamp(result.retrievedAt)
   );
 }
 
