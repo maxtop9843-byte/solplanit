@@ -57,16 +57,19 @@ export function isCanonicalIsoDate(value: string): boolean {
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }
 
-export function isCanonicalIsoTimestamp(value: string): boolean {
-  const parsed = Date.parse(value);
-  return Number.isFinite(parsed) && new Date(parsed).toISOString() === value;
+export function isValidIsoTimestamp(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value)) {
+    return false;
+  }
+
+  return Number.isFinite(Date.parse(value));
 }
 
 export function hasInvalidCalculationProvenance(metadata: ResultMetadataWithoutStatus): boolean {
   return (
     metadata.sources.some((source) => !isValidCalculationSource(source)) ||
     (metadata.referenceDate !== undefined && !isCanonicalIsoDate(metadata.referenceDate)) ||
-    (metadata.calculatedAt !== undefined && !isCanonicalIsoTimestamp(metadata.calculatedAt))
+    (metadata.calculatedAt !== undefined && !isValidIsoTimestamp(metadata.calculatedAt))
   );
 }
 
