@@ -151,6 +151,24 @@ describe("createPvgisGenerationResult", () => {
     expect(result.metadata.status).toBe("verified");
   });
 
+  it.each([
+    ["source", { source: "" }],
+    ["version", { version: "" }],
+    ["reference date", { verifiedAt: "" }],
+    ["retrieved at", { retrievedAt: "" }],
+  ])("returns an error when PVGIS provenance is invalid: %s", (_label, overrides) => {
+    const result = createPvgisGenerationResult({
+      ...proxyResult(3_742.6),
+      ...overrides,
+    } as PvgisProxyResult);
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain(
+      "PVGIS 결과의 출처·버전·기준일 또는 조회 시각이 올바르지 않습니다.",
+    );
+  });
+
   it.each([undefined, null])(
     "returns unavailable when the PVGIS annual output is missing: %s",
     (annualGenerationKwh) => {
