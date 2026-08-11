@@ -69,6 +69,11 @@ function isIsoDate(value: string): boolean {
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }
 
+function isIsoTimestamp(value: string): boolean {
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) && new Date(parsed).toISOString() === value;
+}
+
 function hasInvalidOfficialMetadata(value: OfficialWonValue): boolean {
   return (
     value.source.label.trim().length === 0 ||
@@ -100,6 +105,13 @@ function officialWonResult(
     assumptions: [],
     limitations: [] as string[],
   };
+
+  if (calculatedAt !== undefined && !isIsoTimestamp(calculatedAt)) {
+    return errorResult({
+      ...metadata,
+      limitations: [`${label}의 계산 시각이 올바르지 않습니다.`],
+    });
+  }
 
   if (hasInvalidOfficialMetadata(value)) {
     return errorResult({
