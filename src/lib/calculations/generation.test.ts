@@ -154,8 +154,11 @@ describe("createPvgisGenerationResult", () => {
   it.each([
     ["source", { source: "" }],
     ["version", { version: "" }],
+    ["unexpected version", { version: "5.2" }],
     ["reference date", { verifiedAt: "" }],
+    ["unexpected reference date", { verifiedAt: "2026-07-29" }],
     ["retrieved at", { retrievedAt: "" }],
+    ["invalid retrieved timestamp", { retrievedAt: "2026-08-10" }],
   ])("returns an error when PVGIS provenance is invalid: %s", (_label, overrides) => {
     const result = createPvgisGenerationResult({
       ...proxyResult(3_742.6),
