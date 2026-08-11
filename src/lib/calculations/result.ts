@@ -43,6 +43,7 @@ const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산
 const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
 const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포함되어 있습니다.";
 const INVALID_VALUE_SHAPE_LIMITATION = "결과 값의 형식이 올바르지 않습니다.";
+const SANITIZED_METADATA_LIMITATION = "결과 메타데이터 일부가 올바르지 않아 제외했습니다.";
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
@@ -146,6 +147,38 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
   return invalid;
 }
 
+function sanitizeNullResultMetadata(metadata: ResultMetadataWithoutStatus): ResultMetadataWithoutStatus {
+  const sources = metadata.sources.filter(isValidCalculationSource);
+  const inputs = metadata.inputs?.filter(isValidCalculationMetadataEntry);
+  const assumptions = metadata.assumptions.filter(isValidCalculationMetadataEntry);
+  const limitations = metadata.limitations.filter((limitation) => limitation.trim().length > 0);
+  const referenceDate = metadata.referenceDate !== undefined && isCanonicalIsoDate(metadata.referenceDate)
+    ? metadata.referenceDate
+    : undefined;
+  const calculatedAt = metadata.calculatedAt !== undefined && isValidIsoTimestamp(metadata.calculatedAt)
+    ? metadata.calculatedAt
+    : undefined;
+
+  const removedInvalidMetadata =
+    sources.length !== metadata.sources.length ||
+    inputs?.length !== metadata.inputs?.length ||
+    assumptions.length !== metadata.assumptions.length ||
+    limitations.length !== metadata.limitations.length ||
+    referenceDate !== metadata.referenceDate ||
+    calculatedAt !== metadata.calculatedAt;
+
+  return {
+    sources,
+    ...(referenceDate ? { referenceDate } : {}),
+    ...(calculatedAt ? { calculatedAt } : {}),
+    ...(metadata.inputs ? { inputs: inputs ?? [] } : {}),
+    assumptions,
+    limitations: removedInvalidMetadata
+      ? [...limitations, SANITIZED_METADATA_LIMITATION]
+      : limitations,
+  };
+}
+
 function resultWithValue<T>(
   value: T,
   status: Extract<CalculationResultStatus, "verified" | "estimated">,
@@ -190,13 +223,13 @@ export function estimatedResult<T>(value: T, metadata: ResultMetadataWithoutStat
 export function unavailableResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return {
     value: null,
-    metadata: { ...metadata, status: "unavailable" },
+    metadata: { ...sanitizeNullResultMetadata(metadata), status: "unavailable" },
   };
 }
 
 export function errorResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return {
     value: null,
-    metadata: { ...metadata, status: "error" },
+    metadata: { ...sanitizeNullResultMetadata(metadata), status: "error" },
   };
 }
