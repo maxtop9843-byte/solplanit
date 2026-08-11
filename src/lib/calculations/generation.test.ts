@@ -172,6 +172,31 @@ describe("createPvgisGenerationResult", () => {
     );
   });
 
+  it.each([
+    ["latitude", { latitude: 91 }],
+    ["longitude", { longitude: 181 }],
+    ["peak power", { peakPowerKw: 0 }],
+    ["system loss", { systemLossPercent: 101 }],
+    ["tilt", { tiltDegrees: -1 }],
+    ["azimuth", { azimuthDegrees: 181 }],
+    ["non-finite peak power", { peakPowerKw: Number.POSITIVE_INFINITY }],
+  ])("returns an error when PVGIS request metadata is invalid: %s", (_label, requestOverrides) => {
+    const base = proxyResult(3_742.6);
+    const result = createPvgisGenerationResult({
+      ...base,
+      request: {
+        ...base.request,
+        ...requestOverrides,
+      },
+    } as PvgisProxyResult);
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain(
+      "PVGIS 결과에 기록된 위치·설치 조건이 올바르지 않습니다.",
+    );
+  });
+
   it.each([undefined, null])(
     "returns unavailable when the PVGIS annual output is missing: %s",
     (annualGenerationKwh) => {
