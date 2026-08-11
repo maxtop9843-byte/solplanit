@@ -202,6 +202,7 @@ function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
 
   const removedInvalidShape =
     candidate !== metadata ||
+    Object.getOwnPropertySymbols(candidate).length > 0 ||
     !Array.isArray(candidate.sources) ||
     (hasInputs && !Array.isArray(candidate.inputs)) ||
     !Array.isArray(candidate.assumptions) ||
