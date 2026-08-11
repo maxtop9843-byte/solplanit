@@ -270,9 +270,18 @@ export function estimatedResult<T>(value: T, metadata: ResultMetadataWithoutStat
 }
 
 export function unavailableResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
+  const safeMetadata = sanitizeResultMetadata(metadata).metadata;
+  const invalidProvenance = hasInvalidCalculationProvenance(safeMetadata);
+
   return {
     value: null,
-    metadata: { ...sanitizeResultMetadata(metadata).metadata, status: "unavailable" },
+    metadata: {
+      ...safeMetadata,
+      status: invalidProvenance ? "error" : "unavailable",
+      limitations: invalidProvenance
+        ? [...safeMetadata.limitations, INVALID_PROVENANCE_LIMITATION]
+        : safeMetadata.limitations,
+    },
   };
 }
 
