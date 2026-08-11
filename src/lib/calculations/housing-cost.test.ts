@@ -160,7 +160,11 @@ describe("createHousingCostResults", () => {
   it.each([
     ["empty source label", { source: { label: "", url: "https://example.com/cost" } }],
     ["empty source URL", { source: { label: "공식 설치비", url: "" } }],
+    ["relative source URL", { source: { label: "공식 설치비", url: "/official/cost" } }],
+    ["unsupported source URL scheme", { source: { label: "공식 설치비", url: "ftp://example.com/cost" } }],
     ["empty reference date", { referenceDate: "" }],
+    ["timestamp reference date", { referenceDate: "2026-08-01T00:00:00.000Z" }],
+    ["impossible reference date", { referenceDate: "2026-02-30" }],
   ])("returns an error when official metadata is invalid: %s", (_label, overrides) => {
     const installationCost = {
       ...official(5_000_000, "공식 설치비"),
@@ -178,6 +182,19 @@ describe("createHousingCostResults", () => {
     expect(result.outOfPocket.metadata.limitations).toContain(
       "설치비의 출처 또는 기준일이 올바르지 않습니다.",
     );
+  });
+
+  it("accepts an absolute HTTP source URL and a strict calendar date", () => {
+    const installationCost = official(5_000_000, "공식 설치비");
+    installationCost.source.url = "http://example.com/cost";
+
+    const result = createHousingCostResults({
+      installationCost,
+      subsidy: official(0, "공식 지원 공고"),
+    });
+
+    expect(result.installationCost.metadata.status).toBe("verified");
+    expect(result.outOfPocket.metadata.status).toBe("verified");
   });
 
   it("does not expose a negative out-of-pocket amount when subsidy exceeds installation cost", () => {
