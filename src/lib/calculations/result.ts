@@ -194,55 +194,70 @@ function hasSerializableSourceShape(source: unknown): source is CalculationSourc
   return typeof candidate.label === "string" && typeof candidate.url === "string";
 }
 
-function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
-  const candidate = metadata !== null && typeof metadata === "object" && !Array.isArray(metadata)
-    ? metadata as Record<string, unknown>
-    : {};
-  const hasInputs = Object.prototype.hasOwnProperty.call(candidate, "inputs");
-
-  const rawSources = Array.isArray(candidate.sources) ? candidate.sources : [];
-  const rawInputs = Array.isArray(candidate.inputs) ? candidate.inputs : undefined;
-  const rawAssumptions = Array.isArray(candidate.assumptions) ? candidate.assumptions : [];
-  const rawLimitations = Array.isArray(candidate.limitations) ? candidate.limitations : [];
-
-  const sources = rawSources.filter(hasSerializableSourceShape);
-  const inputs = rawInputs?.filter(hasSerializableMetadataEntryShape);
-  const assumptions = rawAssumptions.filter(hasSerializableMetadataEntryShape);
-  const limitations = rawLimitations.filter((limitation): limitation is string => typeof limitation === "string");
-  const referenceDate = candidate.referenceDate === undefined || typeof candidate.referenceDate === "string"
-    ? candidate.referenceDate as string | undefined
-    : undefined;
-  const calculatedAt = candidate.calculatedAt === undefined || typeof candidate.calculatedAt === "string"
-    ? candidate.calculatedAt as string | undefined
-    : undefined;
-
-  const removedInvalidShape =
-    candidate !== metadata ||
-    !hasOnlyAllowedOwnProperties(candidate, RESULT_METADATA_KEYS) ||
-    !Array.isArray(candidate.sources) ||
-    (hasInputs && !Array.isArray(candidate.inputs)) ||
-    !Array.isArray(candidate.assumptions) ||
-    !Array.isArray(candidate.limitations) ||
-    sources.length !== rawSources.length ||
-    inputs?.length !== rawInputs?.length ||
-    assumptions.length !== rawAssumptions.length ||
-    limitations.length !== rawLimitations.length ||
-    referenceDate !== candidate.referenceDate ||
-    calculatedAt !== candidate.calculatedAt;
-
+function invalidShapeMetadata(): SanitizedMetadata {
   return {
     metadata: {
-      sources,
-      ...(referenceDate !== undefined ? { referenceDate } : {}),
-      ...(calculatedAt !== undefined ? { calculatedAt } : {}),
-      ...(hasInputs ? { inputs: inputs ?? [] } : {}),
-      assumptions,
-      limitations: removedInvalidShape
-        ? [...limitations, SANITIZED_METADATA_LIMITATION]
-        : limitations,
+      sources: [],
+      assumptions: [],
+      limitations: [SANITIZED_METADATA_LIMITATION],
     },
-    removedInvalidShape,
+    removedInvalidShape: true,
   };
+}
+
+function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
+  try {
+    const candidate = metadata !== null && typeof metadata === "object" && !Array.isArray(metadata)
+      ? metadata as Record<string, unknown>
+      : {};
+    const hasInputs = Object.prototype.hasOwnProperty.call(candidate, "inputs");
+
+    const rawSources = Array.isArray(candidate.sources) ? candidate.sources : [];
+    const rawInputs = Array.isArray(candidate.inputs) ? candidate.inputs : undefined;
+    const rawAssumptions = Array.isArray(candidate.assumptions) ? candidate.assumptions : [];
+    const rawLimitations = Array.isArray(candidate.limitations) ? candidate.limitations : [];
+
+    const sources = rawSources.filter(hasSerializableSourceShape);
+    const inputs = rawInputs?.filter(hasSerializableMetadataEntryShape);
+    const assumptions = rawAssumptions.filter(hasSerializableMetadataEntryShape);
+    const limitations = rawLimitations.filter((limitation): limitation is string => typeof limitation === "string");
+    const referenceDate = candidate.referenceDate === undefined || typeof candidate.referenceDate === "string"
+      ? candidate.referenceDate as string | undefined
+      : undefined;
+    const calculatedAt = candidate.calculatedAt === undefined || typeof candidate.calculatedAt === "string"
+      ? candidate.calculatedAt as string | undefined
+      : undefined;
+
+    const removedInvalidShape =
+      candidate !== metadata ||
+      !hasOnlyAllowedOwnProperties(candidate, RESULT_METADATA_KEYS) ||
+      !Array.isArray(candidate.sources) ||
+      (hasInputs && !Array.isArray(candidate.inputs)) ||
+      !Array.isArray(candidate.assumptions) ||
+      !Array.isArray(candidate.limitations) ||
+      sources.length !== rawSources.length ||
+      inputs?.length !== rawInputs?.length ||
+      assumptions.length !== rawAssumptions.length ||
+      limitations.length !== rawLimitations.length ||
+      referenceDate !== candidate.referenceDate ||
+      calculatedAt !== candidate.calculatedAt;
+
+    return {
+      metadata: {
+        sources,
+        ...(referenceDate !== undefined ? { referenceDate } : {}),
+        ...(calculatedAt !== undefined ? { calculatedAt } : {}),
+        ...(hasInputs ? { inputs: inputs ?? [] } : {}),
+        assumptions,
+        limitations: removedInvalidShape
+          ? [...limitations, SANITIZED_METADATA_LIMITATION]
+          : limitations,
+      },
+      removedInvalidShape,
+    };
+  } catch {
+    return invalidShapeMetadata();
+  }
 }
 
 function resultWithValue<T>(
@@ -254,8 +269,15 @@ function resultWithValue<T>(
   const safeMetadata = sanitized.metadata;
   const invalidProvenance = hasInvalidCalculationProvenance(safeMetadata);
   const invalidMetadata = sanitized.removedInvalidShape || hasInvalidCalculationMetadata(safeMetadata);
-  const invalidNumericValue = hasInvalidNumericResultValue(value);
-  const invalidValueShape = !invalidNumericValue && hasInvalidCalculationResultValue(value);
+  let invalidNumericValue = false;
+  let invalidValueShape = false;
+
+  try {
+    invalidNumericValue = hasInvalidNumericResultValue(value);
+    invalidValueShape = !invalidNumericValue && hasInvalidCalculationResultValue(value);
+  } catch {
+    invalidValueShape = true;
+  }
 
   if (invalidProvenance || invalidMetadata || invalidNumericValue || invalidValueShape) {
     return {
