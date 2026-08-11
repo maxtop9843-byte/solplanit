@@ -42,6 +42,7 @@ type CalculationMetadataEntry = CalculationInput | CalculationAssumption;
 const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.";
 const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
 const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포함되어 있습니다.";
+const INVALID_VALUE_SHAPE_LIMITATION = "결과 값의 형식이 올바르지 않습니다.";
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
@@ -111,14 +112,38 @@ export function hasInvalidCalculationMetadata(metadata: ResultMetadataWithoutSta
   );
 }
 
-export function hasInvalidNumericResultValue(value: unknown): boolean {
+export function hasInvalidNumericResultValue(value: unknown, stack = new WeakSet<object>()): boolean {
   if (typeof value === "number") return !Number.isFinite(value);
-  if (Array.isArray(value)) return value.some((item) => hasInvalidNumericResultValue(item));
-  if (value !== null && typeof value === "object") {
-    return Object.values(value as Record<string, unknown>).some((item) => hasInvalidNumericResultValue(item));
+  if (value === null || typeof value !== "object") return false;
+  if (stack.has(value)) return false;
+
+  stack.add(value);
+  const invalid = Array.isArray(value)
+    ? value.some((item) => hasInvalidNumericResultValue(item, stack))
+    : Object.values(value as Record<string, unknown>).some((item) => hasInvalidNumericResultValue(item, stack));
+  stack.delete(value);
+
+  return invalid;
+}
+
+export function hasInvalidCalculationResultValue(value: unknown, stack = new WeakSet<object>()): boolean {
+  if (value === null || typeof value === "string" || typeof value === "boolean") return false;
+  if (typeof value === "number") return !Number.isFinite(value);
+  if (typeof value !== "object") return true;
+  if (stack.has(value)) return true;
+
+  if (!Array.isArray(value)) {
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) return true;
   }
 
-  return false;
+  stack.add(value);
+  const invalid = Array.isArray(value)
+    ? value.some((item) => hasInvalidCalculationResultValue(item, stack))
+    : Object.values(value as Record<string, unknown>).some((item) => hasInvalidCalculationResultValue(item, stack));
+  stack.delete(value);
+
+  return invalid;
 }
 
 function resultWithValue<T>(
@@ -128,9 +153,10 @@ function resultWithValue<T>(
 ): CalculationResult<T> {
   const invalidProvenance = hasInvalidCalculationProvenance(metadata);
   const invalidMetadata = hasInvalidCalculationMetadata(metadata);
-  const invalidValue = hasInvalidNumericResultValue(value);
+  const invalidNumericValue = hasInvalidNumericResultValue(value);
+  const invalidValueShape = !invalidNumericValue && hasInvalidCalculationResultValue(value);
 
-  if (invalidProvenance || invalidMetadata || invalidValue) {
+  if (invalidProvenance || invalidMetadata || invalidNumericValue || invalidValueShape) {
     return {
       value: null,
       metadata: {
@@ -140,7 +166,8 @@ function resultWithValue<T>(
           ...metadata.limitations,
           ...(invalidProvenance ? [INVALID_PROVENANCE_LIMITATION] : []),
           ...(invalidMetadata ? [INVALID_METADATA_LIMITATION] : []),
-          ...(invalidValue ? [INVALID_VALUE_LIMITATION] : []),
+          ...(invalidNumericValue ? [INVALID_VALUE_LIMITATION] : []),
+          ...(invalidValueShape ? [INVALID_VALUE_SHAPE_LIMITATION] : []),
         ],
       },
     };
