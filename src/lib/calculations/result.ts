@@ -138,7 +138,11 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
   if (typeof value !== "object") return true;
   if (stack.has(value)) return true;
 
-  if (!Array.isArray(value)) {
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      if (!Object.prototype.hasOwnProperty.call(value, index)) return true;
+    }
+  } else {
     const prototype = Object.getPrototypeOf(value);
     if (prototype !== Object.prototype && prototype !== null) return true;
   }
