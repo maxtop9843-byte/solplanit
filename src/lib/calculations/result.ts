@@ -58,8 +58,21 @@ export function isCanonicalIsoDate(value: string): boolean {
 }
 
 export function isValidIsoTimestamp(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value)) {
-    return false;
+  const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-](\d{2}):(\d{2}))$/.exec(value);
+  if (!match) return false;
+
+  const [, date, hourText, minuteText, secondText, zone, offsetHourText, offsetMinuteText] = match;
+  if (!isCanonicalIsoDate(date)) return false;
+
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  const second = Number(secondText);
+  if (hour > 23 || minute > 59 || second > 59) return false;
+
+  if (zone !== "Z") {
+    const offsetHour = Number(offsetHourText);
+    const offsetMinute = Number(offsetMinuteText);
+    if (offsetHour > 23 || offsetMinute > 59) return false;
   }
 
   return Number.isFinite(Date.parse(value));

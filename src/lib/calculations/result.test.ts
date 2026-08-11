@@ -23,6 +23,9 @@ describe("calculation result metadata", () => {
     ["invalid reference date", { referenceDate: "2026-02-30" }],
     ["timestamp reference date", { referenceDate: "2026-08-10T00:00:00.000Z" }],
     ["date-only calculatedAt", { calculatedAt: "2026-08-10" }],
+    ["invalid calendar date calculatedAt", { calculatedAt: "2026-02-30T00:00:00.000Z" }],
+    ["invalid hour calculatedAt", { calculatedAt: "2026-08-10T24:00:00.000Z" }],
+    ["invalid offset calculatedAt", { calculatedAt: "2026-08-10T09:00:00+09:60" }],
   ])("does not expose a verified value with invalid provenance: %s", (_label, invalidMetadata) => {
     const result = verifiedResult(3, {
       ...metadata,
