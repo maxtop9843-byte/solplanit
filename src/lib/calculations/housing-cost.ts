@@ -185,6 +185,20 @@ export function createHousingCostResults(input: HousingCostInput): HousingCostRe
     };
   }
 
+  if (referenceDate === undefined) {
+    return {
+      installationCost,
+      subsidy,
+      outOfPocket: unavailableResult({
+        ...combinedMetadata,
+        limitations: [
+          ...limitations,
+          "설치비와 지원액의 기준일이 같아야 내가 부담할 금액을 계산할 수 있습니다.",
+        ],
+      }),
+    };
+  }
+
   const outOfPocketWon =
     installationCost.value.amountWon - subsidy.value.amountWon;
 
