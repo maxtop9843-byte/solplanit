@@ -44,11 +44,27 @@ type SanitizedMetadata = {
   removedInvalidShape: boolean;
 };
 
+const RESULT_METADATA_KEYS = [
+  "sources",
+  "referenceDate",
+  "calculatedAt",
+  "inputs",
+  "assumptions",
+  "limitations",
+] as const;
+const METADATA_ENTRY_KEYS = ["key", "value", "unit", "description"] as const;
+const SOURCE_KEYS = ["label", "url"] as const;
+
 const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.";
 const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
 const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포함되어 있습니다.";
 const INVALID_VALUE_SHAPE_LIMITATION = "결과 값의 형식이 올바르지 않습니다.";
 const SANITIZED_METADATA_LIMITATION = "결과 메타데이터 일부의 형식이 올바르지 않아 제외했습니다.";
+
+function hasOnlyAllowedOwnProperties(value: object, allowedKeys: readonly string[]): boolean {
+  if (Object.getOwnPropertySymbols(value).length > 0) return false;
+  return Object.getOwnPropertyNames(value).every((key) => allowedKeys.includes(key));
+}
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
@@ -159,7 +175,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
 
 function hasSerializableMetadataEntryShape(entry: unknown): entry is CalculationMetadataEntry {
   if (entry === null || typeof entry !== "object" || Array.isArray(entry)) return false;
-  if (Object.getOwnPropertySymbols(entry).length > 0) return false;
+  if (!hasOnlyAllowedOwnProperties(entry, METADATA_ENTRY_KEYS)) return false;
 
   const candidate = entry as Record<string, unknown>;
   if (typeof candidate.key !== "string") return false;
@@ -172,7 +188,7 @@ function hasSerializableMetadataEntryShape(entry: unknown): entry is Calculation
 
 function hasSerializableSourceShape(source: unknown): source is CalculationSource {
   if (source === null || typeof source !== "object" || Array.isArray(source)) return false;
-  if (Object.getOwnPropertySymbols(source).length > 0) return false;
+  if (!hasOnlyAllowedOwnProperties(source, SOURCE_KEYS)) return false;
 
   const candidate = source as Record<string, unknown>;
   return typeof candidate.label === "string" && typeof candidate.url === "string";
@@ -202,7 +218,7 @@ function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
 
   const removedInvalidShape =
     candidate !== metadata ||
-    Object.getOwnPropertySymbols(candidate).length > 0 ||
+    !hasOnlyAllowedOwnProperties(candidate, RESULT_METADATA_KEYS) ||
     !Array.isArray(candidate.sources) ||
     (hasInputs && !Array.isArray(candidate.inputs)) ||
     !Array.isArray(candidate.assumptions) ||
