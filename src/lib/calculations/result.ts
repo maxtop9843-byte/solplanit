@@ -159,6 +159,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
 
 function hasSerializableMetadataEntryShape(entry: unknown): entry is CalculationMetadataEntry {
   if (entry === null || typeof entry !== "object" || Array.isArray(entry)) return false;
+  if (Object.getOwnPropertySymbols(entry).length > 0) return false;
 
   const candidate = entry as Record<string, unknown>;
   if (typeof candidate.key !== "string") return false;
@@ -171,6 +172,7 @@ function hasSerializableMetadataEntryShape(entry: unknown): entry is Calculation
 
 function hasSerializableSourceShape(source: unknown): source is CalculationSource {
   if (source === null || typeof source !== "object" || Array.isArray(source)) return false;
+  if (Object.getOwnPropertySymbols(source).length > 0) return false;
 
   const candidate = source as Record<string, unknown>;
   return typeof candidate.label === "string" && typeof candidate.url === "string";
@@ -270,18 +272,9 @@ export function estimatedResult<T>(value: T, metadata: ResultMetadataWithoutStat
 }
 
 export function unavailableResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
-  const safeMetadata = sanitizeResultMetadata(metadata).metadata;
-  const invalidProvenance = hasInvalidCalculationProvenance(safeMetadata);
-
   return {
     value: null,
-    metadata: {
-      ...safeMetadata,
-      status: invalidProvenance ? "error" : "unavailable",
-      limitations: invalidProvenance
-        ? [...safeMetadata.limitations, INVALID_PROVENANCE_LIMITATION]
-        : safeMetadata.limitations,
-    },
+    metadata: { ...sanitizeResultMetadata(metadata).metadata, status: "unavailable" },
   };
 }
 
