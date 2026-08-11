@@ -2,6 +2,7 @@ import {
   PVGIS_SOURCE_URL,
   PVGIS_VERIFIED_AT,
   PVGIS_VERSION,
+  validatePvgisRequest,
   type PvgisProxyResult,
 } from "../pvgis";
 import {
@@ -62,6 +63,15 @@ function hasInvalidPvgisProvenance(result: PvgisProxyResult): boolean {
     result.verifiedAt !== PVGIS_VERIFIED_AT ||
     !isIsoTimestamp(result.retrievedAt)
   );
+}
+
+function hasInvalidPvgisRequest(result: PvgisProxyResult): boolean {
+  try {
+    validatePvgisRequest(result.request);
+    return false;
+  } catch {
+    return true;
+  }
 }
 
 function generationMetadata(
@@ -205,6 +215,16 @@ export function createPvgisGenerationResult(
       limitations: [
         ...metadata.limitations,
         "PVGIS 결과의 출처·버전·기준일 또는 조회 시각이 올바르지 않습니다.",
+      ],
+    });
+  }
+
+  if (hasInvalidPvgisRequest(result)) {
+    return errorResult({
+      ...metadata,
+      limitations: [
+        ...metadata.limitations,
+        "PVGIS 결과에 기록된 위치·설치 조건이 올바르지 않습니다.",
       ],
     });
   }
