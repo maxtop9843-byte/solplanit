@@ -62,7 +62,7 @@ describe("createHousingCostResults", () => {
     expect(result.outOfPocket.metadata.referenceDate).toBe("2026-08-01");
   });
 
-  it("does not invent a shared reference date when official dates differ", () => {
+  it("does not calculate out-of-pocket cost when official dates differ", () => {
     const subsidy = official(2_000_000, "공식 지원 공고");
     subsidy.referenceDate = "2026-08-02";
 
@@ -71,7 +71,12 @@ describe("createHousingCostResults", () => {
       subsidy,
     });
 
+    expect(result.outOfPocket.value).toBeNull();
+    expect(result.outOfPocket.metadata.status).toBe("unavailable");
     expect(result.outOfPocket.metadata.referenceDate).toBeUndefined();
+    expect(result.outOfPocket.metadata.limitations).toContain(
+      "설치비와 지원액의 기준일이 같아야 내가 부담할 금액을 계산할 수 있습니다.",
+    );
   });
 
   it("preserves a shared reference date and error status when an official amount is invalid", () => {
