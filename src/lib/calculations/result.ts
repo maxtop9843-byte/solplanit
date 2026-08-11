@@ -41,6 +41,7 @@ type CalculationMetadataEntry = CalculationInput | CalculationAssumption;
 
 const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.";
 const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
+const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포함되어 있습니다.";
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
@@ -110,6 +111,16 @@ export function hasInvalidCalculationMetadata(metadata: ResultMetadataWithoutSta
   );
 }
 
+export function hasInvalidNumericResultValue(value: unknown): boolean {
+  if (typeof value === "number") return !Number.isFinite(value);
+  if (Array.isArray(value)) return value.some((item) => hasInvalidNumericResultValue(item));
+  if (value !== null && typeof value === "object") {
+    return Object.values(value as Record<string, unknown>).some((item) => hasInvalidNumericResultValue(item));
+  }
+
+  return false;
+}
+
 function resultWithValue<T>(
   value: T,
   status: Extract<CalculationResultStatus, "verified" | "estimated">,
@@ -117,8 +128,9 @@ function resultWithValue<T>(
 ): CalculationResult<T> {
   const invalidProvenance = hasInvalidCalculationProvenance(metadata);
   const invalidMetadata = hasInvalidCalculationMetadata(metadata);
+  const invalidValue = hasInvalidNumericResultValue(value);
 
-  if (invalidProvenance || invalidMetadata) {
+  if (invalidProvenance || invalidMetadata || invalidValue) {
     return {
       value: null,
       metadata: {
@@ -128,6 +140,7 @@ function resultWithValue<T>(
           ...metadata.limitations,
           ...(invalidProvenance ? [INVALID_PROVENANCE_LIMITATION] : []),
           ...(invalidMetadata ? [INVALID_METADATA_LIMITATION] : []),
+          ...(invalidValue ? [INVALID_VALUE_LIMITATION] : []),
         ],
       },
     };

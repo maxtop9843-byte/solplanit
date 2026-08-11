@@ -18,6 +18,19 @@ describe("calculation result metadata", () => {
   });
 
   it.each([
+    ["NaN", Number.NaN],
+    ["Infinity", Number.POSITIVE_INFINITY],
+    ["nested NaN", { annualGenerationKwh: Number.NaN, monthlyGenerationKwh: [100, 120] }],
+    ["nested Infinity", { annualGenerationKwh: 1_200, monthlyGenerationKwh: [100, Number.POSITIVE_INFINITY] }],
+  ])("does not expose a result containing an invalid numeric value: %s", (_label, value) => {
+    const result = estimatedResult(value, metadata);
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain("결과에 계산할 수 없는 숫자가 포함되어 있습니다.");
+  });
+
+  it.each([
     ["empty source label", { sources: [{ label: "", url: "https://example.com/source" }] }],
     ["relative source URL", { sources: [{ label: "공식 자료", url: "/source" }] }],
     ["invalid reference date", { referenceDate: "2026-02-30" }],
