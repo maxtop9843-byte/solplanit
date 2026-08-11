@@ -87,6 +87,40 @@ describe("calculateVerifiedPayback reference date propagation", () => {
     expect(result.metadata.referenceDate).toBe("2026-08-10");
   });
 
+  it("does not calculate payback when verified inputs use different reference dates", () => {
+    const result = calculateVerifiedPayback({
+      outOfPocket: verifiedWon(5_000_000, "2026-08-01"),
+      annualSavings: verifiedWon(1_000_000, "2026-08-10"),
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("unavailable");
+    expect(result.metadata.referenceDate).toBeUndefined();
+    expect(result.metadata.limitations).toContain(
+      "실부담액과 연간 절감액의 기준일이 같아야 회수기간을 계산할 수 있습니다.",
+    );
+  });
+
+  it("does not calculate payback when a verified input is missing its reference date", () => {
+    const outOfPocket = verifiedResult<WonAmount>(
+      { amountWon: 5_000_000 },
+      {
+        sources: [source],
+        assumptions: [],
+        limitations: [],
+      },
+    );
+
+    const result = calculateVerifiedPayback({
+      outOfPocket,
+      annualSavings: verifiedWon(1_000_000),
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("unavailable");
+    expect(result.metadata.referenceDate).toBeUndefined();
+  });
+
   it("does not claim a shared reference date when upstream dates differ", () => {
     const result = calculateVerifiedPayback({
       outOfPocket: verifiedWon(5_000_000, "2026-08-01"),
