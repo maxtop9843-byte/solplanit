@@ -53,6 +53,14 @@ function sharedReferenceDate(
     : undefined;
 }
 
+function hasInvalidOfficialMetadata(value: OfficialWonValue): boolean {
+  return (
+    value.source.label.trim().length === 0 ||
+    value.source.url.trim().length === 0 ||
+    value.referenceDate.trim().length === 0
+  );
+}
+
 function officialWonResult(
   value: OfficialWonValue | undefined,
   label: string,
@@ -76,6 +84,13 @@ function officialWonResult(
     assumptions: [],
     limitations: [] as string[],
   };
+
+  if (hasInvalidOfficialMetadata(value)) {
+    return errorResult({
+      ...metadata,
+      limitations: [`${label}의 출처 또는 기준일이 올바르지 않습니다.`],
+    });
+  }
 
   if (!Number.isFinite(value.amountWon) || value.amountWon < 0) {
     return errorResult({
