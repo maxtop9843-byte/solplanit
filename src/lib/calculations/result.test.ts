@@ -17,6 +17,37 @@ describe("calculation result metadata", () => {
     expect(estimated).toMatchObject({ value: 3, metadata: { status: "estimated" } });
   });
 
+  it.each([
+    ["empty source label", { sources: [{ label: "", url: "https://example.com/source" }] }],
+    ["relative source URL", { sources: [{ label: "공식 자료", url: "/source" }] }],
+    ["invalid reference date", { referenceDate: "2026-02-30" }],
+    ["timestamp reference date", { referenceDate: "2026-08-10T00:00:00.000Z" }],
+    ["non-canonical calculatedAt", { calculatedAt: "2026-08-10T00:00:00Z" }],
+  ])("does not expose a verified value with invalid provenance: %s", (_label, invalidMetadata) => {
+    const result = verifiedResult(3, {
+      ...metadata,
+      ...invalidMetadata,
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain(
+      "결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.",
+    );
+  });
+
+  it("accepts canonical provenance for verified and estimated values", () => {
+    const provenance = {
+      ...metadata,
+      sources: [{ label: "공식 자료", url: "https://example.com/source" }],
+      referenceDate: "2026-08-10",
+      calculatedAt: "2026-08-10T00:00:00.000Z",
+    };
+
+    expect(verifiedResult(3, provenance)).toMatchObject({ value: 3, metadata: { status: "verified" } });
+    expect(estimatedResult(3, provenance)).toMatchObject({ value: 3, metadata: { status: "estimated" } });
+  });
+
   it("keeps unavailable distinct from a numeric zero", () => {
     const result = unavailableResult<number>(metadata);
 
