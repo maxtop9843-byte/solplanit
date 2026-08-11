@@ -22,7 +22,7 @@ describe("calculation result metadata", () => {
     ["relative source URL", { sources: [{ label: "공식 자료", url: "/source" }] }],
     ["invalid reference date", { referenceDate: "2026-02-30" }],
     ["timestamp reference date", { referenceDate: "2026-08-10T00:00:00.000Z" }],
-    ["non-canonical calculatedAt", { calculatedAt: "2026-08-10T00:00:00Z" }],
+    ["date-only calculatedAt", { calculatedAt: "2026-08-10" }],
   ])("does not expose a verified value with invalid provenance: %s", (_label, invalidMetadata) => {
     const result = verifiedResult(3, {
       ...metadata,
@@ -36,16 +36,21 @@ describe("calculation result metadata", () => {
     );
   });
 
-  it("accepts canonical provenance for verified and estimated values", () => {
+  it("accepts canonical and timezone-offset provenance for verified and estimated values", () => {
     const provenance = {
       ...metadata,
       sources: [{ label: "공식 자료", url: "https://example.com/source" }],
       referenceDate: "2026-08-10",
       calculatedAt: "2026-08-10T00:00:00.000Z",
     };
+    const offsetProvenance = {
+      ...provenance,
+      calculatedAt: "2026-08-10T09:00:00+09:00",
+    };
 
     expect(verifiedResult(3, provenance)).toMatchObject({ value: 3, metadata: { status: "verified" } });
     expect(estimatedResult(3, provenance)).toMatchObject({ value: 3, metadata: { status: "estimated" } });
+    expect(estimatedResult(3, offsetProvenance)).toMatchObject({ value: 3, metadata: { status: "estimated" } });
   });
 
   it("keeps unavailable distinct from a numeric zero", () => {
