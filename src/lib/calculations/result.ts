@@ -137,6 +137,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
   if (typeof value === "number") return !Number.isFinite(value);
   if (typeof value !== "object") return true;
   if (stack.has(value)) return true;
+  if (Object.getOwnPropertySymbols(value).length > 0) return true;
 
   if (Array.isArray(value)) {
     for (let index = 0; index < value.length; index += 1) {
