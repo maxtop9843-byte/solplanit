@@ -39,6 +39,28 @@ describe("calculation result metadata", () => {
     );
   });
 
+  it.each([
+    ["empty input key", { inputs: [{ key: " ", value: 3, unit: "kW" }] }],
+    ["empty input value", { inputs: [{ key: "region", value: " " }] }],
+    ["non-finite input value", { inputs: [{ key: "capacity", value: Number.NaN, unit: "kW" }] }],
+    ["empty assumption key", { assumptions: [{ key: " ", value: 0.8 }] }],
+    ["non-finite assumption value", { assumptions: [{ key: "ratio", value: Number.POSITIVE_INFINITY }] }],
+    ["empty unit", { assumptions: [{ key: "capacity", value: 3, unit: " " }] }],
+    ["empty description", { assumptions: [{ key: "capacity", value: 3, description: " " }] }],
+    ["empty limitation", { limitations: [" "] }],
+  ])("does not expose a verified value with invalid calculation metadata: %s", (_label, invalidMetadata) => {
+    const result = verifiedResult(3, {
+      ...metadata,
+      ...invalidMetadata,
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.limitations).toContain(
+      "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.",
+    );
+  });
+
   it("accepts canonical and timezone-offset provenance for verified and estimated values", () => {
     const provenance = {
       ...metadata,
@@ -54,6 +76,17 @@ describe("calculation result metadata", () => {
     expect(verifiedResult(3, provenance)).toMatchObject({ value: 3, metadata: { status: "verified" } });
     expect(estimatedResult(3, provenance)).toMatchObject({ value: 3, metadata: { status: "estimated" } });
     expect(estimatedResult(3, offsetProvenance)).toMatchObject({ value: 3, metadata: { status: "estimated" } });
+  });
+
+  it("accepts finite numeric and non-empty text metadata", () => {
+    const result = estimatedResult(3, {
+      ...metadata,
+      inputs: [{ key: "region", value: "서울" }, { key: "capacity", value: 3, unit: "kW" }],
+      assumptions: [{ key: "usableRoofRatio", value: 0.8, description: "사용 가능한 지붕 면적 비율" }],
+      limitations: ["현장 조건에 따라 달라질 수 있습니다."],
+    });
+
+    expect(result).toMatchObject({ value: 3, metadata: { status: "estimated" } });
   });
 
   it("keeps unavailable distinct from a numeric zero", () => {

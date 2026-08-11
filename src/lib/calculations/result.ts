@@ -37,7 +37,10 @@ export type CalculationResult<T> = {
 
 type ResultMetadataWithoutStatus = Omit<CalculationResultMetadata, "status">;
 
+type CalculationMetadataEntry = CalculationInput | CalculationAssumption;
+
 const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.";
+const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
@@ -78,6 +81,19 @@ export function isValidIsoTimestamp(value: string): boolean {
   return Number.isFinite(Date.parse(value));
 }
 
+function isValidMetadataText(value: string | undefined): boolean {
+  return value === undefined || value.trim().length > 0;
+}
+
+export function isValidCalculationMetadataEntry(entry: CalculationMetadataEntry): boolean {
+  if (entry.key.trim().length === 0) return false;
+  if (typeof entry.value === "number" && !Number.isFinite(entry.value)) return false;
+  if (typeof entry.value === "string" && entry.value.trim().length === 0) return false;
+  if (!isValidMetadataText(entry.unit) || !isValidMetadataText(entry.description)) return false;
+
+  return true;
+}
+
 export function hasInvalidCalculationProvenance(metadata: ResultMetadataWithoutStatus): boolean {
   return (
     metadata.sources.some((source) => !isValidCalculationSource(source)) ||
@@ -86,18 +102,33 @@ export function hasInvalidCalculationProvenance(metadata: ResultMetadataWithoutS
   );
 }
 
+export function hasInvalidCalculationMetadata(metadata: ResultMetadataWithoutStatus): boolean {
+  return (
+    metadata.inputs?.some((input) => !isValidCalculationMetadataEntry(input)) === true ||
+    metadata.assumptions.some((assumption) => !isValidCalculationMetadataEntry(assumption)) ||
+    metadata.limitations.some((limitation) => limitation.trim().length === 0)
+  );
+}
+
 function resultWithValue<T>(
   value: T,
   status: Extract<CalculationResultStatus, "verified" | "estimated">,
   metadata: ResultMetadataWithoutStatus,
 ): CalculationResult<T> {
-  if (hasInvalidCalculationProvenance(metadata)) {
+  const invalidProvenance = hasInvalidCalculationProvenance(metadata);
+  const invalidMetadata = hasInvalidCalculationMetadata(metadata);
+
+  if (invalidProvenance || invalidMetadata) {
     return {
       value: null,
       metadata: {
         ...metadata,
         status: "error",
-        limitations: [...metadata.limitations, INVALID_PROVENANCE_LIMITATION],
+        limitations: [
+          ...metadata.limitations,
+          ...(invalidProvenance ? [INVALID_PROVENANCE_LIMITATION] : []),
+          ...(invalidMetadata ? [INVALID_METADATA_LIMITATION] : []),
+        ],
       },
     };
   }
