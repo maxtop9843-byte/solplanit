@@ -39,6 +39,11 @@ type ResultMetadataWithoutStatus = Omit<CalculationResultMetadata, "status">;
 
 type CalculationMetadataEntry = CalculationInput | CalculationAssumption;
 
+type SanitizedMetadata = {
+  metadata: ResultMetadataWithoutStatus;
+  removedInvalidShape: boolean;
+};
+
 const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산 시각이 올바르지 않습니다.";
 const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
 const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포함되어 있습니다.";
@@ -166,40 +171,53 @@ function hasSerializableSourceShape(source: unknown): source is CalculationSourc
   return typeof candidate.label === "string" && typeof candidate.url === "string";
 }
 
-function sanitizeNullResultMetadata(metadata: ResultMetadataWithoutStatus): ResultMetadataWithoutStatus {
-  const rawSources = metadata.sources as readonly unknown[];
-  const rawInputs = metadata.inputs as readonly unknown[] | undefined;
-  const rawAssumptions = metadata.assumptions as readonly unknown[];
-  const rawLimitations = metadata.limitations as readonly unknown[];
+function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
+  const candidate = metadata !== null && typeof metadata === "object" && !Array.isArray(metadata)
+    ? metadata as Record<string, unknown>
+    : {};
+  const hasInputs = Object.prototype.hasOwnProperty.call(candidate, "inputs");
+
+  const rawSources = Array.isArray(candidate.sources) ? candidate.sources : [];
+  const rawInputs = Array.isArray(candidate.inputs) ? candidate.inputs : undefined;
+  const rawAssumptions = Array.isArray(candidate.assumptions) ? candidate.assumptions : [];
+  const rawLimitations = Array.isArray(candidate.limitations) ? candidate.limitations : [];
 
   const sources = rawSources.filter(hasSerializableSourceShape);
   const inputs = rawInputs?.filter(hasSerializableMetadataEntryShape);
   const assumptions = rawAssumptions.filter(hasSerializableMetadataEntryShape);
   const limitations = rawLimitations.filter((limitation): limitation is string => typeof limitation === "string");
-  const referenceDate = metadata.referenceDate === undefined || typeof metadata.referenceDate === "string"
-    ? metadata.referenceDate
+  const referenceDate = candidate.referenceDate === undefined || typeof candidate.referenceDate === "string"
+    ? candidate.referenceDate as string | undefined
     : undefined;
-  const calculatedAt = metadata.calculatedAt === undefined || typeof metadata.calculatedAt === "string"
-    ? metadata.calculatedAt
+  const calculatedAt = candidate.calculatedAt === undefined || typeof candidate.calculatedAt === "string"
+    ? candidate.calculatedAt as string | undefined
     : undefined;
 
   const removedInvalidShape =
+    candidate !== metadata ||
+    !Array.isArray(candidate.sources) ||
+    (hasInputs && !Array.isArray(candidate.inputs)) ||
+    !Array.isArray(candidate.assumptions) ||
+    !Array.isArray(candidate.limitations) ||
     sources.length !== rawSources.length ||
     inputs?.length !== rawInputs?.length ||
     assumptions.length !== rawAssumptions.length ||
     limitations.length !== rawLimitations.length ||
-    referenceDate !== metadata.referenceDate ||
-    calculatedAt !== metadata.calculatedAt;
+    referenceDate !== candidate.referenceDate ||
+    calculatedAt !== candidate.calculatedAt;
 
   return {
-    sources,
-    ...(referenceDate !== undefined ? { referenceDate } : {}),
-    ...(calculatedAt !== undefined ? { calculatedAt } : {}),
-    ...(metadata.inputs ? { inputs: inputs ?? [] } : {}),
-    assumptions,
-    limitations: removedInvalidShape
-      ? [...limitations, SANITIZED_METADATA_LIMITATION]
-      : limitations,
+    metadata: {
+      sources,
+      ...(referenceDate !== undefined ? { referenceDate } : {}),
+      ...(calculatedAt !== undefined ? { calculatedAt } : {}),
+      ...(hasInputs ? { inputs: inputs ?? [] } : {}),
+      assumptions,
+      limitations: removedInvalidShape
+        ? [...limitations, SANITIZED_METADATA_LIMITATION]
+        : limitations,
+    },
+    removedInvalidShape,
   };
 }
 
@@ -208,8 +226,10 @@ function resultWithValue<T>(
   status: Extract<CalculationResultStatus, "verified" | "estimated">,
   metadata: ResultMetadataWithoutStatus,
 ): CalculationResult<T> {
-  const invalidProvenance = hasInvalidCalculationProvenance(metadata);
-  const invalidMetadata = hasInvalidCalculationMetadata(metadata);
+  const sanitized = sanitizeResultMetadata(metadata);
+  const safeMetadata = sanitized.metadata;
+  const invalidProvenance = hasInvalidCalculationProvenance(safeMetadata);
+  const invalidMetadata = sanitized.removedInvalidShape || hasInvalidCalculationMetadata(safeMetadata);
   const invalidNumericValue = hasInvalidNumericResultValue(value);
   const invalidValueShape = !invalidNumericValue && hasInvalidCalculationResultValue(value);
 
@@ -217,10 +237,10 @@ function resultWithValue<T>(
     return {
       value: null,
       metadata: {
-        ...metadata,
+        ...safeMetadata,
         status: "error",
         limitations: [
-          ...metadata.limitations,
+          ...safeMetadata.limitations,
           ...(invalidProvenance ? [INVALID_PROVENANCE_LIMITATION] : []),
           ...(invalidMetadata ? [INVALID_METADATA_LIMITATION] : []),
           ...(invalidNumericValue ? [INVALID_VALUE_LIMITATION] : []),
@@ -232,7 +252,7 @@ function resultWithValue<T>(
 
   return {
     value,
-    metadata: { ...metadata, status },
+    metadata: { ...safeMetadata, status },
   };
 }
 
@@ -247,13 +267,13 @@ export function estimatedResult<T>(value: T, metadata: ResultMetadataWithoutStat
 export function unavailableResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return {
     value: null,
-    metadata: { ...sanitizeNullResultMetadata(metadata), status: "unavailable" },
+    metadata: { ...sanitizeResultMetadata(metadata).metadata, status: "unavailable" },
   };
 }
 
 export function errorResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return {
     value: null,
-    metadata: { ...sanitizeNullResultMetadata(metadata), status: "error" },
+    metadata: { ...sanitizeResultMetadata(metadata).metadata, status: "error" },
   };
 }
