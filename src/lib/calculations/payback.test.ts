@@ -205,13 +205,14 @@ describe("calculateVerifiedPayback", () => {
     },
   );
 
-  it("does not claim a shared reference date when the inputs use different dates", () => {
+  it("does not calculate when the verified inputs use different reference dates", () => {
     const result = calculateVerifiedPayback({
       outOfPocket: verifiedWon(5_000_000, "2026-08-01"),
       annualSavings: verifiedWon(1_000_000, "2026-08-10"),
     });
 
-    expect(result.metadata.status).toBe("verified");
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("unavailable");
     expect(result.metadata.referenceDate).toBeUndefined();
   });
 });
