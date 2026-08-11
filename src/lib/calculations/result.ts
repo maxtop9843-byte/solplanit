@@ -43,7 +43,7 @@ const INVALID_PROVENANCE_LIMITATION = "결과의 출처·기준일 또는 계산
 const INVALID_METADATA_LIMITATION = "결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.";
 const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포함되어 있습니다.";
 const INVALID_VALUE_SHAPE_LIMITATION = "결과 값의 형식이 올바르지 않습니다.";
-const SANITIZED_METADATA_LIMITATION = "결과 메타데이터 일부가 올바르지 않아 제외했습니다.";
+const SANITIZED_METADATA_LIMITATION = "결과 메타데이터 일부의 형식이 올바르지 않아 제외했습니다.";
 
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
@@ -147,33 +147,57 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
   return invalid;
 }
 
+function hasSerializableMetadataEntryShape(entry: unknown): entry is CalculationMetadataEntry {
+  if (entry === null || typeof entry !== "object" || Array.isArray(entry)) return false;
+
+  const candidate = entry as Record<string, unknown>;
+  if (typeof candidate.key !== "string") return false;
+  if (typeof candidate.value !== "string" && typeof candidate.value !== "number") return false;
+  if (candidate.unit !== undefined && typeof candidate.unit !== "string") return false;
+  if (candidate.description !== undefined && typeof candidate.description !== "string") return false;
+
+  return true;
+}
+
+function hasSerializableSourceShape(source: unknown): source is CalculationSource {
+  if (source === null || typeof source !== "object" || Array.isArray(source)) return false;
+
+  const candidate = source as Record<string, unknown>;
+  return typeof candidate.label === "string" && typeof candidate.url === "string";
+}
+
 function sanitizeNullResultMetadata(metadata: ResultMetadataWithoutStatus): ResultMetadataWithoutStatus {
-  const sources = metadata.sources.filter(isValidCalculationSource);
-  const inputs = metadata.inputs?.filter(isValidCalculationMetadataEntry);
-  const assumptions = metadata.assumptions.filter(isValidCalculationMetadataEntry);
-  const limitations = metadata.limitations.filter((limitation) => limitation.trim().length > 0);
-  const referenceDate = metadata.referenceDate !== undefined && isCanonicalIsoDate(metadata.referenceDate)
+  const rawSources = metadata.sources as readonly unknown[];
+  const rawInputs = metadata.inputs as readonly unknown[] | undefined;
+  const rawAssumptions = metadata.assumptions as readonly unknown[];
+  const rawLimitations = metadata.limitations as readonly unknown[];
+
+  const sources = rawSources.filter(hasSerializableSourceShape);
+  const inputs = rawInputs?.filter(hasSerializableMetadataEntryShape);
+  const assumptions = rawAssumptions.filter(hasSerializableMetadataEntryShape);
+  const limitations = rawLimitations.filter((limitation): limitation is string => typeof limitation === "string");
+  const referenceDate = metadata.referenceDate === undefined || typeof metadata.referenceDate === "string"
     ? metadata.referenceDate
     : undefined;
-  const calculatedAt = metadata.calculatedAt !== undefined && isValidIsoTimestamp(metadata.calculatedAt)
+  const calculatedAt = metadata.calculatedAt === undefined || typeof metadata.calculatedAt === "string"
     ? metadata.calculatedAt
     : undefined;
 
-  const removedInvalidMetadata =
-    sources.length !== metadata.sources.length ||
-    inputs?.length !== metadata.inputs?.length ||
-    assumptions.length !== metadata.assumptions.length ||
-    limitations.length !== metadata.limitations.length ||
+  const removedInvalidShape =
+    sources.length !== rawSources.length ||
+    inputs?.length !== rawInputs?.length ||
+    assumptions.length !== rawAssumptions.length ||
+    limitations.length !== rawLimitations.length ||
     referenceDate !== metadata.referenceDate ||
     calculatedAt !== metadata.calculatedAt;
 
   return {
     sources,
-    ...(referenceDate ? { referenceDate } : {}),
-    ...(calculatedAt ? { calculatedAt } : {}),
+    ...(referenceDate !== undefined ? { referenceDate } : {}),
+    ...(calculatedAt !== undefined ? { calculatedAt } : {}),
     ...(metadata.inputs ? { inputs: inputs ?? [] } : {}),
     assumptions,
-    limitations: removedInvalidMetadata
+    limitations: removedInvalidShape
       ? [...limitations, SANITIZED_METADATA_LIMITATION]
       : limitations,
   };
