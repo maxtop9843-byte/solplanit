@@ -141,6 +141,16 @@ export function calculateVerifiedPayback(input: PaybackInput): CalculationResult
     });
   }
 
+  if (referenceDate === undefined) {
+    return unavailableResult({
+      ...baseMetadata,
+      limitations: [
+        ...baseMetadata.limitations,
+        "실부담액과 연간 절감액의 기준일이 같아야 회수기간을 계산할 수 있습니다.",
+      ],
+    });
+  }
+
   if (annualSavingsWon === 0) {
     return unavailableResult({
       ...baseMetadata,
