@@ -31,6 +31,13 @@ const homeStructuredData = [
 
 const availableCalculators = [
   {
+    eyebrow: "3kW COST / 2026",
+    title: "3kW 태양광 설치비는 얼마일까요?",
+    description: "지역을 고르면 2026년 공식 사업 자료에서 확인한 사업비 기준과 지원 내용을 보여드립니다.",
+    href: "/calculators/solar-3kw-cost",
+    linkLabel: "3kW 설치비 확인하기",
+  },
+  {
     eyebrow: "ROOF CAPACITY",
     title: "지붕에 태양광을 얼마나 설치할 수 있을까요?",
     description: "건물 종류와 지붕 면적으로 설치 가능 용량과 예상 패널 수를 계산합니다.",
@@ -49,7 +56,7 @@ const availableCalculators = [
 const evidence = [
   ["설치 용량", "패널 규격과 통로·점검 공간, 건물 종류별 배치 가능 비율을 반영합니다."],
   ["발전량", "위치를 선택하는 정밀 계산에서는 JRC PVGIS 5.3 데이터를 직접 조회합니다."],
-  ["기준일", "2026-08-08"],
+  ["기준일", "2026-08-12"],
   ["꼭 확인할 것", "지붕 구조와 그늘, 이격거리, 전기·소방 기준은 실제 설치 전에 현장에서 확인해야 합니다."],
 ];
 
@@ -93,7 +100,7 @@ export default function HomePage() {
             <p className="homeEyebrow">AVAILABLE CALCULATORS</p>
             <h2 id="calculators-title">지금 바로 쓸 수 있는<br />태양광 계산기</h2>
             <p className="blockLead">
-              아직 근거 데이터가 준비되지 않은 설치비·보조금·전기요금 계산기는 노출하지 않습니다. 현재 끝까지 계산할 수 있는 도구만 모았습니다.
+              확인된 데이터로 끝까지 계산할 수 있는 도구만 모았습니다. 준비 중인 계산기는 링크로 만들지 않습니다.
             </p>
           </div>
 
