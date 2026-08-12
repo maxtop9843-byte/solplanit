@@ -31,7 +31,7 @@ type ResultView = {
   savings: ResidentialBillSavingsRangeValue;
   pvgisRetrievedAt: string;
   kepcoReferenceDate?: string;
-  kepcoSources: Array<{ label: string; url: string }>;
+  kepcoSources: ReadonlyArray<{ label: string; url: string }>;
 };
 
 const formatWon = (value: number) => `${Math.round(value).toLocaleString("ko-KR")}원`;
