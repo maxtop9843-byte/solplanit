@@ -99,6 +99,8 @@ export default function BillSavingsCalculator() {
   }
 
   const value = result?.value ?? null;
+  const metadata = result?.metadata ?? null;
+  const sources = metadata?.sources ?? [];
 
   return (
     <div className={styles.calculator}>
@@ -154,15 +156,15 @@ export default function BillSavingsCalculator() {
               <p>발전량은 선택한 지역의 중심 좌표와 JRC PVGIS 5.3을 사용합니다. 간단 계산에서는 PVGIS 검증 설정인 시스템 손실 14%, 지평선 반영, PVGIS-SARAH3와 최적 경사·방위 계산을 적용합니다.</p>
               <p>전기요금은 2026년 3분기 한국전력 주택용 저압 표준요금 모델을 사용합니다.</p>
               <p>PVGIS 검증일: {generationReferenceDate ?? "확인된 정보 없음"}</p>
-              <p>한국전력 요금 기준일: {result.metadata.referenceDate ?? "확인된 정보 없음"}</p>
+              <p>한국전력 요금 기준일: {metadata?.referenceDate ?? "확인된 정보 없음"}</p>
               <p>
-                공식 출처: {result.metadata.sources.map((source, index) => (
+                공식 출처: {sources.map((source, index) => (
                   <span key={`${source.label}-${source.url}`}>
                     {index > 0 ? ", " : ""}
                     <a href={source.url} target="_blank" rel="noreferrer">{source.label}</a>
                   </span>
                 ))}
-                {result.metadata.sources.length > 0 ? ", " : ""}
+                {sources.length > 0 ? ", " : ""}
                 <a href="https://re.jrc.ec.europa.eu/pvg_tools/en/" target="_blank" rel="noreferrer">JRC PVGIS 5.3</a>
               </p>
               <Link href="/trust/methodology">SolPlanit 계산 기준 보기</Link>
