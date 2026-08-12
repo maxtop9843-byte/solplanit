@@ -30,6 +30,7 @@ export default function BillSavingsCalculator() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReturnType<typeof calculateResidentialBillSavingsRange> | null>(null);
   const [generationKwh, setGenerationKwh] = useState<number | null>(null);
+  const [generationReferenceDate, setGenerationReferenceDate] = useState<string | null>(null);
 
   async function calculate() {
     const usage = Number(monthlyUsage);
@@ -49,6 +50,7 @@ export default function BillSavingsCalculator() {
     setError(null);
     setResult(null);
     setGenerationKwh(null);
+    setGenerationReferenceDate(null);
 
     try {
       const location = REGIONS[region];
@@ -87,6 +89,7 @@ export default function BillSavingsCalculator() {
       }
 
       setGenerationKwh(monthlyGeneration);
+      setGenerationReferenceDate(generationResult.metadata.referenceDate ?? null);
       setResult(savingsResult);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "계산을 완료하지 못했습니다. 잠시 후 다시 시도해 주세요.");
@@ -96,6 +99,8 @@ export default function BillSavingsCalculator() {
   }
 
   const value = result?.value ?? null;
+  const metadata = result?.metadata ?? null;
+  const sources = metadata?.sources ?? [];
 
   return (
     <div className={styles.calculator}>
@@ -140,16 +145,28 @@ export default function BillSavingsCalculator() {
               <div className={styles.primaryMetric}><dt>예상 월 절감액</dt><dd>{won.format(value.monthlySavingsRangeWon.min)}~{won.format(value.monthlySavingsRangeWon.max)}원</dd></div>
               <div><dt>설치 전 예상 요금</dt><dd>{won.format(value.beforeBillWon)}원</dd></div>
               <div><dt>설치 후 예상 요금</dt><dd>{won.format(value.afterBillRangeWon.min)}~{won.format(value.afterBillRangeWon.max)}원</dd></div>
-              <div><dt>{REGIONS[region].label} 중심 기준 예상 발전량</dt><dd>{number.format(generationKwh ?? 0)}kWh / {month}월</dd></div>
+              <div><dt>{REGIONS[region].label} 중심 기준 예상 발전량</dt><dd>{generationKwh === null ? "확인된 정보 없음" : `${number.format(generationKwh)}kWh / ${month}월`}</dd></div>
             </dl>
             <div className={styles.notice}>
               <strong>왜 범위로 보여주나요?</strong>
               <p>태양광이 발전하는 시간과 집에서 전기를 쓰는 시간이 얼마나 겹치는지에 따라 실제 절감액이 달라집니다. 시간대별 사용량을 모르는 상태에서 자가소비율을 임의로 정하지 않았습니다.</p>
             </div>
             <div className={styles.method}>
-              <h3>계산 기준</h3>
+              <h3>계산 기준과 출처</h3>
               <p>발전량은 선택한 지역의 중심 좌표와 JRC PVGIS 5.3을 사용합니다. 간단 계산에서는 PVGIS 검증 설정인 시스템 손실 14%, 지평선 반영, PVGIS-SARAH3와 최적 경사·방위 계산을 적용합니다.</p>
               <p>전기요금은 2026년 3분기 한국전력 주택용 저압 표준요금 모델을 사용합니다.</p>
+              <p>PVGIS 검증일: {generationReferenceDate ?? "확인된 정보 없음"}</p>
+              <p>한국전력 요금 기준일: {metadata?.referenceDate ?? "확인된 정보 없음"}</p>
+              <p>
+                공식 출처: {sources.map((source, index) => (
+                  <span key={`${source.label}-${source.url}`}>
+                    {index > 0 ? ", " : ""}
+                    <a href={source.url} target="_blank" rel="noreferrer">{source.label}</a>
+                  </span>
+                ))}
+                {sources.length > 0 ? ", " : ""}
+                <a href="https://re.jrc.ec.europa.eu/pvg_tools/en/" target="_blank" rel="noreferrer">JRC PVGIS 5.3</a>
+              </p>
               <Link href="/trust/methodology">SolPlanit 계산 기준 보기</Link>
             </div>
           </>

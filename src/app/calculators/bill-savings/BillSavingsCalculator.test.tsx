@@ -42,7 +42,7 @@ describe("BillSavingsCalculator", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it("connects PVGIS generation to the verified bill-savings range", async () => {
+  it("connects PVGIS generation to the verified bill-savings range and keeps source dates near the result", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue({
       ok: true,
       json: async () => payload,
@@ -57,6 +57,10 @@ describe("BillSavingsCalculator", () => {
     expect(screen.getByText(/305\.2kWh/)).toBeInTheDocument();
     expect(screen.getByText("예상 월 절감액")).toBeInTheDocument();
     expect(screen.getByText(/자가소비율을 임의로 정하지 않았습니다/)).toBeInTheDocument();
+    expect(screen.getByText("PVGIS 검증일: 2026-07-30")).toBeInTheDocument();
+    expect(screen.getByText("한국전력 요금 기준일: 2026-08-12")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "JRC PVGIS 5.3" })).toHaveAttribute("href", "https://re.jrc.ec.europa.eu/pvg_tools/en/");
+    expect(screen.getByRole("link", { name: "한국전력 2026년 3분기 연료비조정단가" })).toHaveAttribute("href", expect.stringContaining("kepco.co.kr"));
   });
 
   it("separates external-data errors from a zero result", async () => {
