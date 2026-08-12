@@ -20,9 +20,9 @@ describe("HomePage", () => {
     expect(container.querySelector(".blockHub")).not.toBeNull();
     expect(container.querySelector(".blockEvidence")).not.toBeNull();
     expect(screen.getByRole("heading", { name: /지금 바로 쓸 수 있는\s*태양광 계산기/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "3kW 설치비 확인하기 →" })).toHaveAttribute("href", "/calculators/solar-3kw-cost");
     expect(screen.getByRole("link", { name: "설치 가능 용량 계산하기 →" })).toHaveAttribute("href", "#quick-estimate");
     expect(screen.getByRole("link", { name: "위치별 발전량 계산하기 →" })).toHaveAttribute("href", "/pro");
-    expect(screen.queryByRole("link", { name: /설치비/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /보조금/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /전기요금/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /회수기간/ })).not.toBeInTheDocument();
