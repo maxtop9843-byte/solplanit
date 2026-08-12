@@ -198,6 +198,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
   if (!hasJsonPreservedOwnProperties(value)) return true;
 
   if (Array.isArray(value)) {
+    if (Object.getPrototypeOf(value) !== Array.prototype) return true;
     for (let index = 0; index < value.length; index += 1) {
       if (!Object.prototype.hasOwnProperty.call(value, index)) return true;
     }
