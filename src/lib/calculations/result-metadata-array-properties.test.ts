@@ -45,6 +45,40 @@ describe("calculation metadata JSON array-property boundary", () => {
     expect(result.metadata.limitations).toContain("결과 메타데이터 일부의 형식이 올바르지 않아 제외했습니다.");
   });
 
+  it("rejects custom source-array prototypes that JSON serialization would not preserve", () => {
+    const sources = [...baseMetadata.sources];
+    Object.setPrototypeOf(sources, Object.create(Array.prototype));
+
+    expect(Array.isArray(sources)).toBe(true);
+    expect(JSON.stringify(sources)).toBe(JSON.stringify(baseMetadata.sources));
+
+    const result = estimatedResult(1_200, {
+      ...baseMetadata,
+      sources,
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("error");
+    expect(result.metadata.sources).toEqual(baseMetadata.sources);
+    expect(result.metadata.limitations).toContain("결과 메타데이터 일부의 형식이 올바르지 않아 제외했습니다.");
+    expect(result.metadata.limitations).toContain("결과의 입력·가정 또는 한계 정보가 올바르지 않습니다.");
+  });
+
+  it("sanitizes custom assumption-array prototypes without fabricating unavailable data", () => {
+    const assumptions = [...baseMetadata.assumptions];
+    Object.setPrototypeOf(assumptions, Object.create(Array.prototype));
+
+    const result = unavailableResult({
+      ...baseMetadata,
+      assumptions,
+    });
+
+    expect(result.value).toBeNull();
+    expect(result.metadata.status).toBe("unavailable");
+    expect(result.metadata.assumptions).toEqual(baseMetadata.assumptions);
+    expect(result.metadata.limitations).toContain("결과 메타데이터 일부의 형식이 올바르지 않아 제외했습니다.");
+  });
+
   it("keeps plain dense metadata arrays unchanged", () => {
     const result = estimatedResult(1_200, {
       ...baseMetadata,
