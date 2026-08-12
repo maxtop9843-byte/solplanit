@@ -44,6 +44,15 @@ export default function BillSavingsPage() {
           <p>월 전기 사용량과 설치 용량을 넣으면 선택한 지역의 예상 발전량을 확인해 설치 전후 전기요금 범위를 비교합니다.</p>
         </section>
         <BillSavingsCalculator />
+        <section className={styles.related} aria-labelledby="bill-savings-related-title">
+          <p className={styles.eyebrow}>RELATED CALCULATORS</p>
+          <h2 id="bill-savings-related-title">다음으로 무엇을 확인할까요?</h2>
+          <p>절감액을 확인했다면 설치비와 지역 지원을 이어서 비교해 보세요.</p>
+          <div className={styles.relatedLinks}>
+            <Link href="/calculators/solar-3kw-cost">3kW 태양광 설치비 확인하기</Link>
+            <Link href="/calculators/subsidy">2026 태양광 지원 확인하기</Link>
+          </div>
+        </section>
       </main>
     </>
   );
