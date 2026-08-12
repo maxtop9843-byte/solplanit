@@ -355,6 +355,30 @@ function resultWithValue<T>(
   };
 }
 
+function resultWithoutValue<T>(
+  status: Extract<CalculationResultStatus, "unavailable" | "error">,
+  metadata: ResultMetadataWithoutStatus,
+): CalculationResult<T> {
+  const sanitized = sanitizeResultMetadata(metadata);
+  const safeMetadata = sanitized.metadata;
+  const invalidProvenance = hasInvalidCalculationProvenance(safeMetadata);
+  const invalidMetadata = sanitized.removedInvalidShape || hasInvalidCalculationMetadata(safeMetadata);
+  const effectiveStatus = invalidProvenance || invalidMetadata ? "error" : status;
+
+  return {
+    value: null,
+    metadata: {
+      ...safeMetadata,
+      status: effectiveStatus,
+      limitations: [
+        ...safeMetadata.limitations,
+        ...(invalidProvenance ? [INVALID_PROVENANCE_LIMITATION] : []),
+        ...(invalidMetadata ? [INVALID_METADATA_LIMITATION] : []),
+      ],
+    },
+  };
+}
+
 export function verifiedResult<T>(value: T, metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
   return resultWithValue(value, "verified", metadata);
 }
@@ -364,15 +388,9 @@ export function estimatedResult<T>(value: T, metadata: ResultMetadataWithoutStat
 }
 
 export function unavailableResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
-  return {
-    value: null,
-    metadata: { ...sanitizeResultMetadata(metadata).metadata, status: "unavailable" },
-  };
+  return resultWithoutValue("unavailable", metadata);
 }
 
 export function errorResult<T>(metadata: ResultMetadataWithoutStatus): CalculationResult<T> {
-  return {
-    value: null,
-    metadata: { ...sanitizeResultMetadata(metadata).metadata, status: "error" },
-  };
+  return resultWithoutValue("error", metadata);
 }
