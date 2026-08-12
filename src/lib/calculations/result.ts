@@ -64,6 +64,15 @@ function hasOnlyAllowedOwnProperties(value: object, allowedKeys: readonly string
   return Object.getOwnPropertyNames(value).every((key) => allowedKeys.includes(key));
 }
 
+function hasOnlyAllowedJsonObjectProperties(value: object, allowedKeys: readonly string[]): boolean {
+  if (Object.getOwnPropertySymbols(value).length > 0) return false;
+
+  return Object.entries(Object.getOwnPropertyDescriptors(value)).every(
+    ([key, descriptor]) =>
+      allowedKeys.includes(key) && descriptor.enumerable === true && "value" in descriptor,
+  );
+}
+
 function hasJsonPreservedOwnProperties(value: object): boolean {
   const descriptors = Object.getOwnPropertyDescriptors(value);
 
@@ -191,7 +200,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
 
 function hasSerializableMetadataEntryShape(entry: unknown): entry is CalculationMetadataEntry {
   if (entry === null || typeof entry !== "object" || Array.isArray(entry)) return false;
-  if (!hasOnlyAllowedOwnProperties(entry, METADATA_ENTRY_KEYS)) return false;
+  if (!hasOnlyAllowedJsonObjectProperties(entry, METADATA_ENTRY_KEYS)) return false;
 
   const candidate = entry as Record<string, unknown>;
   if (typeof candidate.key !== "string") return false;
@@ -204,7 +213,7 @@ function hasSerializableMetadataEntryShape(entry: unknown): entry is Calculation
 
 function hasSerializableSourceShape(source: unknown): source is CalculationSource {
   if (source === null || typeof source !== "object" || Array.isArray(source)) return false;
-  if (!hasOnlyAllowedOwnProperties(source, SOURCE_KEYS)) return false;
+  if (!hasOnlyAllowedJsonObjectProperties(source, SOURCE_KEYS)) return false;
 
   const candidate = source as Record<string, unknown>;
   return typeof candidate.label === "string" && typeof candidate.url === "string";
