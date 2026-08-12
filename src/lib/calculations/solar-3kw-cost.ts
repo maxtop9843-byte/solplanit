@@ -97,6 +97,8 @@ export function calculateSolar3kwCost(regionKey: Solar3kwRegionKey): Solar3kwCos
     selfPayReason = "여러 지원사업의 중복 적용 여부를 확인해야 해 자부담액을 하나의 숫자로 합산하지 않습니다.";
   } else if (supportLines.some((line) => line.qualifier === "about" || line.amountKrw === null)) {
     selfPayReason = "지원액이 범위·비율로만 확인되어 자부담액을 확정하지 않습니다.";
+  } else if (regionKey === "gyeonggi") {
+    selfPayReason = "경기도 도비 40%만 반영한 계산입니다. 시군 추가 지원은 지역별로 달라 포함하지 않았습니다.";
   }
 
   return {
