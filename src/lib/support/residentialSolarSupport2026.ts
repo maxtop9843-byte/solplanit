@@ -65,7 +65,7 @@ const CHECKED_AT = "2026-08-12";
  * Only records confirmed from government or local-government sources belong here.
  * Absence from this array never means that a region has no support program.
  */
-export const RESIDENTIAL_SOLAR_SUPPORT_2026 = [
+export const RESIDENTIAL_SOLAR_SUPPORT_2026: readonly ResidentialSolarSupportRecord[] = [
   {
     id: "2026-seoul-gwanak-residential-solar-3kw",
     year: 2026,
@@ -160,7 +160,7 @@ export const RESIDENTIAL_SOLAR_SUPPORT_2026 = [
       publishedAt: "2026-04-01",
     },
   },
-] as const satisfies readonly ResidentialSolarSupportRecord[];
+];
 
 function coversCapacity(record: ResidentialSolarSupportRecord, capacityKw: number) {
   return capacityKw >= record.capacity.minKw && capacityKw <= record.capacity.maxKw;
