@@ -313,9 +313,10 @@
 
 .calculatorHubCard h3 {
   margin: 0;
-  font-size: var(--text-title);
-  line-height: var(--lh-title);
-  font-weight: var(--fw-title);
+  font-size: var(--text-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  font-weight: var(--fw-heading);
 }
 
 .calculatorHubCard > p:not(.homeEyebrow) {
