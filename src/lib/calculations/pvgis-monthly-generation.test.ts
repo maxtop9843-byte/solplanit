@@ -13,6 +13,8 @@ const proxyResult = (monthlyValue: unknown = 342.1): PvgisProxyResult => ({
     longitude: 126.978,
     peakPowerKw: 3,
     systemLossPercent: 14,
+    tiltDegrees: 30,
+    azimuthDegrees: 0,
     mountingPosition: "building",
     moduleTechnology: "crystSi",
     useHorizon: true,
