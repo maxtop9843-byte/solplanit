@@ -59,11 +59,6 @@ const INVALID_VALUE_LIMITATION = "결과에 계산할 수 없는 숫자가 포�
 const INVALID_VALUE_SHAPE_LIMITATION = "결과 값의 형식이 올바르지 않습니다.";
 const SANITIZED_METADATA_LIMITATION = "결과 메타데이터 일부의 형식이 올바르지 않아 제외했습니다.";
 
-function hasOnlyAllowedOwnProperties(value: object, allowedKeys: readonly string[]): boolean {
-  if (Object.getOwnPropertySymbols(value).length > 0) return false;
-  return Object.getOwnPropertyNames(value).every((key) => allowedKeys.includes(key));
-}
-
 function hasPlainJsonObjectPrototype(value: object): boolean {
   const prototype = Object.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
@@ -284,7 +279,7 @@ function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
       !Object.prototype.hasOwnProperty.call(candidate, "sources") ||
       !Object.prototype.hasOwnProperty.call(candidate, "assumptions") ||
       !Object.prototype.hasOwnProperty.call(candidate, "limitations") ||
-      !hasOnlyAllowedOwnProperties(candidate, RESULT_METADATA_KEYS) ||
+      !hasOnlyAllowedJsonObjectProperties(candidate, RESULT_METADATA_KEYS) ||
       !Array.isArray(candidate.sources) ||
       (hasInputs && !Array.isArray(candidate.inputs)) ||
       !Array.isArray(candidate.assumptions) ||
