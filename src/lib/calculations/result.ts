@@ -216,6 +216,7 @@ export function hasInvalidCalculationResultValue(value: unknown, stack = new Wea
 
 function hasSerializableMetadataEntryShape(entry: unknown): entry is CalculationMetadataEntry {
   if (entry === null || typeof entry !== "object" || Array.isArray(entry)) return false;
+  if (!hasPlainJsonObjectPrototype(entry)) return false;
   if (!hasOnlyAllowedJsonObjectProperties(entry, METADATA_ENTRY_KEYS)) return false;
 
   const candidate = entry as Record<string, unknown>;
@@ -229,6 +230,7 @@ function hasSerializableMetadataEntryShape(entry: unknown): entry is Calculation
 
 function hasSerializableSourceShape(source: unknown): source is CalculationSource {
   if (source === null || typeof source !== "object" || Array.isArray(source)) return false;
+  if (!hasPlainJsonObjectPrototype(source)) return false;
   if (!hasOnlyAllowedJsonObjectProperties(source, SOURCE_KEYS)) return false;
 
   const candidate = source as Record<string, unknown>;
