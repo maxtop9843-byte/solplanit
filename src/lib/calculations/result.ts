@@ -64,6 +64,11 @@ function hasOnlyAllowedOwnProperties(value: object, allowedKeys: readonly string
   return Object.getOwnPropertyNames(value).every((key) => allowedKeys.includes(key));
 }
 
+function hasPlainJsonObjectPrototype(value: object): boolean {
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
 function hasOnlyAllowedJsonObjectProperties(value: object, allowedKeys: readonly string[]): boolean {
   if (Object.getOwnPropertySymbols(value).length > 0) return false;
 
@@ -266,6 +271,10 @@ function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
 
     const removedInvalidShape =
       candidate !== metadata ||
+      !hasPlainJsonObjectPrototype(candidate) ||
+      !Object.prototype.hasOwnProperty.call(candidate, "sources") ||
+      !Object.prototype.hasOwnProperty.call(candidate, "assumptions") ||
+      !Object.prototype.hasOwnProperty.call(candidate, "limitations") ||
       !hasOnlyAllowedOwnProperties(candidate, RESULT_METADATA_KEYS) ||
       !Array.isArray(candidate.sources) ||
       (hasInputs && !Array.isArray(candidate.inputs)) ||
