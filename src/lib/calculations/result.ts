@@ -251,6 +251,11 @@ function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
     const candidate = metadata !== null && typeof metadata === "object" && !Array.isArray(metadata)
       ? metadata as Record<string, unknown>
       : {};
+
+    if (candidate === metadata && !hasPlainJsonObjectPrototype(candidate)) {
+      return invalidShapeMetadata();
+    }
+
     const hasInputs = Object.prototype.hasOwnProperty.call(candidate, "inputs");
 
     const rawSources = Array.isArray(candidate.sources) ? candidate.sources : [];
