@@ -45,6 +45,13 @@ const availableCalculators = [
     linkLabel: "2026 지원 확인하기",
   },
   {
+    eyebrow: "BILL SAVINGS / PVGIS",
+    title: "태양광을 설치하면 전기요금이 얼마나 줄까요?",
+    description: "월 전기 사용량과 설치 용량을 넣으면 지역별 PVGIS 발전량과 한전 요금 기준으로 예상 절감 범위를 비교합니다.",
+    href: "/calculators/bill-savings",
+    linkLabel: "전기요금 절감액 계산하기",
+  },
+  {
     eyebrow: "ROOF CAPACITY",
     title: "지붕에 태양광을 얼마나 설치할 수 있을까요?",
     description: "건물 종류와 지붕 면적으로 설치 가능 용량과 예상 패널 수를 계산합니다.",
