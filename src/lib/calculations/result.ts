@@ -91,6 +91,17 @@ function hasJsonPreservedOwnProperties(value: object): boolean {
   );
 }
 
+function hasDenseJsonArrayShape(value: readonly unknown[]): boolean {
+  if (!hasJsonPreservedOwnProperties(value)) return false;
+  if (Object.getOwnPropertyNames(value).length !== value.length + 1) return false;
+
+  for (let index = 0; index < value.length; index += 1) {
+    if (!Object.prototype.hasOwnProperty.call(value, index)) return false;
+  }
+
+  return true;
+}
+
 export function isValidCalculationSource(source: CalculationSource): boolean {
   if (source.label.trim().length === 0) return false;
 
@@ -260,6 +271,10 @@ function sanitizeResultMetadata(metadata: unknown): SanitizedMetadata {
       (hasInputs && !Array.isArray(candidate.inputs)) ||
       !Array.isArray(candidate.assumptions) ||
       !Array.isArray(candidate.limitations) ||
+      !hasDenseJsonArrayShape(rawSources) ||
+      (rawInputs !== undefined && !hasDenseJsonArrayShape(rawInputs)) ||
+      !hasDenseJsonArrayShape(rawAssumptions) ||
+      !hasDenseJsonArrayShape(rawLimitations) ||
       sources.length !== rawSources.length ||
       inputs?.length !== rawInputs?.length ||
       assumptions.length !== rawAssumptions.length ||
