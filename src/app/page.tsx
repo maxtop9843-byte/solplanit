@@ -29,6 +29,23 @@ const homeStructuredData = [
   }),
 ];
 
+const availableCalculators = [
+  {
+    eyebrow: "ROOF CAPACITY",
+    title: "지붕에 태양광을 얼마나 설치할 수 있을까요?",
+    description: "건물 종류와 지붕 면적으로 설치 가능 용량과 예상 패널 수를 계산합니다.",
+    href: "#quick-estimate",
+    linkLabel: "설치 가능 용량 계산하기",
+  },
+  {
+    eyebrow: "PVGIS GENERATION",
+    title: "이 위치에서는 태양광이 얼마나 발전할까요?",
+    description: "지도에서 위치를 고르고 설치 용량을 넣어 JRC PVGIS 5.3 기반 발전량을 확인합니다.",
+    href: "/pro",
+    linkLabel: "위치별 발전량 계산하기",
+  },
+];
+
 const evidence = [
   ["설치 용량", "패널 규격과 통로·점검 공간, 건물 종류별 배치 가능 비율을 반영합니다."],
   ["발전량", "위치를 선택하는 정밀 계산에서는 JRC PVGIS 5.3 데이터를 직접 조회합니다."],
@@ -44,6 +61,7 @@ export default function HomePage() {
         <Link className="brand" href="/">SolPlanit</Link>
         <nav className="desktopNav" aria-label="주요 메뉴">
           <Link href="#quick-estimate">설치 용량</Link>
+          <Link href="#calculators">계산기</Link>
           <Link href="/pro">발전량</Link>
           <Link href="/guides">가이드</Link>
           <Link href="/trust/methodology">계산 기준</Link>
@@ -67,6 +85,27 @@ export default function HomePage() {
               <span>간단 계산</span>
             </div>
             <SolarCalculator />
+          </div>
+        </section>
+
+        <section className="block blockHub" id="calculators" aria-labelledby="calculators-title">
+          <div className="hubIntro">
+            <p className="homeEyebrow">AVAILABLE CALCULATORS</p>
+            <h2 id="calculators-title">지금 바로 쓸 수 있는<br />태양광 계산기</h2>
+            <p className="blockLead">
+              아직 근거 데이터가 준비되지 않은 설치비·보조금·전기요금 계산기는 노출하지 않습니다. 현재 끝까지 계산할 수 있는 도구만 모았습니다.
+            </p>
+          </div>
+
+          <div className="calculatorHubList">
+            {availableCalculators.map((calculator) => (
+              <article className="calculatorHubCard" key={calculator.href}>
+                <p className="homeEyebrow">{calculator.eyebrow}</p>
+                <h3>{calculator.title}</h3>
+                <p>{calculator.description}</p>
+                <Link href={calculator.href}>{calculator.linkLabel} →</Link>
+              </article>
+            ))}
           </div>
         </section>
 
