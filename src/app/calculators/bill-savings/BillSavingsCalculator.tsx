@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
+import { createPvgisMonthlyGenerationResult } from "../../../lib/calculations/pvgis-monthly-generation";
 import { calculateResidentialBillSavingsRange } from "../../../lib/calculations/residential-bill-savings-range";
+import type { PvgisProxyResult } from "../../../lib/pvgis";
 import styles from "./bill-savings.module.css";
 
 type RegionKey = "seoul" | "busan" | "daejeon" | "daegu" | "gwangju";
@@ -15,36 +17,14 @@ const REGIONS: Record<RegionKey, Region> = {
   daegu: { label: "대구", latitude: 35.8714, longitude: 128.6014 },
   gwangju: { label: "광주", latitude: 35.1595, longitude: 126.8526 },
 };
-
 const MONTHS = [7, 8, 9] as const;
 const won = new Intl.NumberFormat("ko-KR");
 const number = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
 
-function readMonthlyGeneration(payload: unknown, month: number): number | null {
-  if (!payload || typeof payload !== "object") return null;
-  const proxy = payload as Record<string, unknown>;
-  const data = proxy.data;
-  if (!data || typeof data !== "object") return null;
-  const outputs = (data as Record<string, unknown>).outputs;
-  if (!outputs || typeof outputs !== "object") return null;
-  const monthly = (outputs as Record<string, unknown>).monthly;
-  if (!monthly || typeof monthly !== "object") return null;
-  const fixed = (monthly as Record<string, unknown>).fixed;
-  if (!Array.isArray(fixed)) return null;
-
-  const row = fixed.find((item) => {
-    if (!item || typeof item !== "object") return false;
-    return (item as Record<string, unknown>).month === month;
-  });
-  if (!row || typeof row !== "object") return null;
-  const value = (row as Record<string, unknown>).E_m;
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
-}
-
 export default function BillSavingsCalculator() {
   const [region, setRegion] = useState<RegionKey>("seoul");
-  const [monthlyUsage, setMonthlyUsage] = useState("400");
-  const [capacityKw, setCapacityKw] = useState("3");
+  const [monthlyUsage, setMonthlyUsage] = useState("");
+  const [capacityKw, setCapacityKw] = useState("");
   const [month, setMonth] = useState<(typeof MONTHS)[number]>(8);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,13 +34,13 @@ export default function BillSavingsCalculator() {
   async function calculate() {
     const usage = Number(monthlyUsage);
     const capacity = Number(capacityKw);
-    if (!Number.isFinite(usage) || usage < 0) {
-      setError("월 전기 사용량은 0kWh 이상의 숫자로 입력해 주세요.");
+    if (monthlyUsage.trim() === "" || !Number.isFinite(usage) || usage < 0) {
+      setError("월 전기 사용량을 0kWh 이상의 숫자로 입력해 주세요.");
       setResult(null);
       return;
     }
-    if (!Number.isFinite(capacity) || capacity <= 0 || capacity > 100) {
-      setError("설치 용량은 0보다 크고 100kW 이하로 입력해 주세요.");
+    if (capacityKw.trim() === "" || !Number.isFinite(capacity) || capacity <= 0 || capacity > 100) {
+      setError("설치 용량을 0보다 크고 100kW 이하로 입력해 주세요.");
       setResult(null);
       return;
     }
@@ -92,15 +72,22 @@ export default function BillSavingsCalculator() {
         throw new Error(typeof message === "string" ? message : "발전량을 불러오지 못했습니다.");
       }
 
-      const monthlyGeneration = readMonthlyGeneration(payload, month);
-      if (monthlyGeneration === null) throw new Error("PVGIS 응답에서 선택한 달의 발전량을 확인하지 못했습니다.");
-
-      setGenerationKwh(monthlyGeneration);
-      setResult(calculateResidentialBillSavingsRange({
+      const generationResult = createPvgisMonthlyGenerationResult(payload as PvgisProxyResult, month);
+      if (!generationResult.value) {
+        throw new Error(generationResult.metadata.limitations.at(-1) ?? "선택한 달의 발전량을 확인하지 못했습니다.");
+      }
+      const monthlyGeneration = generationResult.value.generationKwh;
+      const savingsResult = calculateResidentialBillSavingsRange({
         monthlyUsageKwh: usage,
         monthlySolarGenerationKwh: monthlyGeneration,
         month,
-      }));
+      });
+      if (!savingsResult.value) {
+        throw new Error(savingsResult.metadata.limitations.at(-1) ?? "전기요금 절감액을 계산하지 못했습니다.");
+      }
+
+      setGenerationKwh(monthlyGeneration);
+      setResult(savingsResult);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "계산을 완료하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     } finally {
@@ -128,8 +115,9 @@ export default function BillSavingsCalculator() {
         </div>
         <div className={styles.fieldGroup}>
           <label htmlFor="bill-capacity">설치 용량</label>
-          <span id="bill-capacity-help">아직 정하지 않았다면 가정용에서 많이 검토하는 3kW로 먼저 비교해 볼 수 있어요.</span>
+          <span id="bill-capacity-help">용량을 모르면 먼저 설치 가능 용량을 계산해 보세요.</span>
           <div className={styles.inputWithUnit}><input id="bill-capacity" aria-describedby="bill-capacity-help" inputMode="decimal" value={capacityKw} onChange={(event) => setCapacityKw(event.target.value)} /><span>kW</span></div>
+          <Link className={styles.helperLink} href="/#quick-estimate">설치 가능 용량 계산하기</Link>
         </div>
         <div className={styles.fieldGroup}>
           <label htmlFor="bill-month">비교할 달</label>
@@ -160,7 +148,7 @@ export default function BillSavingsCalculator() {
             </div>
             <div className={styles.method}>
               <h3>계산 기준</h3>
-              <p>발전량은 선택한 지역의 중심 좌표와 JRC PVGIS 5.3을 사용합니다. PVGIS 계산에는 기존 검증 설정인 시스템 손실 14%, 지평선 반영, PVGIS-SARAH3를 적용합니다.</p>
+              <p>발전량은 선택한 지역의 중심 좌표와 JRC PVGIS 5.3을 사용합니다. 간단 계산에서는 PVGIS 검증 설정인 시스템 손실 14%, 지평선 반영, PVGIS-SARAH3와 최적 경사·방위 계산을 적용합니다.</p>
               <p>전기요금은 2026년 3분기 한국전력 주택용 저압 표준요금 모델을 사용합니다.</p>
               <Link href="/trust/methodology">SolPlanit 계산 기준 보기</Link>
             </div>
