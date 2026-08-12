@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { PvgisProxyResult } from "@/lib/pvgis";
-import { createPvgisMonthlyGenerationResult } from "@/lib/calculations/pvgis-monthly-generation";
+import type { PvgisProxyResult } from "../../../lib/pvgis";
+import { createPvgisMonthlyGenerationResult } from "../../../lib/calculations/pvgis-monthly-generation";
 import {
   calculateResidentialBillSavingsRange,
   type ResidentialBillSavingsRangeValue,
-} from "@/lib/calculations/residential-bill-savings-range";
+} from "../../../lib/calculations/residential-bill-savings-range";
 import styles from "./bill-savings.module.css";
 
 const REGIONS = [
