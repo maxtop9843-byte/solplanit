@@ -22,6 +22,8 @@ const REGIONS = [
 
 const MONTHS = [7, 8, 9] as const;
 const SYSTEM_LOSS_PERCENT = 14;
+const REPRESENTATIVE_TILT_DEGREES = 30;
+const REPRESENTATIVE_AZIMUTH_DEGREES = 0;
 
 type ResultView = {
   regionLabel: string;
@@ -92,6 +94,8 @@ export default function BillSavingsCalculator() {
           longitude: region.longitude,
           peakPowerKw,
           systemLossPercent: SYSTEM_LOSS_PERCENT,
+          tiltDegrees: REPRESENTATIVE_TILT_DEGREES,
+          azimuthDegrees: REPRESENTATIVE_AZIMUTH_DEGREES,
           mountingPosition: "building",
           moduleTechnology: "crystSi",
           useHorizon: true,
@@ -220,7 +224,7 @@ export default function BillSavingsCalculator() {
             </div>
             <details className={styles.details}>
               <summary>계산 기준 보기</summary>
-              <p>지역 중심 좌표, 결정질 실리콘 모듈, 건물 부착형, PVGIS 최적 경사·방위, 시스템 손실 14%, 지평선 음영 반영, PVGIS-SARAH3 조건으로 발전량을 조회합니다. 14% 손실률은 저장소의 PVGIS 5.3 검증 대표 조건과 같습니다.</p>
+              <p>지역 중심 좌표, 결정질 실리콘 모듈, 건물 부착형, 남향 0°, 경사 30°, 시스템 손실 14%, 지평선 음영 반영, PVGIS-SARAH3 조건으로 발전량을 조회합니다. 저장소에서 PVGIS 5.3 입력 매핑을 검증한 대표 조건을 사용합니다.</p>
             </details>
           </div>
         )}
