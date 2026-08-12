@@ -38,6 +38,13 @@ const availableCalculators = [
     linkLabel: "3kW 설치비 확인하기",
   },
   {
+    eyebrow: "SOLAR SUPPORT / 2026",
+    title: "우리 지역 태양광 지원은 얼마일까요?",
+    description: "2026년 정부·지자체 공식 자료에서 확인한 지원 내용과 신청 조건, 기간을 지역별로 확인합니다.",
+    href: "/calculators/subsidy",
+    linkLabel: "2026 지원 확인하기",
+  },
+  {
     eyebrow: "ROOF CAPACITY",
     title: "지붕에 태양광을 얼마나 설치할 수 있을까요?",
     description: "건물 종류와 지붕 면적으로 설치 가능 용량과 예상 패널 수를 계산합니다.",
