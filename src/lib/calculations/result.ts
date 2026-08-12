@@ -97,6 +97,7 @@ function hasJsonPreservedOwnProperties(value: object): boolean {
 }
 
 function hasDenseJsonArrayShape(value: readonly unknown[]): boolean {
+  if (Object.getPrototypeOf(value) !== Array.prototype) return false;
   if (!hasJsonPreservedOwnProperties(value)) return false;
   if (Object.getOwnPropertyNames(value).length !== value.length + 1) return false;
 
