@@ -187,7 +187,7 @@ export function hasInvalidNumericResultValue(value: unknown, stack = new WeakSet
 
 export function hasInvalidCalculationResultValue(value: unknown, stack = new WeakSet<object>()): boolean {
   if (value === null || typeof value === "string" || typeof value === "boolean") return false;
-  if (typeof value === "number") return !Number.isFinite(value);
+  if (typeof value === "number") return !Number.isFinite(value) || Object.is(value, -0);
   if (typeof value !== "object") return true;
   if (stack.has(value)) return true;
   if (!hasJsonPreservedOwnProperties(value)) return true;
