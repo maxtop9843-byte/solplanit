@@ -62,13 +62,14 @@ UI/UX 작업은 `.agents/skills/ui-ux-pro-max/SKILL.md`를 반드시 읽고 시�
   - 현재 시각 언어에서 좋은 부분은 유지하되 정보구조가 요구하면 레이아웃은 변경할 수 있다.
   - Preview에서 데스크톱과 375px 모바일 대표 흐름을 실제 확인한다.
 
-- [OPEN] **ENGINE-001** 계산 엔진 경계와 결과 메타데이터를 Search-first V3 계약으로 정리
+- [DONE] **ENGINE-001** 계산 엔진 경계와 결과 메타데이터를 Search-first V3 계약으로 정리
   - `docs/CALCULATION_SPEC.md`에 맞춰 주택용 설치 가능 용량, 위치 기반 발전량, 설치비·보조금, 전기요금 절감, 회수기간, 발전사업자 수익을 분리한다.
   - 새 주택용 페이지가 `평균 일 발전시간` 기반 legacy 발전량 공식에 의존하지 않게 한다.
   - SMP·REC 로직은 발전사업자 영역으로 격리한다.
   - 공통 결과 상태 `verified / estimated / unavailable / error`와 출처·기준일·가정 메타데이터 구조를 마련한다.
   - 외부 데이터 로딩, 데이터 없음, 오류를 같은 `0` 값으로 합치지 않는다.
   - 기존 동작을 제거하거나 계산값이 바뀌면 테스트와 문서를 같은 PR에서 갱신한다.
+  - 완료 확인: 공통 결과 계약은 `src/lib/calculations/result.ts`, 위치 기반 발전량은 `generation.ts`, 주택용 절감은 `bill-savings.ts`, 발전사업자 SMP·REC는 `business-revenue.ts`로 분리되어 있고 경계·직렬화·상태 회귀 테스트가 전체 계산 테스트에 포함되어 있다.
 
 - [OPEN] **HOME-002** 홈을 검색형 계산기 허브로 확장
   - `REBUILD-001` 완료 후 진행한다.
