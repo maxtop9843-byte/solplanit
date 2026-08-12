@@ -148,7 +148,7 @@ function isValidMetadataText(value: string | undefined): boolean {
 
 export function isValidCalculationMetadataEntry(entry: CalculationMetadataEntry): boolean {
   if (entry.key.trim().length === 0) return false;
-  if (typeof entry.value === "number" && !Number.isFinite(entry.value)) return false;
+  if (typeof entry.value === "number" && (!Number.isFinite(entry.value) || Object.is(entry.value, -0))) return false;
   if (typeof entry.value === "string" && entry.value.trim().length === 0) return false;
   if (!isValidMetadataText(entry.unit) || !isValidMetadataText(entry.description)) return false;
 
