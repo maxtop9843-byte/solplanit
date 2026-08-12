@@ -287,6 +287,56 @@
 .toolDetails ul { margin: 0; padding-left: var(--space-4); color: var(--ink-muted); font-size: var(--text-caption); line-height: var(--lh-caption); }
 .toolDetails a { text-decoration: underline; text-underline-offset: 3px; }
 
+.blockHub {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  align-items: start;
+  gap: var(--space-16);
+}
+
+.hubIntro { padding-top: var(--space-2); }
+
+.calculatorHubList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: var(--border-hairline);
+}
+
+.calculatorHubCard {
+  min-width: 0;
+  padding: var(--space-8);
+  border-right: var(--border-hairline);
+  border-bottom: var(--border-hairline);
+}
+
+.calculatorHubCard:nth-child(2n) { border-right: 0; }
+
+.calculatorHubCard h3 {
+  margin: 0;
+  font-size: var(--text-title);
+  line-height: var(--lh-title);
+  font-weight: var(--fw-title);
+}
+
+.calculatorHubCard > p:not(.homeEyebrow) {
+  margin: var(--space-4) 0 0;
+  color: var(--ink-muted);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+}
+
+.calculatorHubCard a {
+  min-height: 48px;
+  margin-top: var(--space-6);
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink);
+  font-size: var(--text-body);
+  text-underline-offset: 3px;
+}
+
+.calculatorHubCard a:hover { text-decoration: underline; }
+
 .blockEvidence {
   display: grid;
   grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
@@ -310,21 +360,25 @@
 
 @media (max-width: 1023px) {
   .blockTool,
+  .blockHub,
   .blockEvidence { grid-template-columns: 1fr; gap: var(--space-12); }
   .toolIntro { padding-top: 0; }
   .calculatorStage { width: min(100%, 720px); }
-  .blockEvidence .blockLead { max-width: 640px; }
+  .blockEvidence .blockLead,
+  .blockHub .blockLead { max-width: 640px; }
 }
 
 @media (max-width: 767px) {
   .block { width: min(100% - var(--space-8), var(--width-content)); }
-  .blockTool, .blockEvidence { gap: var(--space-8); }
+  .blockTool, .blockHub, .blockEvidence { gap: var(--space-8); }
   .calculatorStageHeader { padding: 0 var(--space-6); }
   .toolCard { padding: var(--space-6); }
   .toolResult { padding: 0 var(--space-6) var(--space-6); }
   .resultFill { padding: var(--space-6); }
   .resultNextStep { grid-template-columns: 1fr; gap: var(--space-2); }
   .resultNextStep a { white-space: normal; }
+  .calculatorHubList { grid-template-columns: 1fr; }
+  .calculatorHubCard { padding: var(--space-6) 0; border-right: 0; }
   .evidenceRows > div { grid-template-columns: 1fr; gap: var(--space-1); }
 }
 
