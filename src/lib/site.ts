@@ -11,6 +11,7 @@ export const SITE_DESCRIPTION =
 export const CALCULATOR_ROUTES = [
   "/calculators/solar-3kw-cost",
   "/calculators/subsidy",
+  "/calculators/bill-savings",
 ] as const;
 
 export const SEARCH_INTENT_ROUTES = [
