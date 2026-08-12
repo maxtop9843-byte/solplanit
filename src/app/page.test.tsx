@@ -24,7 +24,7 @@ describe("HomePage", () => {
     expect(screen.getByRole("link", { name: "2026 지원 확인하기 →" })).toHaveAttribute("href", "/calculators/subsidy");
     expect(screen.getByRole("link", { name: "전기요금 절감액 계산하기 →" })).toHaveAttribute("href", "/calculators/bill-savings");
     expect(screen.getByRole("link", { name: "설치 가능 용량 계산하기 →" })).toHaveAttribute("href", "#quick-estimate");
-    expect(screen.getByRole("link", { name: "위치별 발전량 계산하기 →" })).toHaveAttribute("href", "/pro");
+    expect(screen.getByRole("link", { name: "지역별 발전량 계산하기 →" })).toHaveAttribute("href", "/calculators/generation");
     expect(screen.queryByRole("link", { name: /회수기간/ })).not.toBeInTheDocument();
   });
 

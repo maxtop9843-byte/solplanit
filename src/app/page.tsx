@@ -60,10 +60,10 @@ const availableCalculators = [
   },
   {
     eyebrow: "PVGIS GENERATION",
-    title: "이 위치에서는 태양광이 얼마나 발전할까요?",
-    description: "지도에서 위치를 고르고 설치 용량을 넣어 JRC PVGIS 5.3 기반 발전량을 확인합니다.",
-    href: "/pro",
-    linkLabel: "위치별 발전량 계산하기",
+    title: "우리 지역에서는 태양광이 얼마나 발전할까요?",
+    description: "지역과 설치 용량을 넣으면 JRC PVGIS 5.3 기반 월별·연간 예상 발전량을 확인합니다.",
+    href: "/calculators/generation",
+    linkLabel: "지역별 발전량 계산하기",
   },
 ];
 
