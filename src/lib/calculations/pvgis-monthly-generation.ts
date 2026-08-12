@@ -23,8 +23,14 @@ function asObject(value: unknown): JsonObject | null {
 }
 
 function withoutStatus(metadata: CalculationResultMetadata): ResultMetadataWithoutStatus {
-  const { status: _status, ...rest } = metadata;
-  return rest;
+  return {
+    sources: metadata.sources,
+    ...(metadata.referenceDate !== undefined ? { referenceDate: metadata.referenceDate } : {}),
+    ...(metadata.calculatedAt !== undefined ? { calculatedAt: metadata.calculatedAt } : {}),
+    ...(metadata.inputs !== undefined ? { inputs: metadata.inputs } : {}),
+    assumptions: metadata.assumptions,
+    limitations: metadata.limitations,
+  };
 }
 
 export function createPvgisMonthlyGenerationResult(
