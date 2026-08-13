@@ -6,24 +6,24 @@ import { buildBreadcrumbNode, buildCalculatorNode, buildFaqNode, buildWebPageNod
 import ProWorkspace from "./ProWorkspace";
 import "./pro.css";
 
-const description = "지도, 시스템 입력, 결과 요약을 한 화면에서 다루는 SolPlanit 전문가용 태양광 프로젝트 워크스페이스입니다.";
+const description = "지도에서 위치를 고르고 설치 용량을 넣어 PVGIS 5.3 기반 월별·연간 태양광 발전량을 자세히 계산합니다.";
 
 export const metadata: Metadata = {
-  title: "전문가용 발전량 분석",
+  title: "정밀 태양광 발전량 계산기",
   description,
   alternates: { canonical: "/pro", languages: { ko: "/pro", "x-default": "/pro" } },
 };
 
 const structuredData = [
-  buildWebPageNode("/pro", "전문가용 발전량 분석 | SolPlanit", description),
-  buildBreadcrumbNode("/pro", [{ label: "홈", href: "/" }, { label: "전문가용 발전량 분석" }]),
+  buildWebPageNode("/pro", "정밀 태양광 발전량 계산기 | SolPlanit", description),
+  buildBreadcrumbNode("/pro", [{ label: "홈", href: "/" }, { label: "정밀 발전량 계산기" }]),
   buildFaqNode("/pro", proSeoGuide.faqs),
   buildCalculatorNode({
     path: "/pro",
-    name: "SolPlanit PVGIS 전문가 발전량 분석",
+    name: "SolPlanit 정밀 태양광 발전량 계산기",
     description,
-    features: ["좌표 기반 분석", "경사·방위 입력", "시스템 손실", "월별·연간 발전량", "PVGIS 출처와 가정", "CSV·JSON·차트·PDF 다운로드"],
-    assumptions: ["PVGIS 5.3 기후 데이터와 사용자가 입력한 시스템 조건을 사용", "현장 음영, 오염, 가동 중단, 장비 편차와 장기 열화는 별도 검토가 필요"],
+    features: ["지도에서 위치 선택", "설치 용량 입력", "경사·방위 상세 조건", "월별·연간 발전량", "PVGIS 출처와 조회 시점", "CSV·JSON·차트·PDF 다운로드"],
+    assumptions: ["PVGIS 5.3 기후 데이터와 입력한 설치 조건을 사용", "현장 음영, 오염, 가동 중단, 장비 편차와 장기 열화에 따라 실제 발전량은 달라질 수 있음"],
   }),
 ];
 
