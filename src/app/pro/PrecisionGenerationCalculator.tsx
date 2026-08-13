@@ -11,6 +11,13 @@ const DEFAULT_LNG = 126.978;
 const numberFormat = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 });
 
 type MonthlyGeneration = { month: number; generationKwh: number };
+type AppliedConditions = {
+  capacityKw: number;
+  lossPercent: number;
+  tiltDegrees: number | null;
+  azimuthDegrees: number | null;
+  radiationDatabase: string;
+};
 type Result = {
   annualProductionKwh: number;
   monthlyGeneration: MonthlyGeneration[];
@@ -18,6 +25,7 @@ type Result = {
   version: string;
   verifiedAt: string;
   retrievedAt: string;
+  conditions: AppliedConditions;
 };
 
 function record(value: unknown): Record<string, unknown> {
@@ -34,6 +42,7 @@ export function parsePrecisionGenerationResult(payload: unknown): Result {
     if (!monthly.value) throw new Error(monthly.metadata.limitations.at(-1) ?? `PVGIS 응답에서 ${month}월 발전량을 확인하지 못했습니다.`);
     return monthly.value;
   });
+  const request = proxyResult.request;
   return {
     annualProductionKwh: annual.value.annualGenerationKwh,
     monthlyGeneration,
@@ -41,6 +50,13 @@ export function parsePrecisionGenerationResult(payload: unknown): Result {
     version: typeof root.version === "string" ? root.version : "5.3",
     verifiedAt: typeof root.verifiedAt === "string" ? root.verifiedAt : "확인된 정보 없음",
     retrievedAt: typeof root.retrievedAt === "string" ? root.retrievedAt : new Date().toISOString(),
+    conditions: {
+      capacityKw: request.peakPowerKw,
+      lossPercent: request.systemLossPercent,
+      tiltDegrees: request.tiltDegrees ?? null,
+      azimuthDegrees: request.azimuthDegrees ?? null,
+      radiationDatabase: request.radiationDatabase ?? "PVGIS-SARAH3",
+    },
   };
 }
 
@@ -149,7 +165,7 @@ export default function PrecisionGenerationCalculator() {
           <input id="precision-capacity" className="precisionInput" type="number" min="0.1" max="100000" step="0.1" value={capacity} onChange={(event) => setCapacity(event.target.value)} aria-invalid={Boolean(validation)} />
           <details className="precisionDetails" open={showDetails} onToggle={(event) => setShowDetails(event.currentTarget.open)}>
             <summary>상세 조건</summary>
-            <p>경사·방위·예상 손실 값을 알고 있을 때만 조정하세요. 열지 않으면 PVGIS 계산에 필요한 기본 조건을 사용합니다.</p>
+            <p>경사·방위·예상 손실 값을 알고 있을 때만 조정하세요. 열지 않으면 경사와 방위는 PVGIS가 위치에 맞춰 계산하고 예상 손실은 14%를 적용합니다.</p>
             <div className="precisionDetailGrid">
               <label>경사 <span>°</span><input type="number" min="0" max="90" value={tilt} onChange={(event) => setTilt(event.target.value)} /></label>
               <label>방위 <span>°</span><input type="number" min="-180" max="180" value={azimuth} onChange={(event) => setAzimuth(event.target.value)} /></label>
@@ -171,6 +187,7 @@ export default function PrecisionGenerationCalculator() {
           <div className="precisionMonthly" aria-label="월별 예상 발전량">
             {result.monthlyGeneration.map((item) => <div key={item.month}><span>{item.month}월</span><strong>{numberFormat.format(item.generationKwh)}kWh</strong></div>)}
           </div>
+          <p>계산 조건: {result.conditions.capacityKw}kW · 예상 손실 {result.conditions.lossPercent}% · {result.conditions.tiltDegrees === null && result.conditions.azimuthDegrees === null ? "경사·방위 PVGIS 자동 계산" : `경사 ${result.conditions.tiltDegrees ?? "자동"}° · 방위 ${result.conditions.azimuthDegrees ?? "자동"}°`} · {result.conditions.radiationDatabase}</p>
           <p>{result.source} {result.version} · 출처 검증일 {result.verifiedAt} · 조회 {new Date(result.retrievedAt).toLocaleString("ko-KR")}</p>
         </div>}
       </section>
