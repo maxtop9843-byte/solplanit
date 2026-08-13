@@ -29,6 +29,18 @@ describe("parsePrecisionGenerationResult", () => {
     expect(result.monthlyGeneration).toHaveLength(12);
     expect(result.monthlyGeneration[0]).toEqual({ month: 1, generationKwh: 300 });
     expect(result.monthlyGeneration[11]).toEqual({ month: 12, generationKwh: 311 });
-    expect(result).toMatchObject({ source: "PVGIS", version: "5.3", verifiedAt: "2026-07-30" });
+    expect(result).toMatchObject({
+      source: "PVGIS",
+      version: "5.3",
+      verifiedAt: "2026-07-30",
+      retrievedAt: "2026-08-13T00:00:00.000Z",
+    });
+  });
+
+  it("does not turn missing verification metadata into a fabricated date", () => {
+    const result = parsePrecisionGenerationResult({ ...payload, verifiedAt: undefined });
+    expect(result.verifiedAt).toBe("확인된 정보 없음");
+    expect(result.source).toBe("PVGIS");
+    expect(result.version).toBe("5.3");
   });
 });
