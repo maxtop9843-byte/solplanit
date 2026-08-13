@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "전문가용 태양광 발전량 분석",
-  description: "PVGIS 5.3 기반으로 위치, 설치 용량, 경사와 방위, 손실 조건을 반영해 월별·연간 태양광 발전량을 분석하세요.",
+  title: "정밀 태양광 발전량 계산기",
+  description: "지도에서 위치를 고르고 설치 용량을 넣어 PVGIS 5.3 기반 월별·연간 태양광 발전량을 자세히 계산합니다.",
   alternates: { canonical: "/pro", languages: { ko: "/pro", "x-default": "/pro" } },
   openGraph: {
-    title: "전문가용 태양광 발전량 분석 | SolPlanit",
-    description: "PVGIS 5.3 기반 태양광 프로젝트 분석 워크스페이스",
+    title: "정밀 태양광 발전량 계산기 | SolPlanit",
+    description: "지도에서 위치를 고르고 설치 조건을 조정해 PVGIS 5.3 기반 발전량을 계산합니다.",
     url: "/pro",
   },
 };
