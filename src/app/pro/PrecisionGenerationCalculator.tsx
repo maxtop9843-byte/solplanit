@@ -66,7 +66,7 @@ export default function PrecisionGenerationCalculator() {
     if (!Number.isFinite(power) || power <= 0 || power > 100000) return "설치 용량은 0보다 크고 100,000kW 이하여야 합니다.";
     if (showDetails && (!Number.isFinite(tiltValue) || tiltValue < 0 || tiltValue > 90)) return "경사는 0°에서 90° 사이로 입력해 주세요.";
     if (showDetails && (!Number.isFinite(azimuthValue) || azimuthValue < -180 || azimuthValue > 180)) return "방위는 -180°에서 180° 사이로 입력해 주세요.";
-    if (showDetails && (!Number.isFinite(lossValue) || lossValue < 0 || lossValue > 100)) return "시스템 손실은 0%에서 100% 사이로 입력해 주세요.";
+    if (showDetails && (!Number.isFinite(lossValue) || lossValue < 0 || lossValue > 100)) return "예상 손실은 0%에서 100% 사이로 입력해 주세요.";
     return null;
   }, [azimuth, capacity, loss, showDetails, tilt]);
 
@@ -149,11 +149,11 @@ export default function PrecisionGenerationCalculator() {
           <input id="precision-capacity" className="precisionInput" type="number" min="0.1" max="100000" step="0.1" value={capacity} onChange={(event) => setCapacity(event.target.value)} aria-invalid={Boolean(validation)} />
           <details className="precisionDetails" open={showDetails} onToggle={(event) => setShowDetails(event.currentTarget.open)}>
             <summary>상세 조건</summary>
-            <p>경사·방위·손실 값을 알고 있을 때만 조정하세요. 열지 않으면 PVGIS 계산에 필요한 기본 조건을 사용합니다.</p>
+            <p>경사·방위·예상 손실 값을 알고 있을 때만 조정하세요. 열지 않으면 PVGIS 계산에 필요한 기본 조건을 사용합니다.</p>
             <div className="precisionDetailGrid">
               <label>경사 <span>°</span><input type="number" min="0" max="90" value={tilt} onChange={(event) => setTilt(event.target.value)} /></label>
               <label>방위 <span>°</span><input type="number" min="-180" max="180" value={azimuth} onChange={(event) => setAzimuth(event.target.value)} /></label>
-              <label>시스템 손실 <span>%</span><input type="number" min="0" max="100" step="0.1" value={loss} onChange={(event) => setLoss(event.target.value)} /></label>
+              <label>예상 손실 <span>%</span><input type="number" min="0" max="100" step="0.1" value={loss} onChange={(event) => setLoss(event.target.value)} /></label>
             </div>
           </details>
           <p className="precisionValidation" role="status">{validation ?? error ?? "위치와 용량을 확인한 뒤 계산하세요."}</p>
