@@ -29,6 +29,15 @@ describe("parsePrecisionGenerationResult", () => {
     expect(result.monthlyGeneration).toHaveLength(12);
     expect(result.monthlyGeneration[0]).toEqual({ month: 1, generationKwh: 300 });
     expect(result.monthlyGeneration[11]).toEqual({ month: 12, generationKwh: 311 });
-    expect(result).toMatchObject({ source: "PVGIS", version: "5.3", verifiedAt: "2026-07-30" });
+    expect(result).toMatchObject({
+      source: "PVGIS",
+      version: "5.3",
+      verifiedAt: "2026-07-30",
+      retrievedAt: "2026-08-13T00:00:00.000Z",
+    });
+  });
+
+  it("rejects PVGIS results when verification metadata is missing", () => {
+    expect(() => parsePrecisionGenerationResult({ ...payload, verifiedAt: undefined })).toThrow();
   });
 });
