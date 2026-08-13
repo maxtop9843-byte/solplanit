@@ -37,10 +37,7 @@ describe("parsePrecisionGenerationResult", () => {
     });
   });
 
-  it("does not turn missing verification metadata into a fabricated date", () => {
-    const result = parsePrecisionGenerationResult({ ...payload, verifiedAt: undefined });
-    expect(result.verifiedAt).toBe("확인된 정보 없음");
-    expect(result.source).toBe("PVGIS");
-    expect(result.version).toBe("5.3");
+  it("rejects PVGIS results when verification metadata is missing", () => {
+    expect(() => parsePrecisionGenerationResult({ ...payload, verifiedAt: undefined })).toThrow();
   });
 });
